@@ -20,9 +20,9 @@ public class TravelLog extends Activity implements OnClickListener {
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		this.setContentView(R.layout.main);
 		((Button) this.findViewById(R.id.start_pause_))
 				.setOnClickListener(this);
 		((Button) this.findViewById(R.id.stop_pause_)).setOnClickListener(this);
@@ -46,14 +46,33 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			break;
 		case STATE_PAUSE:
+			this.findViewById(R.id.start_pause_).setVisibility(View.GONE);
+			this.findViewById(R.id.stop_pause_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
+			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			break;
 		case STATE_TRAVEL:
+			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
+			this.findViewById(R.id.start_travel_).setVisibility(View.GONE);
+			this.findViewById(R.id.stop_travel_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			break;
 		case STATE_WORK:
+			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
+			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
+			this.findViewById(R.id.start_work_).setVisibility(View.GONE);
+			this.findViewById(R.id.stop_work_).setVisibility(View.VISIBLE);
 			break;
 		default:
 			break;
 		}
+		this.state = newState;
 	}
 
 	/**
@@ -88,7 +107,7 @@ public class TravelLog extends Activity implements OnClickListener {
 	@Override
 	protected final void onResume() {
 		super.onResume();
-		reloadPreferences();
+		this.reloadPreferences();
 	}
 
 	/** Called on activity pause. */
@@ -105,7 +124,7 @@ public class TravelLog extends Activity implements OnClickListener {
 				.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editor = preferences.edit();
 		// common
-		editor.putInt(PREFS_STARTE, state);
+		editor.putInt(PREFS_STARTE, this.state);
 		// commit changes
 		editor.commit();
 	}
@@ -116,7 +135,7 @@ public class TravelLog extends Activity implements OnClickListener {
 	private void reloadPreferences() {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		state = preferences.getInt(PREFS_STARTE, STATE_NOTHING);
-		this.changeState(state);
+		this.state = preferences.getInt(PREFS_STARTE, STATE_NOTHING);
+		this.changeState(this.state);
 	}
 }
