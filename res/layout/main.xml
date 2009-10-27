@@ -47,5 +47,8 @@
 		<Button android:text="@string/add_row" android:id="@+id/add_row_"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:layout_weight="1" />
+		<Button android:text="@string/clear_" android:id="@+id/clear_"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_weight="1" />
 	</LinearLayout>
 </LinearLayout>

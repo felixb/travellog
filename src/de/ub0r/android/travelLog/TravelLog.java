@@ -20,6 +20,10 @@ public class TravelLog extends Activity implements OnClickListener {
 	private static final int STATE_WORK = 3;
 
 	private static final String PREFS_STATE = "state";
+	private static final String PREFS_LISTCOUNT = "log_n";
+	private static final String PREFS_LIST_START = "log_start_";
+	private static final String PREFS_LIST_STOP = "log_stop_";
+	private static final String PREFS_LIST_TYPE = "log_type_";
 
 	private int state = STATE_NOTHING;
 
@@ -46,25 +50,37 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.type = t;
 		}
 
-		public void setEnd(final long e) {
+		public final long getStart() {
+			return this.start;
+		}
+
+		public final long getEnd() {
+			return this.end;
+		}
+
+		public final int getType() {
+			return this.type;
+		}
+
+		public final void setEnd(final long e) {
 			this.end = e;
 		}
 
-		public void setStart(final long s) {
+		public final void setStart(final long s) {
 			this.start = s;
 		}
 
-		public void start() {
+		public final void start() {
 			this.start = System.currentTimeMillis();
 		}
 
-		public void terminate(final long e) {
+		public final void terminate(final long e) {
 			if (this.end <= 0) {
 				this.end = e;
 			}
 		}
 
-		public void terminate() {
+		public final void terminate() {
 			if (this.end <= 0) {
 				this.end = System.currentTimeMillis();
 			}
@@ -105,13 +121,14 @@ public class TravelLog extends Activity implements OnClickListener {
 		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.stop_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.add_row_)).setOnClickListener(this);
+		((Button) this.findViewById(R.id.clear_)).setOnClickListener(this);
 		this.list = new ArrayList<TravelItem>();
 		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
 				android.R.id.text1, this.list);
 		((ListView) this.findViewById(R.id.log)).setAdapter(this.adapter);
 	}
 
-	private final void changeState(final int newState) {
+	private final void changeState(final int newState, final boolean btnOnly) {
 		TravelItem itm = null;
 		if (this.list.size() > 0) {
 			itm = this.list.get(0);
@@ -124,8 +141,10 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
-			if (itm != null) {
-				itm.terminate();
+			if (!btnOnly) {
+				if (itm != null) {
+					itm.terminate();
+				}
 			}
 			break;
 		case STATE_PAUSE:
@@ -135,10 +154,12 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
-			if (itm != null) {
-				itm.terminate();
+			if (!btnOnly) {
+				if (itm != null) {
+					itm.terminate();
+				}
+				this.list.add(0, new TravelItem(STATE_PAUSE));
 			}
-			this.list.add(0, new TravelItem(STATE_PAUSE));
 			break;
 		case STATE_TRAVEL:
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
@@ -147,10 +168,12 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.findViewById(R.id.stop_travel_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
-			if (itm != null) {
-				itm.terminate();
+			if (!btnOnly) {
+				if (itm != null) {
+					itm.terminate();
+				}
+				this.list.add(0, new TravelItem(STATE_TRAVEL));
 			}
-			this.list.add(0, new TravelItem(STATE_TRAVEL));
 			break;
 		case STATE_WORK:
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
@@ -159,10 +182,12 @@ public class TravelLog extends Activity implements OnClickListener {
 			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.GONE);
 			this.findViewById(R.id.stop_work_).setVisibility(View.VISIBLE);
-			if (itm != null) {
-				itm.terminate();
+			if (!btnOnly) {
+				if (itm != null) {
+					itm.terminate();
+				}
+				this.list.add(0, new TravelItem(STATE_WORK));
 			}
-			this.list.add(0, new TravelItem(STATE_WORK));
 			break;
 		default:
 			break;
@@ -180,21 +205,24 @@ public class TravelLog extends Activity implements OnClickListener {
 	public final void onClick(final View view) {
 		switch (view.getId()) {
 		case R.id.start_pause_:
-			this.changeState(STATE_PAUSE);
+			this.changeState(STATE_PAUSE, false);
 			break;
 		case R.id.start_travel_:
-			this.changeState(STATE_TRAVEL);
+			this.changeState(STATE_TRAVEL, false);
 			break;
 		case R.id.start_work_:
-			this.changeState(STATE_WORK);
+			this.changeState(STATE_WORK, false);
 			break;
 		case R.id.stop_pause_:
 		case R.id.stop_travel_:
 		case R.id.stop_work_:
-			this.changeState(STATE_NOTHING);
+			this.changeState(STATE_NOTHING, false);
 			break;
 		case R.id.add_row_:
 			this.list.add(new TravelItem(0, 0, 0));
+			break;
+		case R.id.clear_:
+			this.list.clear();
 			break;
 		default:
 			break;
@@ -217,13 +245,26 @@ public class TravelLog extends Activity implements OnClickListener {
 	}
 
 	/** Save prefs. */
-	final void savePreferences() {
+	private void savePreferences() {
 		// save user preferences
-		SharedPreferences preferences = PreferenceManager
+		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		SharedPreferences.Editor editor = preferences.edit();
-		// common
+		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(PREFS_STATE, this.state);
+		int count = prefs.getInt(PREFS_LISTCOUNT, 0);
+		for (int i = 0; i < count; i++) {
+			editor.remove(PREFS_LIST_START + i);
+			editor.remove(PREFS_LIST_STOP + i);
+			editor.remove(PREFS_LIST_TYPE + i);
+		}
+		count = this.list.size();
+		for (int i = 0; i < count; i++) {
+			TravelItem itm = this.list.get(i);
+			editor.putLong(PREFS_LIST_START + i, itm.getStart());
+			editor.putLong(PREFS_LIST_STOP + i, itm.getEnd());
+			editor.putInt(PREFS_LIST_TYPE + i, itm.getType());
+		}
+		editor.putInt(PREFS_LISTCOUNT, count);
 		// commit changes
 		editor.commit();
 	}
@@ -232,9 +273,17 @@ public class TravelLog extends Activity implements OnClickListener {
 	 * Read static vars holding preferences.
 	 */
 	private void reloadPreferences() {
-		SharedPreferences preferences = PreferenceManager
+		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		this.state = preferences.getInt(PREFS_STATE, STATE_NOTHING);
-		this.changeState(this.state);
+		this.state = prefs.getInt(PREFS_STATE, STATE_NOTHING);
+		this.list.clear();
+		final int count = prefs.getInt(PREFS_LISTCOUNT, 0);
+		for (int i = 0; i < count; i++) {
+			final long start = prefs.getLong(PREFS_LIST_START + i, 0);
+			final long end = prefs.getLong(PREFS_LIST_STOP + i, 0);
+			final int type = prefs.getInt(PREFS_LIST_TYPE + i, 0);
+			this.list.add(new TravelItem(start, end, type));
+		}
+		this.changeState(this.state, true);
 	}
 }
