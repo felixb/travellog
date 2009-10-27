@@ -25,4 +25,10 @@
 	<string name="start_pause">start pause</string>
 	<string name="stop_pause">stop pause</string>
     <string name="add_row">add row</string>
+    <string-array name="state">
+		<item>nothing</item>
+		<item>pause</item>
+		<item>travel</item>
+		<item>work</item>
+	</string-array>
 </resources>
