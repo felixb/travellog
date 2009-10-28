@@ -32,4 +32,11 @@
 		<item>travel</item>
 		<item>work</item>
 	</string-array>
+	<string-array name="action">
+		<item>change date</item>
+		<item>change start time</item>
+		<item>change end time</item>
+		<item>change type</item>
+		<item>delete</item>
+	</string-array>
 </resources>

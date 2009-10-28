@@ -1,23 +1,46 @@
 package de.ub0r.android.travelLog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.TimePicker;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class TravelLog extends Activity implements OnClickListener {
+public class TravelLog extends Activity implements OnClickListener,
+		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	private static final int STATE_NOTHING = 0;
 	private static final int STATE_PAUSE = 1;
 	private static final int STATE_TRAVEL = 2;
 	private static final int STATE_WORK = 3;
+
+	private static final int ACTION_CHG_DATE = 0;
+	private static final int ACTION_CHG_START = 1;
+	private static final int ACTION_CHG_END = 2;
+	private static final int ACTION_CHG_TYPE = 3;
+	private static final int ACTION_DELETE = 4;
+
+	private static final int DIALOG_DATE = 0;
+	private static final int DIALOG_TIME = 1;
+	private static final int DIALOG_TYPE = 2;
 
 	private static final String PREFS_STATE = "state";
 	private static final String PREFS_LISTCOUNT = "log_n";
@@ -25,12 +48,16 @@ public class TravelLog extends Activity implements OnClickListener {
 	private static final String PREFS_LIST_STOP = "log_stop_";
 	private static final String PREFS_LIST_TYPE = "log_type_";
 
+	private static String[] namesStates;
+
 	private int state = STATE_NOTHING;
 
 	private ArrayAdapter<TravelItem> adapter;
 	private ArrayList<TravelItem> list;
 
-	private static String[] namesStates;
+	private long editDate = 0;
+	private int editType = 0;
+	private int editItem = 0;
 
 	private class TravelItem {
 		private static final String FORMAT = "dd.MM. hh:mm";
@@ -126,6 +153,7 @@ public class TravelLog extends Activity implements OnClickListener {
 		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
 				android.R.id.text1, this.list);
 		((ListView) this.findViewById(R.id.log)).setAdapter(this.adapter);
+		((ListView) this.findViewById(R.id.log)).setOnItemClickListener(this);
 	}
 
 	private final void changeState(final int newState, final boolean btnOnly) {
@@ -228,6 +256,98 @@ public class TravelLog extends Activity implements OnClickListener {
 			break;
 		}
 		this.adapter.notifyDataSetChanged();
+	}
+
+	/**
+	 * Handle clicked ListItem.
+	 * 
+	 * @param parent
+	 *            parent AdapterView
+	 * @param v
+	 *            View
+	 * @param position
+	 *            Position
+	 * @param id
+	 *            id
+	 */
+	@Override
+	public final void onItemClick(final AdapterView<?> parent, final View v,
+			final int position, final long id) {
+		this.editItem = position;
+		final TravelItem itm = this.list.get(position);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(itm.toString());
+		builder.setItems(this.getResources().getStringArray(R.array.action),
+				new DialogInterface.OnClickListener() {
+					public void onClick(final DialogInterface dialog,
+							final int item) {
+						switch (item) {
+						case ACTION_CHG_DATE:
+							TravelLog.this.editDate = itm.getStart();
+							TravelLog.this.showDialog(DIALOG_DATE);
+							break;
+						case ACTION_CHG_END:
+							TravelLog.this.editDate = itm.getEnd();
+							TravelLog.this.showDialog(DIALOG_TIME);
+							break;
+						case ACTION_CHG_START:
+							TravelLog.this.editDate = itm.getStart();
+							TravelLog.this.showDialog(DIALOG_TIME);
+							break;
+						case ACTION_CHG_TYPE:
+							TravelLog.this.editType = itm.getType();
+							TravelLog.this.showDialog(DIALOG_TYPE);
+							break;
+						case ACTION_DELETE:
+							TravelLog.this.list.remove(position);
+							TravelLog.this.adapter.notifyDataSetChanged();
+							break;
+						default:
+							break;
+						}
+					}
+				});
+		builder.create().show();
+	}
+
+	public void onDateSet(final DatePicker view, final int year,
+			final int monthOfYear, final int dayOfMonth) {
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(this.editDate);
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, monthOfYear);
+		c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		this.list.get(this.editItem).setStart(c.getTimeInMillis());
+		c.setTimeInMillis(this.list.get(this.editItem).getEnd());
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, monthOfYear);
+		c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		this.list.get(this.editItem).setEnd(c.getTimeInMillis());
+		this.adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onTimeSet(final TimePicker view, final int hour,
+			final int minutes) {
+		// TODO Auto-generated method stub
+		this.adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	protected Dialog onCreateDialog(final int id) {
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(this.editDate);
+		switch (id) {
+		case DIALOG_DATE:
+			return new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
+					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+		case DIALOG_TIME:
+			return new TimePickerDialog(this, this,
+					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+		case DIALOG_TYPE:
+			return new Dialog(this); // FIXME
+		}
+		return null;
 	}
 
 	/** Called on activity resume. */
