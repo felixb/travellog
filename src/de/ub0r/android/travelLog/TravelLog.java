@@ -329,8 +329,36 @@ public class TravelLog extends Activity implements OnClickListener,
 	@Override
 	public void onTimeSet(final TimePicker view, final int hour,
 			final int minutes) {
-		// TODO Auto-generated method stub
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(this.editDate);
+		c.set(Calendar.HOUR_OF_DAY, hour);
+		c.set(Calendar.MINUTE, minutes);
+		final TravelItem itm = list.get(this.editItem);
+		if (itm.getStart() == editDate) {
+			itm.setStart(c.getTimeInMillis());
+		} else {
+			// FIXME this does not work
+			itm.setEnd(c.getTimeInMillis());
+		}
 		this.adapter.notifyDataSetChanged();
+	}
+
+	protected final void onPrepareDialog(final int id, final Dialog dialog) {
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(this.editDate);
+		// FIXME
+		switch (id) {
+		case DIALOG_DATE:
+			new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
+					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
+			break;
+		case DIALOG_TIME:
+			new TimePickerDialog(this, this, c.get(Calendar.HOUR_OF_DAY), c
+					.get(Calendar.MINUTE), true);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
