@@ -1,5 +1,7 @@
 package de.ub0r.android.travelLog;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -10,23 +12,37 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
+	/** Tag for output. */
+	private static final String TAG = "TravelLog";
+
 	private static final int STATE_NOTHING = 0;
 	private static final int STATE_PAUSE = 1;
 	private static final int STATE_TRAVEL = 2;
@@ -41,12 +57,22 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final int DIALOG_DATE = 0;
 	private static final int DIALOG_TIME = 1;
 	private static final int DIALOG_TYPE = 2;
+	/** Dialog: donate. */
+	private static final int DIALOG_DONATE = 3;
+	/** Dialog: about. */
+	private static final int DIALOG_ABOUT = 4;
+	/** Dialog: update. */
+	private static final int DIALOG_UPDATE = 5;
 
 	private static final String PREFS_STATE = "state";
 	private static final String PREFS_LISTCOUNT = "log_n";
 	private static final String PREFS_LIST_START = "log_start_";
 	private static final String PREFS_LIST_STOP = "log_stop_";
 	private static final String PREFS_LIST_TYPE = "log_type_";
+	/** Prefs: name for last version run */
+	private static final String PREFS_LAST_RUN = "lastrun";
+	/** Prefs: name for mail */
+	private static final String PREFS_MAIL = "mail";
 
 	private static String[] namesStates;
 
@@ -58,6 +84,27 @@ public class TravelLog extends Activity implements OnClickListener,
 	private long editDate = 0;
 	private int editType = 0;
 	private int editItem = 0;
+
+	/** Unique ID of device. */
+	private String imeiHash = null;
+	/** Display ads? */
+	private boolean prefsNoAds;
+
+	/** Array of md5(imei) for which no ads should be displayed. */
+	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab--9", // me
+	};
+
+	/**
+	 * Preferences.
+	 * 
+	 * @author flx
+	 */
+	public static class Preferences extends PreferenceActivity {
+		public final void onCreate(final Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			this.addPreferencesFromResource(R.xml.prefs);
+		}
+	}
 
 	private class TravelItem {
 		private static final String FORMAT_DATE = "dd.MM.";
@@ -161,6 +208,29 @@ public class TravelLog extends Activity implements OnClickListener,
 				android.R.id.text1, this.list);
 		((ListView) this.findViewById(R.id.log)).setAdapter(this.adapter);
 		((ListView) this.findViewById(R.id.log)).setOnItemClickListener(this);
+
+		// get prefs.
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final String v0 = preferences.getString(PREFS_LAST_RUN, "");
+		final String v1 = getString(R.string.app_version);
+		if (!v0.equals(v1)) {
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putString(PREFS_LAST_RUN, v1);
+			editor.commit();
+			this.showDialog(DIALOG_UPDATE);
+		}
+		// get imei
+		TelephonyManager mTelephonyMgr = (TelephonyManager) this
+				.getSystemService(TELEPHONY_SERVICE);
+		this.imeiHash = md5(mTelephonyMgr.getDeviceId());
+		this.prefsNoAds = false;
+		for (String h : NO_AD_HASHS) {
+			if (this.imeiHash.equals(h)) {
+				this.prefsNoAds = true;
+				break;
+			}
+		}
 	}
 
 	private final void changeState(final int newState, final boolean btnOnly) {
@@ -370,7 +440,53 @@ public class TravelLog extends Activity implements OnClickListener,
 	protected Dialog onCreateDialog(final int id) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
+		Dialog d;
 		switch (id) {
+		case DIALOG_DONATE:
+			d = new Dialog(this);
+			d.setContentView(R.layout.donate);
+			Button button = (Button) d.findViewById(R.id.btn_donate);
+			button.setOnClickListener(new OnClickListener() {
+				public void onClick(final View view) {
+					final Intent in = new Intent(Intent.ACTION_SEND);
+					in.putExtra(Intent.EXTRA_EMAIL,
+							new String[] {
+									TravelLog.this
+											.getString(R.string.donate_mail),
+									"" }); // FIXME: "" is a k9 hack.
+					in.putExtra(Intent.EXTRA_TEXT, TravelLog.this.imeiHash);
+					in
+							.putExtra(Intent.EXTRA_SUBJECT, TravelLog.this
+									.getString(R.string.app_name)
+									+ " "
+									+ TravelLog.this
+											.getString(R.string.donate_subject));
+					in.setType("text/plain");
+					TravelLog.this.startActivity(in);
+					TravelLog.this.dismissDialog(DIALOG_DONATE);
+				}
+			});
+			return d;
+		case DIALOG_ABOUT:
+			d = new Dialog(this);
+			d.setContentView(R.layout.about);
+			d.setTitle(this.getString(R.string.about_) + " v"
+					+ this.getString(R.string.app_version));
+			return d;
+		case DIALOG_UPDATE:
+			d = new Dialog(this);
+			d.setContentView(R.layout.update);
+			d.setTitle(R.string.changelog_);
+			LinearLayout layout = (LinearLayout) d.findViewById(R.id.base_view);
+			TextView tw;
+			String[] changes = this.getResources().getStringArray(
+					R.array.updates);
+			for (String ch : changes) {
+				tw = new TextView(this);
+				tw.setText(ch);
+				layout.addView(tw);
+			}
+			return d;
 		case DIALOG_DATE:
 			return new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -393,11 +509,65 @@ public class TravelLog extends Activity implements OnClickListener,
 		return null;
 	}
 
+	/**
+	 * Open menu.
+	 * 
+	 * @param menu
+	 *            menu to inflate
+	 * @return ok/fail?
+	 */
+	@Override
+	public final boolean onCreateOptionsMenu(final Menu menu) {
+		MenuInflater inflater = this.getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	/**
+	 * Handles item selections.
+	 * 
+	 * @param item
+	 *            menu item
+	 * @return done?
+	 */
+	public final boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.item_about: // start about dialog
+			this.showDialog(DIALOG_ABOUT);
+			return true;
+		case R.id.item_settings: // start settings activity
+			this.startActivity(new Intent(this, Preferences.class));
+			return true;
+		case R.id.item_donate:
+			try {
+				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+						.parse(this.getString(R.string.donate_url))));
+			} catch (ActivityNotFoundException e) {
+				Log.e(TAG, "no browser", e);
+			}
+			this.showDialog(DIALOG_DONATE);
+			return true;
+		case R.id.item_more:
+			try {
+				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+						.parse("market://search?q=pub:\"Felix Bechstein\"")));
+			} catch (ActivityNotFoundException e) {
+				Log.e(TAG, "no market", e);
+			}
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	/** Called on activity resume. */
 	@Override
 	protected final void onResume() {
 		super.onResume();
 		this.reloadPreferences();
+		if (!this.prefsNoAds) {
+		this.findViewById(R.id.ad).setVisibility(View.VISIBLE);
+		}
 	}
 
 	/** Called on activity pause. */
@@ -448,5 +618,37 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.list.add(new TravelItem(start, end, type));
 		}
 		this.changeState(this.state, true);
+	}
+
+	/**
+	 * Calc MD5 Hash from String.
+	 * 
+	 * @param s
+	 *            input
+	 * @return hash
+	 */
+	private static String md5(final String s) {
+		try {
+			// Create MD5 Hash
+			MessageDigest digest = java.security.MessageDigest
+					.getInstance("MD5");
+			digest.update(s.getBytes());
+			byte[] messageDigest = digest.digest();
+			// Create Hex String
+			StringBuilder hexString = new StringBuilder(32);
+			int b;
+			for (int i = 0; i < messageDigest.length; i++) {
+				b = 0xFF & messageDigest[i];
+				if (b < 0x10) {
+					hexString.append('0' + Integer.toHexString(b));
+				} else {
+					hexString.append(Integer.toHexString(b));
+				}
+			}
+			return hexString.toString();
+		} catch (NoSuchAlgorithmException e) {
+			Log.e(TAG, null, e);
+		}
+		return "";
 	}
 }
