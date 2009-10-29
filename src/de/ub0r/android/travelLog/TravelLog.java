@@ -283,7 +283,7 @@ public class TravelLog extends Activity implements OnClickListener,
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(final Bundle savedInstanceState) {
+	public final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
 		namesStates = this.getResources().getStringArray(R.array.state);
@@ -574,7 +574,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @return Dialog for show()
 	 */
 	@Override
-	protected Dialog onCreateDialog(final int id) {
+	protected final Dialog onCreateDialog(final int id) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
 		Dialog d;
@@ -667,6 +667,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 *            menu item
 	 * @return done?
 	 */
+	@Override
 	public final boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.item_about: // start about dialog
