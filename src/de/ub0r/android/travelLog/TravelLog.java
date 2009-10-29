@@ -139,66 +139,129 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	private class TravelItem {
+		/** DateFormat: date. */
 		private static final String FORMAT_DATE = "dd.MM.";
+		/** DateFormat: time. */
 		private static final String FORMAT_TIME = "kk:mm";
 
+		/** Time: start. */
 		private long start;
+		/** Time: end */
 		private long end;
+		/** Type. */
 		private int type;
 
+		/**
+		 * Create a TravelItem.
+		 * 
+		 * @param s
+		 *            start time/date
+		 * @param e
+		 *            end time/date
+		 * @param t
+		 *            type
+		 */
 		public TravelItem(final long s, final long e, final int t) {
 			this.start = s;
 			this.end = e;
 			this.type = t;
 		}
 
+		/**
+		 * Create a TravelItem.
+		 * 
+		 * @param t
+		 *            type
+		 */
 		public TravelItem(final int t) {
 			this.start = System.currentTimeMillis();
 			this.type = t;
 		}
 
+		/**
+		 * @return start date/time.
+		 */
 		public final long getStart() {
 			return this.start;
 		}
 
+		/**
+		 * @return end date/time
+		 */
 		public final long getEnd() {
 			return this.end;
 		}
 
+		/**
+		 * @return type
+		 */
 		public final int getType() {
 			return this.type;
 		}
 
-		public final void setEnd(final long e) {
-			this.end = e;
-		}
-
+		/**
+		 * Set start date/time.
+		 * 
+		 * @param s
+		 *            start
+		 */
 		public final void setStart(final long s) {
 			this.start = s;
 		}
 
+		/**
+		 * Set end date/time.
+		 * 
+		 * @param e
+		 *            end
+		 */
+		public final void setEnd(final long e) {
+			this.end = e;
+		}
+
+		/**
+		 * Set type.
+		 * 
+		 * @param t
+		 *            type
+		 */
 		public final void setType(final int t) {
 			this.type = t;
 		}
 
+		/**
+		 * Start TravelItem now.
+		 */
 		public final void start() {
 			this.start = System.currentTimeMillis();
 		}
 
+		/**
+		 * Terminate open TravelItem.
+		 * 
+		 * @param e
+		 *            end date/time
+		 */
 		public final void terminate(final long e) {
 			if (this.end <= 0) {
 				this.end = e;
 			}
 		}
 
+		/**
+		 * Terminate open TravelItem now.
+		 */
 		public final void terminate() {
 			if (this.end <= 0) {
 				this.end = System.currentTimeMillis();
 			}
 		}
 
+		/**
+		 * @return TravelItem as String
+		 */
 		@Override
-		public String toString() {
+		public final String toString() {
 			String ret = null;
 			if (this.start > 0) {
 				ret = DateFormat.format(FORMAT_DATE, this.start).toString();
@@ -265,6 +328,14 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 	}
 
+	/**
+	 * Change to new state.
+	 * 
+	 * @param newState
+	 *            new state
+	 * @param btnOnly
+	 *            set buttons only, do not modify items
+	 */
 	private final void changeState(final int newState, final boolean btnOnly) {
 		TravelItem itm = null;
 		if (this.list.size() > 0) {
@@ -418,6 +489,18 @@ public class TravelLog extends Activity implements OnClickListener,
 		builder.create().show();
 	}
 
+	/**
+	 * A Date was set.
+	 * 
+	 * @param view
+	 *            DatePicker View
+	 * @param year
+	 *            year set
+	 * @param monthOfYear
+	 *            month set
+	 * @param dayOfMonth
+	 *            day set
+	 */
 	public void onDateSet(final DatePicker view, final int year,
 			final int monthOfYear, final int dayOfMonth) {
 		final Calendar c = Calendar.getInstance();
@@ -434,7 +517,16 @@ public class TravelLog extends Activity implements OnClickListener,
 		this.adapter.notifyDataSetChanged();
 	}
 
-	@Override
+	/**
+	 * A Time was set.
+	 * 
+	 * @param view
+	 *            TimePicker View
+	 * @param hour
+	 *            hour set
+	 * @param minutes
+	 *            minutes set
+	 */
 	public void onTimeSet(final TimePicker view, final int hour,
 			final int minutes) {
 		final Calendar c = Calendar.getInstance();
@@ -450,6 +542,15 @@ public class TravelLog extends Activity implements OnClickListener,
 		this.adapter.notifyDataSetChanged();
 	}
 
+	/**
+	 * Prepare a dialog before open.
+	 * 
+	 * @param id
+	 *            dialog's id
+	 * @param dialog
+	 *            dialog itself
+	 */
+	@Override
 	protected final void onPrepareDialog(final int id, final Dialog dialog) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
@@ -467,6 +568,13 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 	}
 
+	/**
+	 * Create a dialog.
+	 * 
+	 * @param id
+	 *            dialog's id
+	 * @return Dialog for show()
+	 */
 	@Override
 	protected Dialog onCreateDialog(final int id) {
 		final Calendar c = Calendar.getInstance();
