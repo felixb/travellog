@@ -43,33 +43,35 @@
 	</string>
 	<string name="send_">Send</string>
 	<string name="settings">Preferences</string>
-	<string name="about_">About CallMeter NG</string>
+	<string name="about_">About TravelLog</string>
 	<string name="more_">More Apps..</string>
 	<string name="changelog_">Changelog</string>
 	<string name="about">TravelLog is a one-click-app to log your
 		business trips for later accountung.</string>
 
-	<string name="start_work">start work</string>
-	<string name="stop_work">stop work</string>
-	<string name="start_travel">start travel</string>
-	<string name="stop_travel">stop travel</string>
-	<string name="start_pause">start pause</string>
-	<string name="stop_pause">stop pause</string>
-	<string name="add_row">add row</string>
-	<string name="clear_">clear</string>
+	<string name="start_work">Start work</string>
+	<string name="stop_work">Stop work</string>
+	<string name="start_travel">Start travel</string>
+	<string name="stop_travel">Stop travel</string>
+	<string name="start_pause">Start pause</string>
+	<string name="stop_pause">Stop pause</string>
+	<string name="add_row">Add row</string>
+	<string name="clear_">Clear</string>
+	<string name="export_">Send as mail</string>
+	<string name="export_subject">TravelLog export</string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
 	<string-array name="state">
-		<item>nothing</item>
-		<item>pause</item>
-		<item>travel</item>
-		<item>work</item>
+		<item>Nothing</item>
+		<item>Pause</item>
+		<item>Travel</item>
+		<item>Work</item>
 	</string-array>
 	<string-array name="action">
-		<item>change date</item>
-		<item>change start time</item>
-		<item>change end time</item>
-		<item>change type</item>
-		<item>delete</item>
+		<item>Change date</item>
+		<item>Change start time</item>
+		<item>Change end time</item>
+		<item>Change type</item>
+		<item>Delete</item>
 	</string-array>
 </resources>

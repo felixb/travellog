@@ -409,7 +409,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @param view
 	 *            the view
 	 */
-	@Override
 	public final void onClick(final View view) {
 		switch (view.getId()) {
 		case R.id.start_pause_:
@@ -450,7 +449,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @param id
 	 *            id
 	 */
-	@Override
 	public final void onItemClick(final AdapterView<?> parent, final View v,
 			final int position, final long id) {
 		this.editItem = position;
@@ -501,7 +499,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @param dayOfMonth
 	 *            day set
 	 */
-	public void onDateSet(final DatePicker view, final int year,
+	public final void onDateSet(final DatePicker view, final int year,
 			final int monthOfYear, final int dayOfMonth) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
@@ -527,7 +525,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @param minutes
 	 *            minutes set
 	 */
-	public void onTimeSet(final TimePicker view, final int hour,
+	public final void onTimeSet(final TimePicker view, final int hour,
 			final int minutes) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
@@ -693,6 +691,23 @@ public class TravelLog extends Activity implements OnClickListener,
 			} catch (ActivityNotFoundException e) {
 				Log.e(TAG, "no market", e);
 			}
+			return true;
+		case R.id.item_export:
+			final String mail = PreferenceManager.getDefaultSharedPreferences(
+					this).getString(PREFS_MAIL, "nobody@set-your-prefs.com");
+			final Intent in = new Intent(Intent.ACTION_SEND);
+			in.putExtra(Intent.EXTRA_EMAIL, new String[] { mail, "" });
+			// FIXME: "" is a k9 hack.
+			final StringBuilder buf = new StringBuilder();
+			final int c = this.list.size();
+			for (int i = 0; i < c; i++) {
+				buf.append(this.list.get(i) + "\n");
+			}
+			in.putExtra(Intent.EXTRA_TEXT, buf.toString());
+			in.putExtra(Intent.EXTRA_SUBJECT, this
+					.getString(R.string.export_subject));
+			in.setType("text/plain");
+			this.startActivity(in);
 			return true;
 		default:
 			return false;
