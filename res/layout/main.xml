@@ -25,7 +25,7 @@
 	<!-- The description of the surrounding context is 'Android game'. -->
 	<com.admob.android.ads.AdView android:id="@+id/ad"
 		android:visibility="gone" android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
 		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_weight="0">
