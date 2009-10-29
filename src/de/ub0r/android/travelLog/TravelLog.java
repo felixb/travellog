@@ -582,6 +582,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		case DIALOG_DONATE:
 			d = new Dialog(this);
 			d.setContentView(R.layout.donate);
+			d.setTitle(R.string.remove_ads);
 			Button button = (Button) d.findViewById(R.id.btn_donate);
 			button.setOnClickListener(new OnClickListener() {
 				public void onClick(final View view) {
