@@ -38,24 +38,41 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * Main Activity.
+ * 
+ * @author flx
+ */
 public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	/** Tag for output. */
 	private static final String TAG = "TravelLog";
 
+	/** State: nothing. */
 	private static final int STATE_NOTHING = 0;
+	/** State: pause. */
 	private static final int STATE_PAUSE = 1;
+	/** State: travel. */
 	private static final int STATE_TRAVEL = 2;
+	/** State: work. */
 	private static final int STATE_WORK = 3;
 
+	/** Action: change date. */
 	private static final int ACTION_CHG_DATE = 0;
+	/** Action: change start time. */
 	private static final int ACTION_CHG_START = 1;
+	/** Action: change end time. */
 	private static final int ACTION_CHG_END = 2;
+	/** Action: change type. */
 	private static final int ACTION_CHG_TYPE = 3;
+	/** Action: delete. */
 	private static final int ACTION_DELETE = 4;
 
+	/** Dialog: change date. */
 	private static final int DIALOG_DATE = 0;
+	/** Dialog: change time. */
 	private static final int DIALOG_TIME = 1;
+	/** Dialog: change type. */
 	private static final int DIALOG_TYPE = 2;
 	/** Dialog: donate. */
 	private static final int DIALOG_DONATE = 3;
@@ -64,25 +81,35 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Dialog: update. */
 	private static final int DIALOG_UPDATE = 5;
 
+	/** Preference's name: state. */
 	private static final String PREFS_STATE = "state";
+	/** Preference's name: travel item count. */
 	private static final String PREFS_LISTCOUNT = "log_n";
+	/** Preference's name: travel item start. */
 	private static final String PREFS_LIST_START = "log_start_";
+	/** Preference's name: travel item end. */
 	private static final String PREFS_LIST_STOP = "log_stop_";
+	/** Preference's name: travel item type. */
 	private static final String PREFS_LIST_TYPE = "log_type_";
-	/** Prefs: name for last version run */
+	/** Preference's name: last version run */
 	private static final String PREFS_LAST_RUN = "lastrun";
-	/** Prefs: name for mail */
+	/** Preference's name: mail */
 	private static final String PREFS_MAIL = "mail";
 
+	/** States as String[]. */
 	private static String[] namesStates;
 
+	/** State. */
 	private int state = STATE_NOTHING;
 
+	/** ArrayAdapter for ListView. */
 	private ArrayAdapter<TravelItem> adapter;
+	/** The List itself. */
 	private ArrayList<TravelItem> list;
 
+	/** Date/Time for editing. */
 	private long editDate = 0;
-	private int editType = 0;
+	/** Item to edit. */
 	private int editItem = 0;
 
 	/** Unique ID of device. */
@@ -91,7 +118,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	private boolean prefsNoAds;
 
 	/** Array of md5(imei) for which no ads should be displayed. */
-	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab--9", // me
+	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab9", // me
 	};
 
 	/**
@@ -106,6 +133,11 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 	}
 
+	/**
+	 * A single TravelLog item.
+	 * 
+	 * @author flx
+	 */
 	private class TravelItem {
 		private static final String FORMAT_DATE = "dd.MM.";
 		private static final String FORMAT_TIME = "kk:mm";
@@ -213,7 +245,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		final String v0 = preferences.getString(PREFS_LAST_RUN, "");
-		final String v1 = getString(R.string.app_version);
+		final String v1 = this.getString(R.string.app_version);
 		if (!v0.equals(v1)) {
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putString(PREFS_LAST_RUN, v1);
@@ -372,7 +404,6 @@ public class TravelLog extends Activity implements OnClickListener,
 							TravelLog.this.showDialog(DIALOG_TIME);
 							break;
 						case ACTION_CHG_TYPE:
-							TravelLog.this.editType = itm.getType();
 							TravelLog.this.showDialog(DIALOG_TYPE);
 							break;
 						case ACTION_DELETE:
@@ -566,7 +597,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		super.onResume();
 		this.reloadPreferences();
 		if (!this.prefsNoAds) {
-		this.findViewById(R.id.ad).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.ad).setVisibility(View.VISIBLE);
 		}
 	}
 
