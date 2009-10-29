@@ -60,7 +60,8 @@ public class TravelLog extends Activity implements OnClickListener,
 	private int editItem = 0;
 
 	private class TravelItem {
-		private static final String FORMAT = "dd.MM. hh:mm";
+		private static final String FORMAT_DATE = "dd.MM.";
+		private static final String FORMAT_TIME = "kk:mm";
 
 		private long start;
 		private long end;
@@ -97,6 +98,10 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.start = s;
 		}
 
+		public final void setType(final int t) {
+			this.type = t;
+		}
+
 		public final void start() {
 			this.start = System.currentTimeMillis();
 		}
@@ -117,13 +122,15 @@ public class TravelLog extends Activity implements OnClickListener,
 		public String toString() {
 			String ret = null;
 			if (this.start > 0) {
-				ret = DateFormat.format(FORMAT, this.start).toString();
+				ret = DateFormat.format(FORMAT_DATE, this.start).toString();
+				ret += " "
+						+ DateFormat.format(FORMAT_TIME, this.start).toString();
 			} else {
-				ret = "???";
+				ret = "??.??. ???";
 			}
 			ret += " - ";
 			if (this.end > 0) {
-				ret += DateFormat.format(FORMAT, this.end).toString();
+				ret += DateFormat.format(FORMAT_TIME, this.end).toString();
 			} else {
 				ret += "???";
 			}
@@ -333,11 +340,10 @@ public class TravelLog extends Activity implements OnClickListener,
 		c.setTimeInMillis(this.editDate);
 		c.set(Calendar.HOUR_OF_DAY, hour);
 		c.set(Calendar.MINUTE, minutes);
-		final TravelItem itm = list.get(this.editItem);
-		if (itm.getStart() == editDate) {
+		final TravelItem itm = this.list.get(this.editItem);
+		if (itm.getStart() == this.editDate) {
 			itm.setStart(c.getTimeInMillis());
 		} else {
-			// FIXME this does not work
 			itm.setEnd(c.getTimeInMillis());
 		}
 		this.adapter.notifyDataSetChanged();
@@ -346,15 +352,14 @@ public class TravelLog extends Activity implements OnClickListener,
 	protected final void onPrepareDialog(final int id, final Dialog dialog) {
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
-		// FIXME
 		switch (id) {
 		case DIALOG_DATE:
-			new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
+			((DatePickerDialog) dialog).updateDate(c.get(Calendar.YEAR), c
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 			break;
 		case DIALOG_TIME:
-			new TimePickerDialog(this, this, c.get(Calendar.HOUR_OF_DAY), c
-					.get(Calendar.MINUTE), true);
+			((TimePickerDialog) dialog).updateTime(c.get(Calendar.HOUR_OF_DAY),
+					c.get(Calendar.MINUTE));
 			break;
 		default:
 			break;
@@ -373,7 +378,17 @@ public class TravelLog extends Activity implements OnClickListener,
 			return new TimePickerDialog(this, this,
 					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
 		case DIALOG_TYPE:
-			return new Dialog(this); // FIXME
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setItems(this.getResources().getStringArray(R.array.state),
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int item) {
+							TravelLog.this.list.get(TravelLog.this.editItem)
+									.setType(item);
+							TravelLog.this.adapter.notifyDataSetChanged();
+						}
+					});
+			return builder.create();
 		}
 		return null;
 	}
