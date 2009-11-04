@@ -297,7 +297,6 @@ public class TravelLog extends Activity implements OnClickListener,
 		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.stop_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.add_row_)).setOnClickListener(this);
-		((Button) this.findViewById(R.id.clear_)).setOnClickListener(this);
 		this.list = new ArrayList<TravelItem>();
 		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
 				android.R.id.text1, this.list);
@@ -427,9 +426,6 @@ public class TravelLog extends Activity implements OnClickListener,
 			break;
 		case R.id.add_row_:
 			this.list.add(new TravelItem(0, 0, 0));
-			break;
-		case R.id.clear_:
-			this.list.clear();
 			break;
 		default:
 			break;
@@ -677,6 +673,10 @@ public class TravelLog extends Activity implements OnClickListener,
 		case R.id.item_settings: // start settings activity
 			this.startActivity(new Intent(this, Preferences.class));
 			return true;
+		case R.id.item_clear:
+			this.list.clear();
+			this.adapter.notifyDataSetChanged();
+			return true;
 		case R.id.item_donate:
 			try {
 				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
@@ -705,6 +705,10 @@ public class TravelLog extends Activity implements OnClickListener,
 			for (int i = 0; i < c; i++) {
 				buf.append(this.list.get(i) + "\n");
 			}
+			buf.append("\n");
+			buf.append(this.getString(R.string.export_footer));
+			buf.append(this.getString(R.string.source));
+			buf.append("\n");
 			in.putExtra(Intent.EXTRA_TEXT, buf.toString());
 			in.putExtra(Intent.EXTRA_SUBJECT, this
 					.getString(R.string.export_subject));

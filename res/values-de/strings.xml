@@ -44,7 +44,7 @@
 	<string name="start_pause">Start Pause</string>
 	<string name="stop_pause">Stopp Pause</string>
 	<string name="add_row">Zeile hinzu</string>
-	<string name="clear_">Löschen</string>
+	<string name="clear_">Alle löschen</string>
 	<string name="export_">Als Mail senden</string>
 	<string name="export_subject">TravelLog Export</string>
 	<string name="mail_">Mail Adresse</string>
