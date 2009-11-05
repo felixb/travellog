@@ -96,6 +96,13 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Preference's name: mail */
 	private static final String PREFS_MAIL = "mail";
 
+	/** DateFormat: date. */
+	private static String FORMAT_DATE = "dd.MM.";
+	/** DateFormat: time. */
+	private static String FORMAT_TIME = "kk:mm";
+	/** DateFormat: am/pm */
+	private static boolean FORMAT_AMPM = false;
+
 	/** States as String[]. */
 	private static String[] namesStates;
 
@@ -139,11 +146,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	private class TravelItem {
-		/** DateFormat: date. */
-		private static final String FORMAT_DATE = "dd.MM.";
-		/** DateFormat: time. */
-		private static final String FORMAT_TIME = "kk:mm";
-
 		/** Time: start. */
 		private long start;
 		/** Time: end */
@@ -286,6 +288,9 @@ public class TravelLog extends Activity implements OnClickListener,
 	public final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
+		FORMAT_DATE = this.getString(R.string.format_date);
+		FORMAT_TIME = this.getString(R.string.format_time);
+		FORMAT_AMPM = FORMAT_TIME.endsWith("aa");
 		namesStates = this.getResources().getStringArray(R.array.state);
 		((Button) this.findViewById(R.id.start_pause_))
 				.setOnClickListener(this);
@@ -626,7 +631,8 @@ public class TravelLog extends Activity implements OnClickListener,
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 		case DIALOG_TIME:
 			return new TimePickerDialog(this, this,
-					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),
+					FORMAT_AMPM);
 		case DIALOG_TYPE:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setItems(this.getResources().getStringArray(R.array.state),
