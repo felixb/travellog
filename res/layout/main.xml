@@ -20,13 +20,6 @@
 	xmlns:app="http://schemas.android.com/apk/res/de.ub0r.android.travelLog"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<!-- Place an AdMob ad at the bottom of the screen. -->
-	<!-- It has white text on a black background. -->
-	<!-- The description of the surrounding context is 'Android game'. -->
-	<com.admob.android.ads.AdView android:id="@+id/ad"
-		android:visibility="gone" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
-		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_weight="0">
 		<Button android:text="" android:id="@+id/stop"
@@ -47,4 +40,8 @@
 	</ListView>
 	<Button android:text="@string/add_row" android:id="@+id/add_row_"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<com.admob.android.ads.AdView android:id="@+id/ad"
+		android:visibility="gone" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
+		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 </LinearLayout>

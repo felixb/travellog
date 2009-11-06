@@ -95,6 +95,11 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_LAST_RUN = "lastrun";
 	/** Preference's name: mail */
 	private static final String PREFS_MAIL = "mail";
+	/** Preference's name: round */
+	private static final String PREFS_ROUND = "round";
+
+	/** Milliseconds per minute. */
+	private static final long MILLIS_A_MINUTE = 60000;
 
 	/** DateFormat: date. */
 	private static String FORMAT_DATE = "dd.MM.";
@@ -127,6 +132,9 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Array of md5(imei) for which no ads should be displayed. */
 	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab9", // me
 	};
+
+	/** Round time to this. */
+	private int prefsRound = 0;
 
 	/**
 	 * Preferences.
@@ -176,7 +184,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 *            type
 		 */
 		public TravelItem(final int t) {
-			this.start = System.currentTimeMillis();
+			this.start = this.round(System.currentTimeMillis());
 			this.type = t;
 		}
 
@@ -255,7 +263,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		public final void terminate() {
 			if (this.end <= 0) {
-				this.end = System.currentTimeMillis();
+				this.end = this.round(System.currentTimeMillis());
 			}
 		}
 
@@ -284,7 +292,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			ret.append(": " + TravelLog.namesStates[this.type]);
 			if (this.start > 0) {
 				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
-				if (this.end > this.start) {
+				if (this.end >= this.start) {
 					ret.append(TravelLog.this.getTime(this.end - this.start));
 				} else {
 					ret.append(TravelLog.this.getTime(System
@@ -293,6 +301,32 @@ public class TravelLog extends Activity implements OnClickListener,
 				}
 			}
 			return ret.toString();
+		}
+
+		/**
+		 * Round time as set in preferences.
+		 * 
+		 * @param time
+		 *            unrounded time
+		 * @return rounded time
+		 */
+		private long round(final long time) {
+			long m = time / MILLIS_A_MINUTE; // cut down to minutes
+			if (TravelLog.this.prefsRound == 0) {
+				return m * MILLIS_A_MINUTE;
+			}
+			final Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(m * MILLIS_A_MINUTE);
+			m = c.get(Calendar.MINUTE);
+			final int r = (int) (m % TravelLog.this.prefsRound);
+			if (r != 0) {
+				if (r >= TravelLog.this.prefsRound / 2) {
+					c.roll(Calendar.MINUTE, -r + TravelLog.this.prefsRound);
+				} else {
+					c.roll(Calendar.MINUTE, -r);
+				}
+			}
+			return c.getTimeInMillis();
 		}
 	}
 
@@ -791,6 +825,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.list.add(new TravelItem(start, end, type));
 		}
 		this.changeState(this.state, true);
+		this.prefsRound = Integer.parseInt(prefs.getString(PREFS_ROUND, "0"));
 	}
 
 	/**
