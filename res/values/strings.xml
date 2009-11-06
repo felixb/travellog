@@ -63,6 +63,7 @@
 	<string name="export_footer">Check out TravelLog - </string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
+	<string name="for_">for</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>

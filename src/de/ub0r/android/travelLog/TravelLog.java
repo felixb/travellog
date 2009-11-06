@@ -264,22 +264,35 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		@Override
 		public final String toString() {
-			String ret = null;
+			StringBuilder ret = new StringBuilder();
 			if (this.start > 0) {
-				ret = DateFormat.format(FORMAT_DATE, this.start).toString();
-				ret += " "
-						+ DateFormat.format(FORMAT_TIME, this.start).toString();
+				ret.append(DateFormat.format(FORMAT_DATE, this.start)
+						.toString());
+				ret
+						.append(" "
+								+ DateFormat.format(FORMAT_TIME, this.start)
+										.toString());
 			} else {
-				ret = "??.??. ???";
+				ret.append("??.??. ???");
 			}
-			ret += " - ";
+			ret.append(" - ");
 			if (this.end > 0) {
-				ret += DateFormat.format(FORMAT_TIME, this.end).toString();
+				ret.append(DateFormat.format(FORMAT_TIME, this.end).toString());
 			} else {
-				ret += "???";
+				ret.append("???");
 			}
-			ret += ": " + TravelLog.namesStates[this.type];
-			return ret;
+			ret.append(": " + TravelLog.namesStates[this.type]);
+			if (this.start > 0) {
+				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
+				if (this.end > this.start) {
+					ret.append(TravelLog.this.getTime(this.end - this.start));
+				} else {
+					ret.append(TravelLog.this.getTime(System
+							.currentTimeMillis()
+							- this.start));
+				}
+			}
+			return ret.toString();
 		}
 	}
 
@@ -290,17 +303,14 @@ public class TravelLog extends Activity implements OnClickListener,
 		this.setContentView(R.layout.main);
 		FORMAT_DATE = this.getString(R.string.format_date);
 		FORMAT_TIME = this.getString(R.string.format_time);
-		FORMAT_AMPM = FORMAT_TIME.endsWith("aa");
+		FORMAT_AMPM = !FORMAT_TIME.endsWith("aa");
 		namesStates = this.getResources().getStringArray(R.array.state);
+		((Button) this.findViewById(R.id.stop)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_pause_))
 				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_pause_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_travel_))
 				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_travel_))
-				.setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.add_row_)).setOnClickListener(this);
 		this.list = new ArrayList<TravelItem>();
 		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
@@ -347,12 +357,12 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 		switch (newState) {
 		case STATE_NOTHING:
+			this.findViewById(R.id.stop).setVisibility(View.GONE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
+
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
+
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -360,12 +370,12 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_PAUSE:
+			((Button) this.findViewById(R.id.stop))
+					.setText(R.string.stop_pause);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -374,12 +384,12 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_TRAVEL:
+			((Button) this.findViewById(R.id.stop))
+					.setText(R.string.stop_travel);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -388,12 +398,11 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_WORK:
+			((Button) this.findViewById(R.id.stop)).setText(R.string.stop_work);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.VISIBLE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -424,9 +433,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		case R.id.start_work_:
 			this.changeState(STATE_WORK, false);
 			break;
-		case R.id.stop_pause_:
-		case R.id.stop_travel_:
-		case R.id.stop_work_:
+		case R.id.stop:
 			this.changeState(STATE_NOTHING, false);
 			break;
 		case R.id.add_row_:
@@ -816,5 +823,41 @@ public class TravelLog extends Activity implements OnClickListener,
 			Log.e(TAG, null, e);
 		}
 		return "";
+	}
+
+	/**
+	 * Parse number of seconds to a readable time format.
+	 * 
+	 * @param milliseconds
+	 *            milliseconds
+	 * @return parsed string
+	 */
+	private String getTime(final long milliseconds) {
+		String ret;
+		int seconds = (int) (milliseconds / 1000);
+		int d = seconds / 86400;
+		int h = (seconds % 86400) / 3600;
+		int m = (seconds % 3600) / 60;
+		if (d > 0) {
+			ret = d + "d ";
+		} else {
+			ret = "";
+		}
+		if (h > 0 || d > 0) {
+			if (h < 10) {
+				ret += "0";
+			}
+			ret += h + ":";
+		}
+		if (m > 0 || h > 0 || d > 0) {
+			if (m < 10 && h > 0) {
+				ret += "0";
+			}
+		}
+		ret += m;
+		if (d == 0 && h == 0) {
+			ret += "min";
+		}
+		return ret;
 	}
 }
