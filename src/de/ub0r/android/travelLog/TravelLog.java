@@ -151,7 +151,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * 
 	 * @author flx
 	 */
-	private class TravelItem {
+	class TravelItem {
 		/** Time: start. */
 		private long start;
 		/** Time: end */
