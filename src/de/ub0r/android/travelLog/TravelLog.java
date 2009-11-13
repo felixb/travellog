@@ -32,9 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -620,33 +618,44 @@ public class TravelLog extends Activity implements OnClickListener,
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
 		Dialog d;
+		AlertDialog.Builder builder;
 		switch (id) {
 		case DIALOG_DONATE:
-			d = new Dialog(this);
-			d.setContentView(R.layout.donate);
-			d.setTitle(R.string.remove_ads);
-			Button button = (Button) d.findViewById(R.id.btn_donate);
-			button.setOnClickListener(new OnClickListener() {
-				public void onClick(final View view) {
-					final Intent in = new Intent(Intent.ACTION_SEND);
-					in.putExtra(Intent.EXTRA_EMAIL,
-							new String[] {
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.remove_ads);
+			builder.setMessage(R.string.postdonate);
+			builder.setPositiveButton(R.string.donate_,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							final Intent in = new Intent(Intent.ACTION_SEND);
+							in.putExtra(Intent.EXTRA_EMAIL, new String[] {
 									TravelLog.this
 											.getString(R.string.donate_mail),
 									"" }); // FIXME: "" is a k9 hack.
-					in.putExtra(Intent.EXTRA_TEXT, TravelLog.this.imeiHash);
-					in
-							.putExtra(Intent.EXTRA_SUBJECT, TravelLog.this
-									.getString(R.string.app_name)
-									+ " "
-									+ TravelLog.this
-											.getString(R.string.donate_subject));
-					in.setType("text/plain");
-					TravelLog.this.startActivity(in);
-					TravelLog.this.dismissDialog(DIALOG_DONATE);
-				}
-			});
-			return d;
+							in.putExtra(Intent.EXTRA_TEXT,
+									TravelLog.this.imeiHash);
+							in
+									.putExtra(
+											Intent.EXTRA_SUBJECT,
+											TravelLog.this
+													.getString(R.string.app_name)
+													+ " "
+													+ TravelLog.this
+															.getString(R.string.donate_subject));
+							in.setType("text/plain");
+							TravelLog.this.startActivity(in);
+							dialog.dismiss();
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							dialog.cancel();
+						}
+					});
+			return builder.create();
 		case DIALOG_ABOUT:
 			d = new Dialog(this);
 			d.setContentView(R.layout.about);
@@ -654,19 +663,26 @@ public class TravelLog extends Activity implements OnClickListener,
 					+ this.getString(R.string.app_version));
 			return d;
 		case DIALOG_UPDATE:
-			d = new Dialog(this);
-			d.setContentView(R.layout.update);
-			d.setTitle(R.string.changelog_);
-			LinearLayout layout = (LinearLayout) d.findViewById(R.id.base_view);
-			TextView tw;
-			String[] changes = this.getResources().getStringArray(
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.changelog_);
+			final String[] changes = this.getResources().getStringArray(
 					R.array.updates);
-			for (String ch : changes) {
-				tw = new TextView(this);
-				tw.setText(ch);
-				layout.addView(tw);
+			final StringBuilder buf = new StringBuilder(changes[0]);
+			for (int i = 1; i < changes.length; i++) {
+				buf.append("\n\n");
+				buf.append(changes[i]);
 			}
-			return d;
+			builder.setIcon(android.R.drawable.ic_menu_info_details);
+			builder.setMessage(buf.toString());
+			builder.setCancelable(true);
+			builder.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int id) {
+							dialog.cancel();
+						}
+					});
+			return builder.create();
 		case DIALOG_DATE:
 			return new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -675,7 +691,7 @@ public class TravelLog extends Activity implements OnClickListener,
 					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),
 					FORMAT_AMPM);
 		case DIALOG_TYPE:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder = new AlertDialog.Builder(this);
 			builder.setItems(this.getResources().getStringArray(R.array.state),
 					new DialogInterface.OnClickListener() {
 						public void onClick(final DialogInterface dialog,
