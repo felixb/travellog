@@ -17,7 +17,7 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <resources>
-	<string name="app_version">0.1</string>
+	<string name="app_version">0.2</string>
 	<string name="app_name">TravelLog</string>
 	<string name="author_">Author:</string>
 	<string name="version_">Version:</string>
@@ -34,12 +34,12 @@
 	<string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=9284303
 	</string>
 	<string name="donate_mail">f@ub0r.de</string>
-	<string name="donate_subject">I'm the donator. My IMEI hash is...</string>
+	<string name="donate_subject">I\'m the donator. My IMEI hash is...</string>
 	<string name="donate_">Donate/remove ads</string>
 	<string name="remove_ads">Remove ads</string>
 	<string name="postdonate">To remove ads, you need to send me the MD5 hash
 		of your IMEI (unique id of your phone). This hash is a
-		one-way-function. It is not traceable back to you. I'll remove your
+		one-way-function. It is not traceable back to you. I\'ll remove your
 		ads with the next release. 
 	</string>
 	<string name="send_">Send</string>
@@ -60,8 +60,11 @@
 	<string name="clear_">Clear</string>
 	<string name="export_">Send as mail</string>
 	<string name="export_subject">TravelLog export</string>
+	<string name="export_footer">Check out TravelLog - </string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
+	<string name="for_">for</string>
+	<string name="round_">Round time</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>

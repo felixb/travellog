@@ -20,43 +20,28 @@
 	xmlns:app="http://schemas.android.com/apk/res/de.ub0r.android.travelLog"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<!-- Place an AdMob ad at the bottom of the screen. -->
-	<!-- It has white text on a black background. -->
-	<!-- The description of the surrounding context is 'Android game'. -->
-	<com.admob.android.ads.AdView android:id="@+id/ad"
-		android:visibility="gone" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
-		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_weight="0">
-		<Button android:text="@string/start_work" android:id="@+id/start_work_"
+		<Button android:text="" android:id="@+id/stop"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_weight="1" />
-		<Button android:text="@string/stop_work" android:id="@+id/stop_work_"
+		<Button android:text="@string/start_work" android:id="@+id/start_work_"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_weight="1" />
 		<Button android:text="@string/start_travel" android:id="@+id/start_travel_"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_weight="1" />
-		<Button android:text="@string/stop_travel" android:id="@+id/stop_travel_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
 		<Button android:text="@string/start_pause" android:id="@+id/start_pause_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-		<Button android:text="@string/stop_pause" android:id="@+id/stop_pause_"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_weight="1" />
 	</LinearLayout>
 	<ListView android:id="@+id/log" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_weight="1" />
-	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<Button android:text="@string/add_row" android:id="@+id/add_row_"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-		<Button android:text="@string/clear_" android:id="@+id/clear_"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-	</LinearLayout>
+		android:layout_height="wrap_content" android:layout_weight="1">
+	</ListView>
+	<Button android:text="@string/add_row" android:id="@+id/add_row_"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<com.admob.android.ads.AdView android:id="@+id/ad"
+		android:visibility="gone" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
+		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 </LinearLayout>

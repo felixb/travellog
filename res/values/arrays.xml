@@ -17,16 +17,21 @@
 		copy of the GNU General Public License along with this program; If
 		not, see <http://www.gnu.org/licenses/>.
 	-->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="fill_parent">
-		<TextView android:text="@string/postdonate" android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:paddingLeft="5dip"
-			android:paddingRight="5dip" android:autoLink="web" />
-		<Button android:id="@+id/btn_donate" android:text="@string/send_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_marginTop="10dip" android:layout_marginLeft="5dip"
-			android:layout_marginRight="5dip" />
-	</LinearLayout>
-</ScrollView>
+<resources>
+	<string-array name="round">
+		<item>0</item>
+		<item>5</item>
+		<item>10</item>
+		<item>15</item>
+		<item>30</item>
+		<item>60</item>
+	</string-array>
+	<string-array name="round_">
+		<item>as is</item>
+		<item>5min</item>
+		<item>10min</item>
+		<item>15min</item>
+		<item>30min</item>
+		<item>60min</item>
+	</string-array>
+</resources>

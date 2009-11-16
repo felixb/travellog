@@ -3,11 +3,10 @@
 		Copyright (C) 2009 Felix Bechstein
 	-->
 	<!--
-		This file is part of TravelLog. This program is free software; you
-		can redistribute it and/or modify it under the terms of the GNU
-		General Public License as published by the Free Software Foundation;
-		either version 3 of the License, or (at your option) any later
-		version.
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
 	-->
 	<!--
 		This program is distributed in the hope that it will be useful, but
@@ -22,5 +21,8 @@
 		<EditTextPreference android:key="mail"
 			android:title="@string/mail_" android:dialogTitle="@string/mail_"
 			android:inputType="textEmailAddress" android:summary="@string/mail__" />
+		<ListPreference android:key="round" android:title="@string/round_"
+			android:entries="@array/round_" android:entryValues="@array/round"
+			android:dialogTitle="@string/round_" />
 	</PreferenceCategory>
 </PreferenceScreen>

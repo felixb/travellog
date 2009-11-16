@@ -22,10 +22,12 @@
 		android:icon="@android:drawable/ic_menu_preferences" />
 	<item android:title="@string/export_" android:id="@+id/item_export"
 		android:icon="@android:drawable/ic_menu_upload" />
+	<item android:title="@string/clear_" android:id="@+id/item_clear"
+		android:icon="@android:drawable/ic_menu_delete" />
 	<item android:id="@+id/item_about" android:icon="@android:drawable/ic_menu_info_details"
 		android:title="@string/about_" />
-	<item android:id="@+id/item_donate" android:icon="@drawable/ic_menu_donate"
+	<item android:id="@+id/item_donate" android:icon="@drawable/ic_menu_star"
 		android:title="@string/donate_" />
-	<item android:id="@+id/item_more" android:icon="@drawable/ic_menu_star"
+	<item android:id="@+id/item_more" android:icon="@drawable/ic_menu_windows"
 		android:title="@string/more_" />
 </menu>

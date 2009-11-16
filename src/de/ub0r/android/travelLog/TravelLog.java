@@ -32,9 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -95,6 +93,18 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_LAST_RUN = "lastrun";
 	/** Preference's name: mail */
 	private static final String PREFS_MAIL = "mail";
+	/** Preference's name: round */
+	private static final String PREFS_ROUND = "round";
+
+	/** Milliseconds per minute. */
+	private static final long MILLIS_A_MINUTE = 60000;
+
+	/** DateFormat: date. */
+	private static String FORMAT_DATE = "dd.MM.";
+	/** DateFormat: time. */
+	private static String FORMAT_TIME = "kk:mm";
+	/** DateFormat: am/pm */
+	private static boolean FORMAT_AMPM = false;
 
 	/** States as String[]. */
 	private static String[] namesStates;
@@ -121,6 +131,9 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab9", // me
 	};
 
+	/** Round time to this. */
+	private int prefsRound = 0;
+
 	/**
 	 * Preferences.
 	 * 
@@ -139,11 +152,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	class TravelItem {
-		/** DateFormat: date. */
-		private static final String FORMAT_DATE = "dd.MM.";
-		/** DateFormat: time. */
-		private static final String FORMAT_TIME = "kk:mm";
-
 		/** Time: start. */
 		private long start;
 		/** Time: end */
@@ -174,7 +182,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 *            type
 		 */
 		public TravelItem(final int t) {
-			this.start = System.currentTimeMillis();
+			this.start = this.round(System.currentTimeMillis());
 			this.type = t;
 		}
 
@@ -253,7 +261,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		public final void terminate() {
 			if (this.end <= this.start) {
-				this.end = System.currentTimeMillis();
+				this.end = this.round(System.currentTimeMillis());
 			}
 		}
 
@@ -262,22 +270,61 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		@Override
 		public final String toString() {
-			String ret = null;
+			StringBuilder ret = new StringBuilder();
 			if (this.start > 0) {
-				ret = DateFormat.format(FORMAT_DATE, this.start).toString();
-				ret += " "
-						+ DateFormat.format(FORMAT_TIME, this.start).toString();
+				ret.append(DateFormat.format(FORMAT_DATE, this.start)
+						.toString());
+				ret
+						.append(" "
+								+ DateFormat.format(FORMAT_TIME, this.start)
+										.toString());
 			} else {
-				ret = "??.??. ???";
+				ret.append("??.??. ???");
 			}
-			ret += " - ";
-			if (this.end >= this.start) {
-				ret += DateFormat.format(FORMAT_TIME, this.end).toString();
+			ret.append(" - ");
+			if (this.end > this.start) {
+				ret.append(DateFormat.format(FORMAT_TIME, this.end).toString());
 			} else {
-				ret += "???";
+				ret.append("???");
 			}
-			ret += ": " + TravelLog.namesStates[this.type];
-			return ret;
+			ret.append(": " + TravelLog.namesStates[this.type]);
+			if (this.start > 0) {
+				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
+				if (this.end >= this.start) {
+					ret.append(TravelLog.this.getTime(this.end - this.start));
+				} else {
+					ret.append(TravelLog.this.getTime(System
+							.currentTimeMillis()
+							- this.start));
+				}
+			}
+			return ret.toString();
+		}
+
+		/**
+		 * Round time as set in preferences.
+		 * 
+		 * @param time
+		 *            unrounded time
+		 * @return rounded time
+		 */
+		private long round(final long time) {
+			long m = time / MILLIS_A_MINUTE; // cut down to minutes
+			if (TravelLog.this.prefsRound == 0) {
+				return m * MILLIS_A_MINUTE;
+			}
+			final Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(m * MILLIS_A_MINUTE);
+			m = c.get(Calendar.MINUTE);
+			final int r = (int) (m % TravelLog.this.prefsRound);
+			if (r != 0) {
+				if (r >= TravelLog.this.prefsRound / 2) {
+					c.roll(Calendar.MINUTE, -r + TravelLog.this.prefsRound);
+				} else {
+					c.roll(Calendar.MINUTE, -r);
+				}
+			}
+			return c.getTimeInMillis();
 		}
 	}
 
@@ -286,18 +333,17 @@ public class TravelLog extends Activity implements OnClickListener,
 	public final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
+		FORMAT_DATE = this.getString(R.string.format_date);
+		FORMAT_TIME = this.getString(R.string.format_time);
+		FORMAT_AMPM = !FORMAT_TIME.endsWith("aa");
 		namesStates = this.getResources().getStringArray(R.array.state);
+		((Button) this.findViewById(R.id.stop)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_pause_))
 				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_pause_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_travel_))
 				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_travel_))
-				.setOnClickListener(this);
 		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
-		((Button) this.findViewById(R.id.stop_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.add_row_)).setOnClickListener(this);
-		((Button) this.findViewById(R.id.clear_)).setOnClickListener(this);
 		this.list = new ArrayList<TravelItem>();
 		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
 				android.R.id.text1, this.list);
@@ -343,12 +389,12 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 		switch (newState) {
 		case STATE_NOTHING:
+			this.findViewById(R.id.stop).setVisibility(View.GONE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
+
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
+
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -356,12 +402,12 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_PAUSE:
+			((Button) this.findViewById(R.id.stop))
+					.setText(R.string.stop_pause);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -370,12 +416,12 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_TRAVEL:
+			((Button) this.findViewById(R.id.stop))
+					.setText(R.string.stop_travel);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_work_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.GONE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -384,12 +430,11 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			break;
 		case STATE_WORK:
+			((Button) this.findViewById(R.id.stop)).setText(R.string.stop_work);
+			this.findViewById(R.id.stop).setVisibility(View.VISIBLE);
 			this.findViewById(R.id.start_pause_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_pause_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_travel_).setVisibility(View.VISIBLE);
-			this.findViewById(R.id.stop_travel_).setVisibility(View.GONE);
 			this.findViewById(R.id.start_work_).setVisibility(View.GONE);
-			this.findViewById(R.id.stop_work_).setVisibility(View.VISIBLE);
 			if (!btnOnly) {
 				if (itm != null) {
 					itm.terminate();
@@ -420,16 +465,11 @@ public class TravelLog extends Activity implements OnClickListener,
 		case R.id.start_work_:
 			this.changeState(STATE_WORK, false);
 			break;
-		case R.id.stop_pause_:
-		case R.id.stop_travel_:
-		case R.id.stop_work_:
+		case R.id.stop:
 			this.changeState(STATE_NOTHING, false);
 			break;
 		case R.id.add_row_:
 			this.list.add(new TravelItem(0, 0, 0));
-			break;
-		case R.id.clear_:
-			this.list.clear();
 			break;
 		default:
 			break;
@@ -584,33 +624,44 @@ public class TravelLog extends Activity implements OnClickListener,
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(this.editDate);
 		Dialog d;
+		AlertDialog.Builder builder;
 		switch (id) {
 		case DIALOG_DONATE:
-			d = new Dialog(this);
-			d.setContentView(R.layout.donate);
-			d.setTitle(R.string.remove_ads);
-			Button button = (Button) d.findViewById(R.id.btn_donate);
-			button.setOnClickListener(new OnClickListener() {
-				public void onClick(final View view) {
-					final Intent in = new Intent(Intent.ACTION_SEND);
-					in.putExtra(Intent.EXTRA_EMAIL,
-							new String[] {
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.remove_ads);
+			builder.setMessage(R.string.postdonate);
+			builder.setPositiveButton(R.string.send_,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							final Intent in = new Intent(Intent.ACTION_SEND);
+							in.putExtra(Intent.EXTRA_EMAIL, new String[] {
 									TravelLog.this
 											.getString(R.string.donate_mail),
 									"" }); // FIXME: "" is a k9 hack.
-					in.putExtra(Intent.EXTRA_TEXT, TravelLog.this.imeiHash);
-					in
-							.putExtra(Intent.EXTRA_SUBJECT, TravelLog.this
-									.getString(R.string.app_name)
-									+ " "
-									+ TravelLog.this
-											.getString(R.string.donate_subject));
-					in.setType("text/plain");
-					TravelLog.this.startActivity(in);
-					TravelLog.this.dismissDialog(DIALOG_DONATE);
-				}
-			});
-			return d;
+							in.putExtra(Intent.EXTRA_TEXT,
+									TravelLog.this.imeiHash);
+							in
+									.putExtra(
+											Intent.EXTRA_SUBJECT,
+											TravelLog.this
+													.getString(R.string.app_name)
+													+ " "
+													+ TravelLog.this
+															.getString(R.string.donate_subject));
+							in.setType("text/plain");
+							TravelLog.this.startActivity(in);
+							dialog.dismiss();
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							dialog.cancel();
+						}
+					});
+			return builder.create();
 		case DIALOG_ABOUT:
 			d = new Dialog(this);
 			d.setContentView(R.layout.about);
@@ -618,27 +669,35 @@ public class TravelLog extends Activity implements OnClickListener,
 					+ this.getString(R.string.app_version));
 			return d;
 		case DIALOG_UPDATE:
-			d = new Dialog(this);
-			d.setContentView(R.layout.update);
-			d.setTitle(R.string.changelog_);
-			LinearLayout layout = (LinearLayout) d.findViewById(R.id.base_view);
-			TextView tw;
-			String[] changes = this.getResources().getStringArray(
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.changelog_);
+			final String[] changes = this.getResources().getStringArray(
 					R.array.updates);
-			for (String ch : changes) {
-				tw = new TextView(this);
-				tw.setText(ch);
-				layout.addView(tw);
+			final StringBuilder buf = new StringBuilder(changes[0]);
+			for (int i = 1; i < changes.length; i++) {
+				buf.append("\n\n");
+				buf.append(changes[i]);
 			}
-			return d;
+			builder.setIcon(android.R.drawable.ic_menu_info_details);
+			builder.setMessage(buf.toString());
+			builder.setCancelable(true);
+			builder.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int id) {
+							dialog.cancel();
+						}
+					});
+			return builder.create();
 		case DIALOG_DATE:
 			return new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 		case DIALOG_TIME:
 			return new TimePickerDialog(this, this,
-					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+					c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE),
+					FORMAT_AMPM);
 		case DIALOG_TYPE:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder = new AlertDialog.Builder(this);
 			builder.setItems(this.getResources().getStringArray(R.array.state),
 					new DialogInterface.OnClickListener() {
 						public void onClick(final DialogInterface dialog,
@@ -683,6 +742,10 @@ public class TravelLog extends Activity implements OnClickListener,
 		case R.id.item_settings: // start settings activity
 			this.startActivity(new Intent(this, Preferences.class));
 			return true;
+		case R.id.item_clear:
+			this.list.clear();
+			this.adapter.notifyDataSetChanged();
+			return true;
 		case R.id.item_donate:
 			try {
 				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
@@ -711,6 +774,10 @@ public class TravelLog extends Activity implements OnClickListener,
 			for (int i = 0; i < c; i++) {
 				buf.append(this.list.get(i) + "\n");
 			}
+			buf.append("\n");
+			buf.append(this.getString(R.string.export_footer));
+			buf.append(this.getString(R.string.source));
+			buf.append("\n");
 			in.putExtra(Intent.EXTRA_TEXT, buf.toString());
 			in.putExtra(Intent.EXTRA_SUBJECT, this
 					.getString(R.string.export_subject));
@@ -780,6 +847,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.list.add(new TravelItem(start, end, type));
 		}
 		this.changeState(this.state, true);
+		this.prefsRound = Integer.parseInt(prefs.getString(PREFS_ROUND, "0"));
 	}
 
 	/**
@@ -812,5 +880,41 @@ public class TravelLog extends Activity implements OnClickListener,
 			Log.e(TAG, null, e);
 		}
 		return "";
+	}
+
+	/**
+	 * Parse number of seconds to a readable time format.
+	 * 
+	 * @param milliseconds
+	 *            milliseconds
+	 * @return parsed string
+	 */
+	private String getTime(final long milliseconds) {
+		String ret;
+		int seconds = (int) (milliseconds / 1000);
+		int d = seconds / 86400;
+		int h = (seconds % 86400) / 3600;
+		int m = (seconds % 3600) / 60;
+		if (d > 0) {
+			ret = d + "d ";
+		} else {
+			ret = "";
+		}
+		if (h > 0 || d > 0) {
+			if (h < 10) {
+				ret += "0";
+			}
+			ret += h + ":";
+		}
+		if (m > 0 || h > 0 || d > 0) {
+			if (m < 10 && h > 0) {
+				ret += "0";
+			}
+		}
+		ret += m;
+		if (d == 0 && h == 0) {
+			ret += "min";
+		}
+		return ret;
 	}
 }

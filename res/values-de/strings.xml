@@ -44,12 +44,14 @@
 	<string name="start_pause">Start Pause</string>
 	<string name="stop_pause">Stopp Pause</string>
 	<string name="add_row">Zeile hinzu</string>
-	<string name="clear_">Löschen</string>
+	<string name="clear_">Alle löschen</string>
 	<string name="export_">Als Mail senden</string>
 	<string name="export_subject">TravelLog Export</string>
 	<string name="mail_">Mail Adresse</string>
 	<string name="mail__">Eine Mail Adresse an die der Export geschickt
 		wird</string>
+	<string name="for_">für</string>
+	<string name="round_">Zeit runden</string>
 	<string-array name="state">
 		<item>Nichts</item>
 		<item>Pause</item>
