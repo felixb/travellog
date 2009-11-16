@@ -138,7 +138,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * 
 	 * @author flx
 	 */
-	private class TravelItem {
+	class TravelItem {
 		/** DateFormat: date. */
 		private static final String FORMAT_DATE = "dd.MM.";
 		/** DateFormat: time. */
@@ -243,7 +243,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 *            end date/time
 		 */
 		public final void terminate(final long e) {
-			if (this.end <= 0) {
+			if (this.end <= this.start) {
 				this.end = e;
 			}
 		}
@@ -252,7 +252,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 * Terminate open TravelItem now.
 		 */
 		public final void terminate() {
-			if (this.end <= 0) {
+			if (this.end <= this.start) {
 				this.end = System.currentTimeMillis();
 			}
 		}
@@ -271,7 +271,7 @@ public class TravelLog extends Activity implements OnClickListener,
 				ret = "??.??. ???";
 			}
 			ret += " - ";
-			if (this.end > 0) {
+			if (this.end >= this.start) {
 				ret += DateFormat.format(FORMAT_TIME, this.end).toString();
 			} else {
 				ret += "???";
@@ -465,7 +465,13 @@ public class TravelLog extends Activity implements OnClickListener,
 							TravelLog.this.showDialog(DIALOG_DATE);
 							break;
 						case ACTION_CHG_END:
-							TravelLog.this.editDate = itm.getEnd();
+							final long e = itm.getEnd();
+							final long s = itm.getStart();
+							if (e < s) {
+								TravelLog.this.editDate = s;
+							} else {
+								TravelLog.this.editDate = e;
+							}
 							TravelLog.this.showDialog(DIALOG_TIME);
 							break;
 						case ACTION_CHG_START:
