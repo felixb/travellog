@@ -93,6 +93,8 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_LAST_RUN = "lastrun";
 	/** Preference's name: mail */
 	private static final String PREFS_MAIL = "mail";
+	/** Preference's name: flip export. */
+	private static final String PREFS_FLIP_EXPORT = "export_flip";
 	/** Preference's name: round */
 	private static final String PREFS_ROUND = "round";
 
@@ -764,15 +766,24 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			return true;
 		case R.id.item_export:
-			final String mail = PreferenceManager.getDefaultSharedPreferences(
-					this).getString(PREFS_MAIL, "nobody@set-your-prefs.com");
+			SharedPreferences p = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			final String mail = p.getString(PREFS_MAIL,
+					"nobody@set-your-prefs.com");
 			final Intent in = new Intent(Intent.ACTION_SEND);
 			in.putExtra(Intent.EXTRA_EMAIL, new String[] { mail, "" });
 			// FIXME: "" is a k9 hack.
+			final boolean flip = p.getBoolean(PREFS_FLIP_EXPORT, false);
 			final StringBuilder buf = new StringBuilder();
 			final int c = this.list.size();
-			for (int i = 0; i < c; i++) {
-				buf.append(this.list.get(i) + "\n");
+			if (flip) {
+				for (int i = c - 1; i >= 0; i--) {
+					buf.append(this.list.get(i) + "\n");
+				}
+			} else {
+				for (int i = 0; i < c; i++) {
+					buf.append(this.list.get(i) + "\n");
+				}
 			}
 			buf.append("\n");
 			buf.append(this.getString(R.string.export_footer));

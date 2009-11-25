@@ -61,6 +61,7 @@
 	<string name="export_">Send as mail</string>
 	<string name="export_subject">TravelLog export</string>
 	<string name="export_footer">Check out TravelLog - </string>
+	<string name="export_flip">Flip export upside down</string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
 	<string name="for_">for</string>
