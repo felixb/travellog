@@ -47,6 +47,7 @@
 	<string name="clear_">Alle löschen</string>
 	<string name="export_">Als Mail senden</string>
 	<string name="export_subject">TravelLog Export</string>
+	<string name="export_flip">Export umdrehen</string>
 	<string name="mail_">Mail Adresse</string>
 	<string name="mail__">Eine Mail Adresse an die der Export geschickt
 		wird</string>

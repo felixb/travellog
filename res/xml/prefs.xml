@@ -25,4 +25,6 @@
 			android:entries="@array/round_" android:entryValues="@array/round"
 			android:dialogTitle="@string/round_" />
 	</PreferenceCategory>
+	<CheckBoxPreference android:key="export_flip"
+		android:title="@string/export_flip" />
 </PreferenceScreen>
