@@ -787,7 +787,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			buf.append("\n");
 			buf.append(this.getString(R.string.export_footer));
-			buf.append(" "));
+			buf.append(" ");
 			buf.append(this.getString(R.string.website));
 			buf.append("\n");
 			in.putExtra(Intent.EXTRA_TEXT, buf.toString());
