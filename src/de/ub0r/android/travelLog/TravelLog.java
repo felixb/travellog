@@ -99,17 +99,17 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_ROUND = "round";
 
 	/** Milliseconds per minute. */
-	private static final long MILLIS_A_MINUTE = 60000;
+	static final long MILLIS_A_MINUTE = 60000;
 
 	/** DateFormat: date. */
-	private static String FORMAT_DATE = "dd.MM.";
+	static String FORMAT_DATE = "dd.MM.";
 	/** DateFormat: time. */
-	private static String FORMAT_TIME = "kk:mm";
+	static String FORMAT_TIME = "kk:mm";
 	/** DateFormat: am/pm */
-	private static boolean FORMAT_AMPM = false;
+	static boolean FORMAT_AMPM = false;
 
 	/** States as String[]. */
-	private static String[] namesStates;
+	static String[] namesStates;
 
 	/** State. */
 	private int state = STATE_NOTHING;
@@ -134,7 +134,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	};
 
 	/** Round time to this. */
-	private int prefsRound = 0;
+	int prefsRound = 0;
 
 	/**
 	 * Preferences.
@@ -153,7 +153,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * 
 	 * @author flx
 	 */
-	class TravelItem {
+	private class TravelItem {
 		/** Time: start. */
 		private long start;
 		/** Time: end */
@@ -184,7 +184,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		 *            type
 		 */
 		public TravelItem(final int t) {
-			this.start = this.round(System.currentTimeMillis());
+			this.start = TravelLog.this.roundTime(System.currentTimeMillis());
 			this.type = t;
 		}
 
@@ -263,12 +263,12 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		public final void terminate() {
 			if (this.end <= this.start) {
-				this.end = this.round(System.currentTimeMillis());
+				this.end = TravelLog.this.roundTime(System.currentTimeMillis());
 			}
 		}
 
 		/**
-		 * @return TravelItem as String
+		 *{@inheritDoc}
 		 */
 		@Override
 		public final String toString() {
@@ -293,47 +293,21 @@ public class TravelLog extends Activity implements OnClickListener,
 			if (this.start > 0) {
 				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
 				if (this.end >= this.start) {
-					ret.append(TravelLog.this.getTime(this.end - this.start));
+					ret.append(TravelLog.getTime(this.end - this.start));
 				} else {
-					ret.append(TravelLog.this.getTime(System
-							.currentTimeMillis()
+					ret.append(TravelLog.getTime(System.currentTimeMillis()
 							- this.start));
 				}
 			}
 			return ret.toString();
 		}
-
-		/**
-		 * Round time as set in preferences.
-		 * 
-		 * @param time
-		 *            unrounded time
-		 * @return rounded time
-		 */
-		private long round(final long time) {
-			final int roundTo = TravelLog.this.prefsRound;
-			long m = time / MILLIS_A_MINUTE; // cut down to full minutes
-			if (roundTo == 0) {
-				return m * MILLIS_A_MINUTE;
-			}
-			final Calendar c = Calendar.getInstance();
-			c.setTimeInMillis(m * MILLIS_A_MINUTE);
-			m = c.get(Calendar.MINUTE);
-			final int r = (int) (m % roundTo);
-			if (r != 0) {
-				if (r >= roundTo / 2) {
-					c.add(Calendar.MINUTE, -r + roundTo);
-				} else {
-					c.add(Calendar.MINUTE, -r);
-				}
-			}
-			return c.getTimeInMillis();
-		}
 	}
 
-	/** Called when the activity is first created. */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public final void onCreate(final Bundle savedInstanceState) {
+	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.main);
 		FORMAT_DATE = this.getString(R.string.format_date);
@@ -452,10 +426,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * A view is clicked!
-	 * 
-	 * @param view
-	 *            the view
+	 * {@inheritDoc}
 	 */
 	public final void onClick(final View view) {
 		switch (view.getId()) {
@@ -481,16 +452,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * Handle clicked ListItem.
-	 * 
-	 * @param parent
-	 *            parent AdapterView
-	 * @param v
-	 *            View
-	 * @param position
-	 *            Position
-	 * @param id
-	 *            id
+	 * {@inheritDoc}
 	 */
 	public final void onItemClick(final AdapterView<?> parent, final View v,
 			final int position, final long id) {
@@ -537,16 +499,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * A Date was set.
-	 * 
-	 * @param view
-	 *            DatePicker View
-	 * @param year
-	 *            year set
-	 * @param monthOfYear
-	 *            month set
-	 * @param dayOfMonth
-	 *            day set
+	 * {@inheritDoc}
 	 */
 	public final void onDateSet(final DatePicker view, final int year,
 			final int monthOfYear, final int dayOfMonth) {
@@ -565,14 +518,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * A Time was set.
-	 * 
-	 * @param view
-	 *            TimePicker View
-	 * @param hour
-	 *            hour set
-	 * @param minutes
-	 *            minutes set
+	 * {@inheritDoc}
 	 */
 	public final void onTimeSet(final TimePicker view, final int hour,
 			final int minutes) {
@@ -590,12 +536,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * Prepare a dialog before open.
-	 * 
-	 * @param id
-	 *            dialog's id
-	 * @param dialog
-	 *            dialog itself
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected final void onPrepareDialog(final int id, final Dialog dialog) {
@@ -616,11 +557,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * Create a dialog.
-	 * 
-	 * @param id
-	 *            dialog's id
-	 * @return Dialog for show()
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected final Dialog onCreateDialog(final int id) {
@@ -716,11 +653,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * Open menu.
-	 * 
-	 * @param menu
-	 *            menu to inflate
-	 * @return ok/fail?
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final boolean onCreateOptionsMenu(final Menu menu) {
@@ -730,11 +663,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	}
 
 	/**
-	 * Handles item selections.
-	 * 
-	 * @param item
-	 *            menu item
-	 * @return done?
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final boolean onOptionsItemSelected(final MenuItem item) {
@@ -802,7 +731,9 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 	}
 
-	/** Called on activity resume. */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected final void onResume() {
 		super.onResume();
@@ -812,9 +743,11 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 	}
 
-	/** Called on activity pause. */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public final void onPause() {
+	protected final void onPause() {
 		super.onPause();
 		this.savePreferences();
 	}
@@ -902,7 +835,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 *            milliseconds
 	 * @return parsed string
 	 */
-	private String getTime(final long milliseconds) {
+	static final String getTime(final long milliseconds) {
 		String ret;
 		int seconds = (int) (milliseconds / 1000);
 		int d = seconds / 86400;
@@ -929,5 +862,32 @@ public class TravelLog extends Activity implements OnClickListener,
 			ret += "min";
 		}
 		return ret;
+	}
+
+	/**
+	 * Round time as set in preferences.
+	 * 
+	 * @param time
+	 *            unrounded time
+	 * @return rounded time
+	 */
+	long roundTime(final long time) {
+		final int roundTo = this.prefsRound;
+		long m = time / MILLIS_A_MINUTE; // cut down to full minutes
+		if (roundTo == 0) {
+			return m * MILLIS_A_MINUTE;
+		}
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(m * MILLIS_A_MINUTE);
+		m = c.get(Calendar.MINUTE);
+		final int r = (int) (m % roundTo);
+		if (r != 0) {
+			if (r >= roundTo / 2) {
+				c.add(Calendar.MINUTE, -r + roundTo);
+			} else {
+				c.add(Calendar.MINUTE, -r);
+			}
+		}
+		return c.getTimeInMillis();
 	}
 }
