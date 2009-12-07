@@ -284,7 +284,7 @@ public class TravelLog extends Activity implements OnClickListener,
 				ret.append("??.??. ???");
 			}
 			ret.append(" - ");
-			if (this.end > this.start) {
+			if (this.end >= this.start) {
 				ret.append(DateFormat.format(FORMAT_TIME, this.end).toString());
 			} else {
 				ret.append("???");
