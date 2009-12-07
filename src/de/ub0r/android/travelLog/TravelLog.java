@@ -311,19 +311,20 @@ public class TravelLog extends Activity implements OnClickListener,
 		 * @return rounded time
 		 */
 		private long round(final long time) {
-			long m = time / MILLIS_A_MINUTE; // cut down to minutes
-			if (TravelLog.this.prefsRound == 0) {
+			final int roundTo = TravelLog.this.prefsRound;
+			long m = time / MILLIS_A_MINUTE; // cut down to full minutes
+			if (roundTo == 0) {
 				return m * MILLIS_A_MINUTE;
 			}
 			final Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(m * MILLIS_A_MINUTE);
 			m = c.get(Calendar.MINUTE);
-			final int r = (int) (m % TravelLog.this.prefsRound);
+			final int r = (int) (m % roundTo);
 			if (r != 0) {
-				if (r >= TravelLog.this.prefsRound / 2) {
-					c.roll(Calendar.MINUTE, -r + TravelLog.this.prefsRound);
+				if (r >= roundTo / 2) {
+					c.add(Calendar.MINUTE, -r + roundTo);
 				} else {
-					c.roll(Calendar.MINUTE, -r);
+					c.add(Calendar.MINUTE, -r);
 				}
 			}
 			return c.getTimeInMillis();
