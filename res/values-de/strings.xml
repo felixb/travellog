@@ -19,24 +19,19 @@
 <resources>
 	<string name="author_">Autor:</string>
 	<string name="license_">Lizens:</string>
-	<string name="license">GPLv3 - siehe
-		http://www.gnu.org/licenses/gpl-3.0.txt</string>
-	<string name="donate_subject">Ich bin der Spender. Mein IMEI hash ist...
-	</string>
-	<string name="donate_">Spenden/Werbung entfernen</string>
-	<string name="postdonate">Um die Werbung zu entfernen brauche ich den MD5
-		Hash deiner IMEI (Eindeutige ID deines Handys) von dir. Der Hash ist
-		eine Einwegfunktion und ist somit nicht zu deiner IMEI Rückverfolgbar.
-		Ich werde die Werbung mit dem nächsten Release dann entfernen.
-	</string>
+	<string name="license">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
+	<string name="donate_subject">Ich bin der Spender. Mein IMEI hash ist...</string>
+	<string name="donate_">Spenden</string>
+	<string name="donate_remove_ads_">Spenden/Werbung entfernen</string>
+	<string name="remove_ads_">Werbung entfernen</string>
+	<string name="predonate">Dies ist eine open-source App. Sie ist und bleibt frei. Wenn du die App wirklich magst oder dich die Werbung nervt, kannst du gerne etwas spenden. Ich werde die Werbung mit dem nächsten Release dann entfernen.</string>
+	<string name="postdonate">Um die Werbung zu entfernen brauche ich den MD5 Hash deiner IMEI (Die eindeutige ID deines Handys) von dir. Der Hash ist eine Einwegfunktion und ist somit nicht zu deiner IMEI Rückverfolgbar.</string>
 	<string name="send_">Senden</string>
 	<string name="remove_ads">Werbung entfernen</string>
 	<string name="settings">Einstellungen</string>
 	<string name="about_">Über TravelLog</string>
 	<string name="more_">Mehr Apps..</string>
-	<string name="about">TravelLog ist eine ein-Klick-App, mit der
-		du deine Geschäftsreisen loggen kannst um sie später einfacher
-		abzurechnen.</string>
+	<string name="about">TravelLog ist eine ein-Klick-App, mit der du deine Geschäftsreisen loggen kannst um sie später einfacher abzurechnen.</string>
 	<string name="start_work">Start Arbeit</string>
 	<string name="stop_work">Stopp Arbeit</string>
 	<string name="start_travel">Start Reise</string>
@@ -49,8 +44,7 @@
 	<string name="export_subject">TravelLog Export</string>
 	<string name="export_flip">Export umdrehen</string>
 	<string name="mail_">Mail Adresse</string>
-	<string name="mail__">Eine Mail Adresse an die der Export geschickt
-		wird</string>
+	<string name="mail__">Eine Mail Adresse an die der Export geschickt wird</string>
 	<string name="for_">für</string>
 	<string name="round_">Zeit runden</string>
 	<string-array name="state">

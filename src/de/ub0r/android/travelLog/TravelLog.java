@@ -72,12 +72,14 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final int DIALOG_TIME = 1;
 	/** Dialog: change type. */
 	private static final int DIALOG_TYPE = 2;
-	/** Dialog: donate. */
+	/** Dialog: post donate. */
 	private static final int DIALOG_POSTDONATE = 3;
 	/** Dialog: about. */
 	private static final int DIALOG_ABOUT = 4;
 	/** Dialog: update. */
 	private static final int DIALOG_UPDATE = 5;
+	/** Dialog: pre donate. */
+	private static final int DIALOG_PREDONATE = 6;
 
 	/** Preference's name: state. */
 	private static final String PREFS_STATE = "state";
@@ -89,13 +91,13 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_LIST_STOP = "log_stop_";
 	/** Preference's name: travel item type. */
 	private static final String PREFS_LIST_TYPE = "log_type_";
-	/** Preference's name: last version run */
+	/** Preference's name: last version run. */
 	private static final String PREFS_LAST_RUN = "lastrun";
-	/** Preference's name: mail */
+	/** Preference's name: mail. */
 	private static final String PREFS_MAIL = "mail";
 	/** Preference's name: flip export. */
 	private static final String PREFS_FLIP_EXPORT = "export_flip";
-	/** Preference's name: round */
+	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
 
 	/** Milliseconds per minute. */
@@ -130,7 +132,8 @@ public class TravelLog extends Activity implements OnClickListener,
 	private boolean prefsNoAds;
 
 	/** Array of md5(imei) for which no ads should be displayed. */
-	private static final String[] NO_AD_HASHS = { "43dcb861b9588fb733300326b61dbab9", // me
+	private static final String[] NO_AD_HASHS = { // 
+	"43dcb861b9588fb733300326b61dbab9", // me
 	};
 
 	/** Round time to this. */
@@ -142,6 +145,10 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	public static class Preferences extends PreferenceActivity {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
 		public final void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			this.addPreferencesFromResource(R.xml.prefs);
@@ -359,7 +366,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @param btnOnly
 	 *            set buttons only, do not modify items
 	 */
-	private final void changeState(final int newState, final boolean btnOnly) {
+	private void changeState(final int newState, final boolean btnOnly) {
 		TravelItem itm = null;
 		if (this.list.size() > 0) {
 			itm = this.list.get(0);
@@ -566,9 +573,33 @@ public class TravelLog extends Activity implements OnClickListener,
 		Dialog d;
 		AlertDialog.Builder builder;
 		switch (id) {
+		case DIALOG_PREDONATE:
+			builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.donate_);
+			builder.setMessage(R.string.predonate);
+			builder.setPositiveButton(R.string.donate_,
+					new DialogInterface.OnClickListener() {
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							try {
+								TravelLog.this
+										.startActivity(new Intent(
+												Intent.ACTION_VIEW,
+												Uri
+														.parse(TravelLog.this
+																.getString(R.string.donate_url))));
+							} catch (ActivityNotFoundException e) {
+								Log.e(TAG, "no browser", e);
+							} finally {
+								TravelLog.this.showDialog(DIALOG_POSTDONATE);
+							}
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel, null);
+			return builder.create();
 		case DIALOG_POSTDONATE:
 			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.remove_ads);
+			builder.setTitle(R.string.remove_ads_);
 			builder.setMessage(R.string.postdonate);
 			builder.setPositiveButton(R.string.send_,
 					new DialogInterface.OnClickListener() {
@@ -591,16 +622,9 @@ public class TravelLog extends Activity implements OnClickListener,
 															.getString(R.string.donate_subject));
 							in.setType("text/plain");
 							TravelLog.this.startActivity(in);
-							dialog.dismiss();
 						}
 					});
-			builder.setNegativeButton(android.R.string.cancel,
-					new DialogInterface.OnClickListener() {
-						public void onClick(final DialogInterface dialog,
-								final int which) {
-							dialog.cancel();
-						}
-					});
+			builder.setNegativeButton(android.R.string.cancel, null);
 			return builder.create();
 		case DIALOG_ABOUT:
 			d = new Dialog(this);
@@ -648,8 +672,9 @@ public class TravelLog extends Activity implements OnClickListener,
 						}
 					});
 			return builder.create();
+		default:
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -679,13 +704,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.adapter.notifyDataSetChanged();
 			return true;
 		case R.id.item_donate:
-			try {
-				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse(this.getString(R.string.donate_url))));
-			} catch (ActivityNotFoundException e) {
-				Log.e(TAG, "no browser", e);
-			}
-			this.showDialog(DIALOG_POSTDONATE);
+			this.showDialog(DIALOG_PREDONATE);
 			return true;
 		case R.id.item_more:
 			try {
@@ -871,7 +890,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	 *            unrounded time
 	 * @return rounded time
 	 */
-	long roundTime(final long time) {
+	final long roundTime(final long time) {
 		final int roundTo = this.prefsRound;
 		long m = time / MILLIS_A_MINUTE; // cut down to full minutes
 		if (roundTo == 0) {
