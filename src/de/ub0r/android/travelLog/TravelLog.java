@@ -125,6 +125,8 @@ public class TravelLog extends Activity implements OnClickListener,
 	private long editDate = 0;
 	/** Item to edit. */
 	private int editItem = 0;
+	/** Action selected. */
+	private int editAction = ACTION_CHG_START;
 
 	/** Unique ID of device. */
 	private String imeiHash = null;
@@ -291,13 +293,13 @@ public class TravelLog extends Activity implements OnClickListener,
 				ret.append("??.??. ???");
 			}
 			ret.append(" - ");
-			if (this.end >= this.start) {
+			if (this.end >= this.start && this.end != 0) {
 				ret.append(DateFormat.format(FORMAT_TIME, this.end).toString());
 			} else {
 				ret.append("???");
 			}
 			ret.append(": " + TravelLog.namesStates[this.type]);
-			if (this.start > 0) {
+			if (this.start > 0 && this.start < this.end) {
 				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
 				if (this.end >= this.start) {
 					ret.append(TravelLog.getTime(this.end - this.start));
@@ -471,11 +473,12 @@ public class TravelLog extends Activity implements OnClickListener,
 				new DialogInterface.OnClickListener() {
 					public void onClick(final DialogInterface dialog,
 							final int item) {
+						TravelLog.this.editAction = item;
 						switch (item) {
 						case ACTION_CHG_DATE:
 							TravelLog.this.editDate = itm.getStart();
 							TravelLog.this.showDialog(DIALOG_DATE);
-							break;
+							return;
 						case ACTION_CHG_END:
 							final long e = itm.getEnd();
 							final long s = itm.getStart();
@@ -485,20 +488,20 @@ public class TravelLog extends Activity implements OnClickListener,
 								TravelLog.this.editDate = e;
 							}
 							TravelLog.this.showDialog(DIALOG_TIME);
-							break;
+							return;
 						case ACTION_CHG_START:
 							TravelLog.this.editDate = itm.getStart();
 							TravelLog.this.showDialog(DIALOG_TIME);
-							break;
+							return;
 						case ACTION_CHG_TYPE:
 							TravelLog.this.showDialog(DIALOG_TYPE);
-							break;
+							return;
 						case ACTION_DELETE:
 							TravelLog.this.list.remove(position);
 							TravelLog.this.adapter.notifyDataSetChanged();
-							break;
+							return;
 						default:
-							break;
+							return;
 						}
 					}
 				});
@@ -534,9 +537,9 @@ public class TravelLog extends Activity implements OnClickListener,
 		c.set(Calendar.HOUR_OF_DAY, hour);
 		c.set(Calendar.MINUTE, minutes);
 		final TravelItem itm = this.list.get(this.editItem);
-		if (itm.getStart() == this.editDate) {
+		if (this.editAction == ACTION_CHG_START) {
 			itm.setStart(c.getTimeInMillis());
-		} else {
+		} else if (this.editAction == ACTION_CHG_END) {
 			itm.setEnd(c.getTimeInMillis());
 		}
 		this.adapter.notifyDataSetChanged();
@@ -548,7 +551,9 @@ public class TravelLog extends Activity implements OnClickListener,
 	@Override
 	protected final void onPrepareDialog(final int id, final Dialog dialog) {
 		final Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(this.editDate);
+		if (this.editDate != 0) {
+			c.setTimeInMillis(this.editDate);
+		}
 		switch (id) {
 		case DIALOG_DATE:
 			((DatePickerDialog) dialog).updateDate(c.get(Calendar.YEAR), c
