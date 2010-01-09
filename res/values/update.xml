@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>v0.3.2: fix some more bugs</item>
 		<item>v0.3.1: fix some minor bugs</item>
 		<item>v0.3: support flip export upside down</item>
 		<item>v0.2: add locale for en, en_US, calc time for each line, round time</item>
