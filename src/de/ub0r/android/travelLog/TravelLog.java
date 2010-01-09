@@ -165,7 +165,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	private class TravelItem {
 		/** Time: start. */
 		private long start;
-		/** Time: end */
+		/** Time: end. */
 		private long end;
 		/** Type. */
 		private int type;
@@ -249,25 +249,6 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 
 		/**
-		 * Start TravelItem now.
-		 */
-		public final void start() {
-			this.start = System.currentTimeMillis();
-		}
-
-		/**
-		 * Terminate open TravelItem.
-		 * 
-		 * @param e
-		 *            end date/time
-		 */
-		public final void terminate(final long e) {
-			if (this.end <= this.start) {
-				this.end = e;
-			}
-		}
-
-		/**
 		 * Terminate open TravelItem now.
 		 */
 		public final void terminate() {
@@ -281,31 +262,29 @@ public class TravelLog extends Activity implements OnClickListener,
 		 */
 		@Override
 		public final String toString() {
+			final long s = this.start;
+			final long e = this.end;
 			StringBuilder ret = new StringBuilder();
-			if (this.start > 0) {
-				ret.append(DateFormat.format(FORMAT_DATE, this.start)
-						.toString());
-				ret
-						.append(" "
-								+ DateFormat.format(FORMAT_TIME, this.start)
-										.toString());
+			if (s > 0) {
+				ret.append(DateFormat.format(FORMAT_DATE, s).toString());
+				ret.append(" " + DateFormat.format(FORMAT_TIME, s).toString());
 			} else {
 				ret.append("??.??. ???");
 			}
 			ret.append(" - ");
-			if (this.end >= this.start && this.end != 0) {
-				ret.append(DateFormat.format(FORMAT_TIME, this.end).toString());
+			if (e >= s && e != 0) {
+				ret.append(DateFormat.format(FORMAT_TIME, e).toString());
 			} else {
 				ret.append("???");
 			}
 			ret.append(": " + TravelLog.namesStates[this.type]);
-			if (this.start > 0 && this.start < this.end) {
+			if (s > 0 && (s < e || e == 0)) {
 				ret.append(" " + TravelLog.this.getString(R.string.for_) + " ");
-				if (this.end >= this.start) {
-					ret.append(TravelLog.getTime(this.end - this.start));
+				if (e >= s) {
+					ret.append(TravelLog.getTime(e - s));
 				} else {
-					ret.append(TravelLog.getTime(System.currentTimeMillis()
-							- this.start));
+					ret.append(TravelLog
+							.getTime(System.currentTimeMillis() - s));
 				}
 			}
 			return ret.toString();
