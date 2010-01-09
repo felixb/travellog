@@ -73,7 +73,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Dialog: change type. */
 	private static final int DIALOG_TYPE = 2;
 	/** Dialog: donate. */
-	private static final int DIALOG_DONATE = 3;
+	private static final int DIALOG_POSTDONATE = 3;
 	/** Dialog: about. */
 	private static final int DIALOG_ABOUT = 4;
 	/** Dialog: update. */
@@ -566,7 +566,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		Dialog d;
 		AlertDialog.Builder builder;
 		switch (id) {
-		case DIALOG_DONATE:
+		case DIALOG_POSTDONATE:
 			builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.remove_ads);
 			builder.setMessage(R.string.postdonate);
@@ -685,7 +685,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			} catch (ActivityNotFoundException e) {
 				Log.e(TAG, "no browser", e);
 			}
-			this.showDialog(DIALOG_DONATE);
+			this.showDialog(DIALOG_POSTDONATE);
 			return true;
 		case R.id.item_more:
 			try {
