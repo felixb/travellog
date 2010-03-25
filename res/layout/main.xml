@@ -42,6 +42,6 @@
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
 	<com.admob.android.ads.AdView android:id="@+id/ad"
 		android:visibility="gone" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" app:isGoneWithoutAd="true"
+		android:layout_height="wrap_content"
 		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
 </LinearLayout>
