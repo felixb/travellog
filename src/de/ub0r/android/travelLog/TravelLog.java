@@ -13,6 +13,7 @@ import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -99,6 +100,18 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_FLIP_EXPORT = "export_flip";
 	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
+	/** Preference's name: theme. */
+	private static final String PREFS_THEME = "theme";
+	/** Theme: black. */
+	private static final String THEME_BLACK = "black";
+	/** Theme: light. */
+	private static final String THEME_LIGHT = "light";
+	/** Preference's name: textsize. */
+	private static final String PREFS_TEXTSIZE = "textsize";
+	/** Textsize: black. */
+	private static final String TEXTSIZE_SMALL = "small";
+	/** Textsize: light. */
+	private static final String TEXTSIZE_MEDIUM = "medium";
 
 	/** Milliseconds per minute. */
 	static final long MILLIS_A_MINUTE = 60000;
@@ -154,6 +167,40 @@ public class TravelLog extends Activity implements OnClickListener,
 		public final void onCreate(final Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			this.addPreferencesFromResource(R.xml.prefs);
+		}
+
+		/**
+		 * Get Theme from Preferences.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 * @return theme
+		 */
+		static final int getTheme(final Context context) {
+			final SharedPreferences p = PreferenceManager
+					.getDefaultSharedPreferences(context);
+			final String s = p.getString(PREFS_THEME, THEME_BLACK);
+			if (s != null && THEME_LIGHT.equals(s)) {
+				return android.R.style.Theme_Light;
+			}
+			return android.R.style.Theme_Black;
+		}
+
+		/**
+		 * Get Textsize from Preferences.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 * @return theme
+		 */
+		static final int getTextsize(final Context context) {
+			final SharedPreferences p = PreferenceManager
+					.getDefaultSharedPreferences(context);
+			final String s = p.getString(PREFS_TEXTSIZE, TEXTSIZE_SMALL);
+			if (s != null && TEXTSIZE_MEDIUM.equals(s)) {
+				return android.R.style.TextAppearance_Medium;
+			}
+			return android.R.style.TextAppearance_Small;
 		}
 	}
 
@@ -297,6 +344,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.main);
 		FORMAT_DATE = this.getString(R.string.format_date);
 		FORMAT_TIME = this.getString(R.string.format_time);
@@ -310,10 +358,18 @@ public class TravelLog extends Activity implements OnClickListener,
 		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
 		((Button) this.findViewById(R.id.add_row_)).setOnClickListener(this);
 		this.list = new ArrayList<TravelItem>();
-		this.adapter = new ArrayAdapter<TravelItem>(this, R.layout.list_item,
+		int textSize = Preferences.getTextsize(this);
+		int itemLayout;
+		if (textSize == android.R.style.TextAppearance_Medium) {
+			itemLayout = R.layout.list_item_medium;
+		} else {
+			itemLayout = R.layout.list_item_small;
+		}
+		this.adapter = new ArrayAdapter<TravelItem>(this, itemLayout,
 				android.R.id.text1, this.list);
-		((ListView) this.findViewById(R.id.log)).setAdapter(this.adapter);
-		((ListView) this.findViewById(R.id.log)).setOnItemClickListener(this);
+		final ListView lv = (ListView) this.findViewById(R.id.log);
+		lv.setAdapter(this.adapter);
+		lv.setOnItemClickListener(this);
 
 		// get prefs.
 		SharedPreferences preferences = PreferenceManager
@@ -668,6 +724,9 @@ public class TravelLog extends Activity implements OnClickListener,
 	public final boolean onCreateOptionsMenu(final Menu menu) {
 		MenuInflater inflater = this.getMenuInflater();
 		inflater.inflate(R.menu.menu, menu);
+		if (this.prefsNoAds) {
+			menu.removeItem(R.id.item_donate);
+		}
 		return true;
 	}
 

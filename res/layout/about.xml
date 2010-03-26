@@ -25,7 +25,7 @@
 		<TextView android:text="@string/about" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:paddingLeft="5dip"
 			android:paddingRight="5dip" android:autoLink="web" />
-		
+
 		<TextView android:text="@string/license_"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:paddingTop="5dip" android:paddingLeft="5dip" />

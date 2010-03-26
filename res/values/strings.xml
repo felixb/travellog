@@ -55,6 +55,9 @@
 	<string name="export_subject">TravelLog export</string>
 	<string name="export_footer">Check out TravelLog -</string>
 	<string name="export_flip">Flip export upside down</string>
+	<string name="appearance_">Appearance</string>
+	<string name="theme_">Theme</string>
+	<string name="textsize_">Text size</string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
 	<string name="for_">for</string>
@@ -71,5 +74,22 @@
 		<item>Change end time</item>
 		<item>Change type</item>
 		<item>Delete</item>
+	</string-array>
+	
+	<string-array name="themes">
+		<item>Black</item>
+		<item>Light</item>
+	</string-array>
+	<string-array name="themes_values">
+		<item>black</item>
+		<item>light</item>
+	</string-array>
+	<string-array name="textsize">
+		<item>Small</item>
+		<item>Medium</item>
+	</string-array>
+	<string-array name="textsize_values">
+		<item>small</item>
+		<item>medium</item>
 	</string-array>
 </resources>

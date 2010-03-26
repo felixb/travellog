@@ -42,6 +42,9 @@
 	<string name="export_">Als Mail senden</string>
 	<string name="export_subject">TravelLog Export</string>
 	<string name="export_flip">Export umdrehen</string>
+	<string name="appearance_">Erscheinung</string>
+	<string name="theme_">Theme</string>
+	<string name="textsize_">Schriftgrad</string>
 	<string name="mail_">Mail Adresse</string>
 	<string name="mail__">Eine Mail Adresse an die der Export geschickt wird</string>
 	<string name="for_">für</string>
@@ -58,5 +61,13 @@
 		<item>Ändere Endzeit</item>
 		<item>Ändere Art</item>
 		<item>Löschen</item>
+	</string-array>
+	<string-array name="themes">
+		<item>Dunkel</item>
+		<item>Hell</item>
+	</string-array>
+	<string-array name="textsize">
+		<item>Klein</item>
+		<item>Mittel</item>
 	</string-array>
 </resources>
