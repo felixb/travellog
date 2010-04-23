@@ -37,6 +37,8 @@ import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.flurry.android.FlurryAgent;
+
 /**
  * Main Activity.
  * 
@@ -46,6 +48,9 @@ public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	/** Tag for output. */
 	private static final String TAG = "TravelLog";
+
+	/** Flurry's API key. */
+	public static final String FLURRYKEY = "SXBT8HYLZ15EGLJRNV4S";
 
 	/** State: nothing. */
 	private static final int STATE_NOTHING = 0;
@@ -73,15 +78,13 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final int DIALOG_TIME = 1;
 	/** Dialog: change type. */
 	private static final int DIALOG_TYPE = 2;
-	/** Dialog: post donate. */
-	private static final int DIALOG_POSTDONATE = 3;
 	/** Dialog: about. */
 	private static final int DIALOG_ABOUT = 4;
 	/** Dialog: update. */
 	private static final int DIALOG_UPDATE = 5;
-	/** Dialog: pre donate. */
-	private static final int DIALOG_PREDONATE = 6;
 
+	/** Preference's name: hide ads. */
+	static final String PREFS_HIDEADS = "hideads";
 	/** Preference's name: state. */
 	private static final String PREFS_STATE = "state";
 	/** Preference's name: travel item count. */
@@ -146,11 +149,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Display ads? */
 	private boolean prefsNoAds;
 
-	/** Array of md5(imei) for which no ads should be displayed. */
-	private static final String[] NO_AD_HASHS = { // 
-	"43dcb861b9588fb733300326b61dbab9", // me
-	};
-
 	/** Round time to this. */
 	int prefsRound = 0;
 
@@ -160,6 +158,24 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	public static class Preferences extends PreferenceActivity {
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public final void onStart() {
+			super.onStart();
+			FlurryAgent.onStartSession(this, FLURRYKEY);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public final void onStop() {
+			super.onStop();
+			FlurryAgent.onEndSession(this);
+		}
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -342,6 +358,24 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * {@inheritDoc}
 	 */
 	@Override
+	public final void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, FLURRYKEY);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setTheme(Preferences.getTheme(this));
@@ -386,13 +420,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		TelephonyManager mTelephonyMgr = (TelephonyManager) this
 				.getSystemService(TELEPHONY_SERVICE);
 		this.imeiHash = md5(mTelephonyMgr.getDeviceId());
-		this.prefsNoAds = false;
-		for (String h : NO_AD_HASHS) {
-			if (this.imeiHash.equals(h)) {
-				this.prefsNoAds = true;
-				break;
-			}
-		}
+		this.prefsNoAds = preferences.getBoolean(PREFS_HIDEADS, false);
 	}
 
 	/**
@@ -613,59 +641,6 @@ public class TravelLog extends Activity implements OnClickListener,
 		Dialog d;
 		AlertDialog.Builder builder;
 		switch (id) {
-		case DIALOG_PREDONATE:
-			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.donate_);
-			builder.setMessage(R.string.predonate);
-			builder.setPositiveButton(R.string.donate_,
-					new DialogInterface.OnClickListener() {
-						public void onClick(final DialogInterface dialog,
-								final int which) {
-							try {
-								TravelLog.this
-										.startActivity(new Intent(
-												Intent.ACTION_VIEW,
-												Uri
-														.parse(TravelLog.this
-																.getString(R.string.donate_url))));
-							} catch (ActivityNotFoundException e) {
-								Log.e(TAG, "no browser", e);
-							} finally {
-								TravelLog.this.showDialog(DIALOG_POSTDONATE);
-							}
-						}
-					});
-			builder.setNegativeButton(android.R.string.cancel, null);
-			return builder.create();
-		case DIALOG_POSTDONATE:
-			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.remove_ads_);
-			builder.setMessage(R.string.postdonate);
-			builder.setPositiveButton(R.string.send_,
-					new DialogInterface.OnClickListener() {
-						public void onClick(final DialogInterface dialog,
-								final int which) {
-							final Intent in = new Intent(Intent.ACTION_SEND);
-							in.putExtra(Intent.EXTRA_EMAIL, new String[] {
-									TravelLog.this
-											.getString(R.string.donate_mail),
-									"" }); // FIXME: "" is a k9 hack.
-							in.putExtra(Intent.EXTRA_TEXT,
-									TravelLog.this.imeiHash);
-							in
-									.putExtra(
-											Intent.EXTRA_SUBJECT,
-											TravelLog.this
-													.getString(R.string.app_name)
-													+ " "
-													+ TravelLog.this
-															.getString(R.string.donate_subject));
-							in.setType("text/plain");
-							TravelLog.this.startActivity(in);
-						}
-					});
-			builder.setNegativeButton(android.R.string.cancel, null);
-			return builder.create();
 		case DIALOG_ABOUT:
 			d = new Dialog(this);
 			d.setContentView(R.layout.about);
@@ -747,7 +722,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			this.adapter.notifyDataSetChanged();
 			return true;
 		case R.id.item_donate:
-			this.showDialog(DIALOG_PREDONATE);
+			this.startActivity(new Intent(this, DonationHelper.class));
 			return true;
 		case R.id.item_more:
 			try {

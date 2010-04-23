@@ -19,6 +19,7 @@
 <resources>
 	<string name="app_version">0.4</string>
 	<string name="app_name">TravelLog</string>
+	<string name="lang">en</string>
 	<string name="author_">Author:</string>
 	<string name="version_">Version:</string>
 	<string name="license_">License:</string>
@@ -36,13 +37,16 @@
 	<string name="remove_ads_">Remove ads</string>
 	<string name="predonate">This is an open-source application released under the GPLv3 license. It is free and will remain free. If you really like it or if you are annoyed by the ads, please consider donating (via paypal). I\'ll remove the ads for you with the next release.\nThank you!</string>
 	<string name="postdonate">To remove ads, you need to send me the MD5 hash of your IMEI (unique id of your phone). This hash is a one-way-function. It is not traceable back to you.</string>
+	<string name="send_hash_">Send hash</string>
+	<string name="signature_">You will get back a code, which you can paste here, to finally remove the ads:</string>
+	<string name="sig_loaded">Ads removed!</string>
+	<string name="sig_failed">Failed to remove ads!</string>
 	<string name="send_">Send</string>
 	<string name="settings">Preferences</string>
 	<string name="about_">About TravelLog</string>
 	<string name="more_">More Apps..</string>
 	<string name="changelog_">Changelog</string>
 	<string name="about">TravelLog is a one-click-app to log your business trips for later accounting.</string>
-
 	<string name="start_work">Start work</string>
 	<string name="stop_work">Stop work</string>
 	<string name="start_travel">Start travel</string>
