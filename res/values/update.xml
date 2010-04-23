@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>v0.5: minor internal changes</item>
 		<item>v0.4: add theme support</item>
 		<item>v0.3.3: add hi-res icons</item>
 		<item>v0.3.2: fix some more bugs</item>
