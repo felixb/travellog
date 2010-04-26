@@ -19,7 +19,11 @@
 <resources>
 	<string name="lang">de</string>
 	<string name="author_">Autor:</string>
-	<string name="license_">Lizens:</string>
+	<string name="faq_hint">Ein paar Tipps und Tricks, wie man diese App einstellt.</string>
+	<string name="feedback_">Feedback</string>
+	<string name="feedback_hint">Bugreports, feature requests ...</string>
+	<string name="twitter_hint">Follow auf twitter.\nUpdate Infos etc...</string>
+	<string name="license_">Lizenz:</string>
 	<string name="license">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
 	<string name="donate_subject">Ich bin der Spender. Mein IMEI hash ist...</string>
 	<string name="donate_">Spenden (Paypal)</string>
