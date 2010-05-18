@@ -47,8 +47,6 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-
 /**
  * Display send IMEI hash, read signature..
  * 
@@ -83,24 +81,6 @@ public class DonationHelper extends Activity implements OnClickListener {
 
 	/** Hashed IMEI. */
 	private static String imeiHash = null;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void onStart() {
-		super.onStart();
-		FlurryAgent.onStartSession(this, TravelLog.FLURRYKEY);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void onStop() {
-		super.onStop();
-		FlurryAgent.onEndSession(this);
-	}
 
 	/**
 	 * {@inheritDoc}

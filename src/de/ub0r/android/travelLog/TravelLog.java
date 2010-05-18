@@ -37,8 +37,6 @@ import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.flurry.android.FlurryAgent;
-
 /**
  * Main Activity.
  * 
@@ -48,9 +46,6 @@ public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	/** Tag for output. */
 	private static final String TAG = "TravelLog";
-
-	/** Flurry's API key. */
-	public static final String FLURRYKEY = "SXBT8HYLZ15EGLJRNV4S";
 
 	/** State: nothing. */
 	private static final int STATE_NOTHING = 0;
@@ -158,24 +153,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	 * @author flx
 	 */
 	public static class Preferences extends PreferenceActivity {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public final void onStart() {
-			super.onStart();
-			FlurryAgent.onStartSession(this, FLURRYKEY);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public final void onStop() {
-			super.onStop();
-			FlurryAgent.onEndSession(this);
-		}
-
 		/**
 		 * {@inheritDoc}
 		 */
@@ -352,24 +329,6 @@ public class TravelLog extends Activity implements OnClickListener,
 			}
 			return ret.toString();
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void onStart() {
-		super.onStart();
-		FlurryAgent.onStartSession(this, FLURRYKEY);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void onStop() {
-		super.onStop();
-		FlurryAgent.onEndSession(this);
 	}
 
 	/**
