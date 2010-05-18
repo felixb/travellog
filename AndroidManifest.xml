@@ -32,16 +32,6 @@
 		<activity android:name="DonationHelper"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:scheme="noads" android:host="travellog" />
-			</intent-filter>
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<data android:mimeType="application/octet-stream" />
-			</intent-filter>
 		</activity>
 		<!-- The application's publisher ID assigned by AdMob -->
 		<meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14ae9c6fae6c50" />
