@@ -35,14 +35,27 @@
 		<CheckBoxPreference android:key="export_flip"
 			android:title="@string/export_flip" />
 	</PreferenceCategory>
-	<PreferenceScreen android:title="@string/feedback_"
-		android:summary="@string/feedback_hint">
-		<intent android:action="android.intent.action.VIEW"
-			android:data="http://code.google.com/p/travellogdroid/issues/list" />
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/twitter_"
-		android:summary="@string/twitter_hint">
-		<intent android:action="android.intent.action.VIEW"
-			android:data="http://twitter.com/flx_b" />
-	</PreferenceScreen>
+
+	<PreferenceCategory android:title="@string/about_">
+		<PreferenceScreen android:title="@string/about_"
+			android:summary="@string/about_hint">
+			<intent android:action="android.intent.action.MAIN"
+				android:targetPackage="de.ub0r.android.travelLog"
+				android:targetClass="de.ub0r.android.travelLog.About" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="@string/feedback_"
+			android:summary="@string/feedback_hint">
+			<intent android:action="android.intent.action.VIEW"
+				android:data="http://code.google.com/p/travellogdroid/issues/list" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="@string/twitter_"
+			android:summary="@string/twitter_hint">
+			<intent android:action="android.intent.action.VIEW"
+				android:data="http://twitter.com/flx_b" />
+		</PreferenceScreen>
+		<PreferenceScreen android:title="@string/more_">
+			<intent android:action="android.intent.action.VIEW"
+				android:data="market://search?q=pub:&quot;Felix Bechstein&quot;" />
+		</PreferenceScreen>
+	</PreferenceCategory>
 </PreferenceScreen>

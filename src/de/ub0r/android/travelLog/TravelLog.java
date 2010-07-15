@@ -1,7 +1,5 @@
 package de.ub0r.android.travelLog;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -12,18 +10,14 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +30,7 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
+import de.ub0r.android.lib.DonationHelper;
 
 /**
  * Main Activity.
@@ -45,7 +40,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	/** Tag for output. */
-	private static final String TAG = "TravelLog";
+	// private static final String TAG = "TravelLog";
 
 	/** State: nothing. */
 	private static final int STATE_NOTHING = 0;
@@ -139,8 +134,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	/** Action selected. */
 	private int editAction = ACTION_CHG_START;
 
-	/** Unique ID of device. */
-	private String imeiHash = null;
 	/** Display ads? */
 	private boolean prefsNoAds;
 
@@ -375,11 +368,7 @@ public class TravelLog extends Activity implements OnClickListener,
 			editor.commit();
 			this.showDialog(DIALOG_UPDATE);
 		}
-		// get imei
-		TelephonyManager mTelephonyMgr = (TelephonyManager) this
-				.getSystemService(TELEPHONY_SERVICE);
-		this.imeiHash = md5(mTelephonyMgr.getDeviceId());
-		this.prefsNoAds = preferences.getBoolean(PREFS_HIDEADS, false);
+		this.prefsNoAds = DonationHelper.hideAds(this);
 	}
 
 	/**
@@ -670,9 +659,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	@Override
 	public final boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.item_about: // start about dialog
-			this.showDialog(DIALOG_ABOUT);
-			return true;
 		case R.id.item_settings: // start settings activity
 			this.startActivity(new Intent(this, Preferences.class));
 			return true;
@@ -682,14 +668,6 @@ public class TravelLog extends Activity implements OnClickListener,
 			return true;
 		case R.id.item_donate:
 			this.startActivity(new Intent(this, DonationHelper.class));
-			return true;
-		case R.id.item_more:
-			try {
-				this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://search?q=pub:\"Felix Bechstein\"")));
-			} catch (ActivityNotFoundException e) {
-				Log.e(TAG, "no market", e);
-			}
 			return true;
 		case R.id.item_export:
 			SharedPreferences p = PreferenceManager
@@ -790,38 +768,6 @@ public class TravelLog extends Activity implements OnClickListener,
 		}
 		this.changeState(this.state, true);
 		this.prefsRound = Integer.parseInt(prefs.getString(PREFS_ROUND, "0"));
-	}
-
-	/**
-	 * Calc MD5 Hash from String.
-	 * 
-	 * @param s
-	 *            input
-	 * @return hash
-	 */
-	private static String md5(final String s) {
-		try {
-			// Create MD5 Hash
-			MessageDigest digest = java.security.MessageDigest
-					.getInstance("MD5");
-			digest.update(s.getBytes());
-			byte[] messageDigest = digest.digest();
-			// Create Hex String
-			StringBuilder hexString = new StringBuilder(32);
-			int b;
-			for (int i = 0; i < messageDigest.length; i++) {
-				b = 0xFF & messageDigest[i];
-				if (b < 0x10) {
-					hexString.append('0' + Integer.toHexString(b));
-				} else {
-					hexString.append(Integer.toHexString(b));
-				}
-			}
-			return hexString.toString();
-		} catch (NoSuchAlgorithmException e) {
-			Log.e(TAG, null, e);
-		}
-		return "";
 	}
 
 	/**
