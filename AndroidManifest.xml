@@ -36,6 +36,7 @@
 			android:windowSoftInputMode="adjustResize" />
 		<!-- The application's publisher ID assigned by AdMob -->
 		<meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14ae9c6fae6c50" />
+		<meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="7" />
 	<supports-screens android:largeScreens="true"
