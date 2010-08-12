@@ -34,6 +34,11 @@
 		<activity android:name="de.ub0r.android.lib.DonationHelper"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
+		<receiver android:name="de.ub0r.android.lib.DonationReceiver">
+			<intent-filter>
+				<action android:name="de.ub0r.android.donator.REGISTERED" />
+			</intent-filter>
+		</receiver>
 		<!-- The application's publisher ID assigned by AdMob -->
 		<meta-data android:name="ADMOB_PUBLISHER_ID" android:value="a14ae9c6fae6c50" />
 		<meta-data android:value="true" android:name="ADMOB_ALLOW_LOCATION_FOR_ADS" />
