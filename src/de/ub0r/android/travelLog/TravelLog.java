@@ -30,6 +30,7 @@ import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
+import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
 
 /**
@@ -70,8 +71,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final int DIALOG_TYPE = 2;
 	/** Dialog: about. */
 	private static final int DIALOG_ABOUT = 4;
-	/** Dialog: update. */
-	private static final int DIALOG_UPDATE = 5;
 
 	/** Preference's name: hide ads. */
 	static final String PREFS_HIDEADS = "hideads";
@@ -85,8 +84,6 @@ public class TravelLog extends Activity implements OnClickListener,
 	private static final String PREFS_LIST_STOP = "log_stop_";
 	/** Preference's name: travel item type. */
 	private static final String PREFS_LIST_TYPE = "log_type_";
-	/** Preference's name: last version run. */
-	private static final String PREFS_LAST_RUN = "lastrun";
 	/** Preference's name: mail. */
 	private static final String PREFS_MAIL = "mail";
 	/** Preference's name: flip export. */
@@ -357,17 +354,8 @@ public class TravelLog extends Activity implements OnClickListener,
 		lv.setAdapter(this.adapter);
 		lv.setOnItemClickListener(this);
 
-		// get prefs.
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		final String v0 = preferences.getString(PREFS_LAST_RUN, "");
-		final String v1 = this.getString(R.string.app_version);
-		if (!v0.equals(v1)) {
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putString(PREFS_LAST_RUN, v1);
-			editor.commit();
-			this.showDialog(DIALOG_UPDATE);
-		}
+		Changelog.showChangelog(this);
+
 		this.prefsNoAds = DonationHelper.hideAds(this);
 	}
 
@@ -595,27 +583,6 @@ public class TravelLog extends Activity implements OnClickListener,
 			d.setTitle(this.getString(R.string.about_) + " v"
 					+ this.getString(R.string.app_version));
 			return d;
-		case DIALOG_UPDATE:
-			builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.changelog_);
-			final String[] changes = this.getResources().getStringArray(
-					R.array.updates);
-			final StringBuilder buf = new StringBuilder(changes[0]);
-			for (int i = 1; i < changes.length; i++) {
-				buf.append("\n\n");
-				buf.append(changes[i]);
-			}
-			builder.setIcon(android.R.drawable.ic_menu_info_details);
-			builder.setMessage(buf.toString());
-			builder.setCancelable(true);
-			builder.setPositiveButton(android.R.string.ok,
-					new DialogInterface.OnClickListener() {
-						public void onClick(final DialogInterface dialog,
-								final int id) {
-							dialog.cancel();
-						}
-					});
-			return builder.create();
 		case DIALOG_DATE:
 			return new DatePickerDialog(this, this, c.get(Calendar.YEAR), c
 					.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
