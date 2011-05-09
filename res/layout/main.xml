@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!--
-		Copyright (C) 2010 Felix Bechstein
+		Copyright (C) 2010-2011 Felix Bechstein
 	-->
 	<!--
 		This file is part of TravelLog. This program is free software; you can
@@ -17,7 +17,6 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res/de.ub0r.android.travelLog"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:background="?android:attr/colorBackground"
 	android:layout_height="fill_parent">
@@ -42,8 +41,9 @@
 	</ListView>
 	<Button android:text="@string/add_row" android:id="@+id/add_row_"
 		android:layout_width="fill_parent" android:layout_height="wrap_content" />
-	<com.admob.android.ads.AdView android:id="@+id/ad"
-		android:visibility="gone" android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		app:keywords="android mobile handy cellphone google htc market app report business travel trip" />
+	<LinearLayout android:id="@+id/ad"
+		android:layout_alignParentBottom="true" android:visibility="gone"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:cacheColorHint="?android:attr/colorBackground"
+		android:gravity="center_horizontal" />
 </LinearLayout>

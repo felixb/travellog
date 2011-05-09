@@ -2,6 +2,7 @@ package de.ub0r.android.travelLog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,6 +33,7 @@ import android.widget.TimePicker;
 import android.widget.AdapterView.OnItemClickListener;
 import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
+import de.ub0r.android.lib.Log;
 
 /**
  * Main Activity.
@@ -42,6 +44,34 @@ public class TravelLog extends Activity implements OnClickListener,
 		OnItemClickListener, OnDateSetListener, OnTimeSetListener {
 	/** Tag for output. */
 	// private static final String TAG = "TravelLog";
+
+	/** Ad's unit id. */
+	private static final String AD_UNITID = "a14ae9c6fae6c50";
+
+	/** Ad's keywords. */
+	public static final HashSet<String> AD_KEYWORDS = new HashSet<String>();
+	static {
+		AD_KEYWORDS.add("android");
+		AD_KEYWORDS.add("mobile");
+		AD_KEYWORDS.add("handy");
+		AD_KEYWORDS.add("cellphone");
+		AD_KEYWORDS.add("google");
+		AD_KEYWORDS.add("htc");
+		AD_KEYWORDS.add("samsung");
+		AD_KEYWORDS.add("motorola");
+		AD_KEYWORDS.add("market");
+		AD_KEYWORDS.add("app");
+		AD_KEYWORDS.add("message");
+		AD_KEYWORDS.add("txt");
+		AD_KEYWORDS.add("sms");
+		AD_KEYWORDS.add("mms");
+		AD_KEYWORDS.add("game");
+		AD_KEYWORDS.add("amazon");
+		AD_KEYWORDS.add("report");
+		AD_KEYWORDS.add("business");
+		AD_KEYWORDS.add("travel");
+		AD_KEYWORDS.add("trip");
+	}
 
 	/** State: nothing. */
 	private static final int STATE_NOTHING = 0;
@@ -327,6 +357,7 @@ public class TravelLog extends Activity implements OnClickListener,
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.init("TravelLog");
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.main);
 		FORMAT_DATE = this.getString(R.string.format_date);
@@ -680,7 +711,7 @@ public class TravelLog extends Activity implements OnClickListener,
 		super.onResume();
 		this.reloadPreferences();
 		if (!this.prefsNoAds) {
-			this.findViewById(R.id.ad).setVisibility(View.VISIBLE);
+			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
 		}
 	}
 
