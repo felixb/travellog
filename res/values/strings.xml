@@ -47,11 +47,14 @@
 	<string name="stop_travel">Stop travel</string>
 	<string name="start_pause">Start pause</string>
 	<string name="stop_pause">Stop pause</string>
+	<string name="pause">Pause</string>
+	<string name="travel">Travel</string>
+	<string name="work">Work</string>
 	<string name="add_row">Add row</string>
 	<string name="clear_">Clear</string>
 	<string name="export_">Send as mail</string>
 	<string name="export_subject">TravelLog export</string>
-	<string name="export_footer">Check out TravelLog -</string>
+	<string name="export_footer">Check out TravelLog at</string>
 	<string name="export_flip">Flip export upside down</string>
 	<string name="appearance_">Appearance</string>
 	<string name="theme_">Theme</string>
@@ -66,11 +69,15 @@
 		<item>Travel</item>
 		<item>Work</item>
 	</string-array>
-	<string-array name="action">
+	<string-array name="action_child">
 		<item>Change date</item>
 		<item>Change start time</item>
 		<item>Change end time</item>
 		<item>Change type</item>
+		<item>Delete</item>
+	</string-array>
+	<string-array name="action_group">
+		<item>Change date</item>
 		<item>Delete</item>
 	</string-array>
 	

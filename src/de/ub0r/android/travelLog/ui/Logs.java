@@ -1,0 +1,861 @@
+package de.ub0r.android.travelLog.ui;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.ExpandableListActivity;
+import android.app.TimePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ExpandableListView;
+import android.widget.ResourceCursorTreeAdapter;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import de.ub0r.android.lib.Changelog;
+import de.ub0r.android.lib.DonationHelper;
+import de.ub0r.android.lib.Log;
+import de.ub0r.android.travelLog.Ads;
+import de.ub0r.android.travelLog.R;
+import de.ub0r.android.travelLog.data.DataProvider;
+
+/**
+ * Main Activity.
+ * 
+ * @author flx
+ */
+public final class Logs extends ExpandableListActivity implements
+		OnClickListener, OnGroupClickListener {
+	/** Tag for output. */
+	private static final String TAG = "Logs";
+
+	/** Ad's unit id. */
+	private static final String AD_UNITID = "a14ae9c6fae6c50";
+
+	/** Ad's keywords. */
+	public static final HashSet<String> AD_KEYWORDS = new HashSet<String>();
+	static {
+		AD_KEYWORDS.add("android");
+		AD_KEYWORDS.add("mobile");
+		AD_KEYWORDS.add("handy");
+		AD_KEYWORDS.add("cellphone");
+		AD_KEYWORDS.add("google");
+		AD_KEYWORDS.add("htc");
+		AD_KEYWORDS.add("samsung");
+		AD_KEYWORDS.add("motorola");
+		AD_KEYWORDS.add("market");
+		AD_KEYWORDS.add("app");
+		AD_KEYWORDS.add("message");
+		AD_KEYWORDS.add("txt");
+		AD_KEYWORDS.add("sms");
+		AD_KEYWORDS.add("mms");
+		AD_KEYWORDS.add("game");
+		AD_KEYWORDS.add("amazon");
+		AD_KEYWORDS.add("report");
+		AD_KEYWORDS.add("business");
+		AD_KEYWORDS.add("travel");
+		AD_KEYWORDS.add("trip");
+	}
+
+	/**
+	 * Adapter showing log entries.
+	 * 
+	 * @author flx
+	 */
+	private final class LogAdapter extends ResourceCursorTreeAdapter {
+		/** {@link ContentResolver}. */
+		private final ContentResolver cr;
+		/** Where clause used for inner {@link Cursor}. */
+		private static final String INNER_SELECT = DataProvider.Logs.FROM_Y
+				+ "= ? AND " + DataProvider.Logs.FROM_M + "= ? AND "
+				+ DataProvider.Logs.FROM_D + "= ?";
+		/** {@link DateFormat}. */
+		private final java.text.DateFormat dateFormat;
+		/** {@link DateFormat}. */
+		private final java.text.DateFormat timeFormat;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 */
+		public LogAdapter(final Context context) {
+			super(context, null, R.layout.logs_group, R.layout.logs_child);
+			this.cr = context.getContentResolver();
+			this.dateFormat = DateFormat.getDateFormat(context);
+			this.timeFormat = DateFormat.getTimeFormat(context);
+			this.requery();
+		}
+
+		/**
+		 * Requery.
+		 */
+		public void requery() {
+			this.setGroupCursor(this.cr.query(
+					DataProvider.Logs.CONTENT_URI_SUM,
+					DataProvider.Logs.PROJECTION_SUM, null, null, null));
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void bindChildView(final View view, final Context context,
+				final Cursor cursor, final boolean isLastChild) {
+			final int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
+			final int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+			final int idComment = cursor
+					.getColumnIndex(DataProvider.Logs.COMMENT);
+			final int idTypeName = cursor
+					.getColumnIndex(DataProvider.Logs.TYPE_NAME);
+			final long from = cursor.getLong(idFrom);
+			final long to = cursor.getLong(idTo);
+			final String comment = cursor.getString(idComment);
+			final String typeName = cursor.getString(idTypeName);
+			long dur = to - from;
+			if (to <= 0L) {
+				dur = System.currentTimeMillis() - from;
+			}
+
+			((TextView) view.findViewById(R.id.time)).setText(getTime(dur));
+			String s = this.timeFormat.format(new Date(from));
+			if (to > 0L) {
+				s += " - " + this.timeFormat.format(new Date(to));
+			}
+			((TextView) view.findViewById(R.id.from_to)).setText(s);
+
+			((TextView) view.findViewById(R.id.type)).setText(typeName);
+
+			if (TextUtils.isEmpty(comment)) {
+				view.findViewById(R.id.comment).setVisibility(View.GONE);
+			} else {
+				final TextView tv = (TextView) view.findViewById(R.id.comment);
+				tv.setText(comment);
+				tv.setVisibility(View.GONE);
+			}
+
+			// TODO Auto-generated method stub
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void bindGroupView(final View view, final Context context,
+				final Cursor cursor, final boolean isExpanded) {
+			final int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
+			final int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+			long to = cursor.getLong(idTo);
+			if (to == 0L) {
+				to = System.currentTimeMillis();
+			}
+			final long from = cursor.getLong(idFrom);
+			final long time = to - from;
+			((TextView) view.findViewById(R.id.date)).setText(this.dateFormat
+					.format(new Date(from)));
+			((TextView) view.findViewById(R.id.time)).setText(getTime(time));
+			// TODO Auto-generated method stub
+
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected Cursor getChildrenCursor(final Cursor groupCursor) {
+			final int idFromY = groupCursor
+					.getColumnIndex(DataProvider.Logs.FROM_Y);
+			final int idFromM = groupCursor
+					.getColumnIndex(DataProvider.Logs.FROM_M);
+			final int idFromD = groupCursor
+					.getColumnIndex(DataProvider.Logs.FROM_D);
+			return this.cr.query(DataProvider.Logs.CONTENT_URI,
+					DataProvider.Logs.PROJECTION, INNER_SELECT, new String[] {
+							groupCursor.getString(idFromY),
+							groupCursor.getString(idFromM),
+							groupCursor.getString(idFromD) },
+					DataProvider.Logs.FROM + " DESC");
+		}
+	}
+
+	/** Action: change date. */
+	private static final int ACTION_CHILD_CHG_DATE = 0;
+	/** Action: change start time. */
+	private static final int ACTION_CHILD_CHG_START = 1;
+	/** Action: change end time. */
+	private static final int ACTION_CHILD_CHG_END = 2;
+	/** Action: change type. */
+	private static final int ACTION_CHILD_CHG_TYPE = 3;
+	/** Action: delete. */
+	private static final int ACTION_CHILD_DELETE = 4;
+
+	/** Action: change date. */
+	private static final int ACTION_GROUP_CHG_DATE = 0;
+	/** Action: delete. */
+	private static final int ACTION_GROUP_DELETE = 4;
+
+	/** Preference's name: hide ads. */
+	static final String PREFS_HIDEADS = "hideads";
+	/** Preference's name: mail. */
+	private static final String PREFS_MAIL = "mail";
+	/** Preference's name: flip export. */
+	private static final String PREFS_FLIP_EXPORT = "export_flip";
+
+	/** DateFormat: time. */
+	private static String FORMAT_TIME = "kk:mm";
+	/** DateFormat: am/pm */
+	private static boolean FORMAT_AMPM = false;
+
+	/** Milliseconds per minute. */
+	static final long MILLIS_A_MINUTE = 60000;
+
+	/** Display ads? */
+	private boolean prefsNoAds;
+
+	/** Round time to this. */
+	int prefsRound = 0;
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.setTheme(Preferences.getTheme(this));
+		this.setContentView(R.layout.logs);
+		this.changeState(0, 0, true);
+		// FORMAT_DATE = this.getString(R.string.format_date);
+		FORMAT_TIME = this.getString(R.string.format_time);
+		FORMAT_AMPM = !FORMAT_TIME.endsWith("aa");
+		((Button) this.findViewById(R.id.stop)).setOnClickListener(this);
+		((Button) this.findViewById(R.id.start_pause_))
+				.setOnClickListener(this);
+		((Button) this.findViewById(R.id.start_travel_))
+				.setOnClickListener(this);
+		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
+
+		final ExpandableListView lv = (ExpandableListView) this
+				.findViewById(android.R.id.list);
+		lv.setAdapter(new LogAdapter(this));
+		lv.expandGroup(0);
+		lv.setOnChildClickListener(this);
+		lv.setOnGroupClickListener(this);
+
+		Changelog.showChangelog(this);
+
+		this.prefsNoAds = DonationHelper.hideAds(this);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void onClick(final View view) {
+		switch (view.getId()) {
+		case R.id.start_pause_:
+			this.changeState(DataProvider.Logtypes.TYPE_PAUSE);
+			break;
+		case R.id.start_travel_:
+			this.changeState(DataProvider.Logtypes.TYPE_TRAVEL);
+			break;
+		case R.id.start_work_:
+			this.changeState(DataProvider.Logtypes.TYPE_WORK);
+			break;
+		case R.id.stop:
+			this.changeState(0);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		MenuInflater inflater = this.getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		if (this.prefsNoAds) {
+			menu.removeItem(R.id.item_donate);
+		}
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.item_settings: // start settings activity
+			this.startActivity(new Intent(this, Preferences.class));
+			return true;
+		case R.id.item_clear:
+			this.getContentResolver().delete(DataProvider.Logs.CONTENT_URI,
+					null, null);
+			this.requery();
+			return true;
+		case R.id.item_donate:
+			this.startActivity(new Intent(this, DonationHelper.class));
+			return true;
+		case R.id.item_export:
+			this.export();
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (!this.prefsNoAds) {
+			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onChildClick(final ExpandableListView parent, final View v,
+			final int groupPosition, final int childPosition, final long id) {
+		AlertDialog.Builder b = new AlertDialog.Builder(this);
+		b.setItems(R.array.action_child, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				final Uri target = ContentUris.withAppendedId(
+						DataProvider.Logs.CONTENT_URI, id);
+				switch (which) {
+				case ACTION_CHILD_CHG_DATE:
+					Logs.this.changeDate(target);
+					return;
+				case ACTION_CHILD_CHG_END:
+					Logs.this.changeTime(target, DataProvider.Logs.TO);
+					return;
+				case ACTION_CHILD_CHG_START:
+					Logs.this.changeTime(target, DataProvider.Logs.FROM);
+					return;
+				case ACTION_CHILD_CHG_TYPE:
+					Logs.this.changeType(target);
+					return;
+				case ACTION_CHILD_DELETE:
+					Logs.this.delete(target);
+					return;
+				default:
+					return;
+				}
+			}
+		});
+		b.show();
+		return true;
+	}
+
+	@Override
+	public boolean onGroupClick(final ExpandableListView parent, final View v,
+			final int groupPosition, final long id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/**
+	 * Export data.
+	 */
+	private void export() {
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		final String mail = p
+				.getString(PREFS_MAIL, "nobody@set-your-prefs.com");
+		final Intent in = new Intent(Intent.ACTION_SEND);
+		in.putExtra(Intent.EXTRA_EMAIL, new String[] { mail, "" });
+		String sortOrder = DataProvider.Logs.FROM;
+		if (p.getBoolean(PREFS_FLIP_EXPORT, false)) {
+			sortOrder += " ASC";
+		} else {
+			sortOrder += " DESC";
+		}
+		final StringBuilder buf = new StringBuilder();
+
+		final Cursor cursor = this.getContentResolver().query(
+				DataProvider.Logs.CONTENT_URI, DataProvider.Logs.PROJECTION,
+				null, null, sortOrder);
+		if (cursor.moveToFirst()) {
+			final int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
+			final int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+			final int idComment = cursor
+					.getColumnIndex(DataProvider.Logs.COMMENT);
+			final int idTypeName = cursor
+					.getColumnIndex(DataProvider.Logs.TYPE_NAME);
+			final java.text.DateFormat dateFormat = DateFormat
+					.getDateFormat(this);
+			final java.text.DateFormat timeFormat = DateFormat
+					.getTimeFormat(this);
+			do {
+				final long from = cursor.getLong(idFrom);
+				final long to = cursor.getLong(idTo);
+				long dur = to - from;
+				if (to <= 0L) {
+					dur = System.currentTimeMillis() - from;
+				}
+
+				buf.append(dateFormat.format(new Date(from)));
+				buf.append(": ");
+				buf.append(timeFormat.format(new Date(from)));
+				buf.append(" - ");
+				if (to > 0L) {
+					buf.append(timeFormat.format(new Date(to)));
+				} else {
+					buf.append("??:??");
+				}
+				buf.append("\t ");
+				buf.append(getTime(dur));
+				buf.append("\t ");
+				buf.append(cursor.getString(idTypeName));
+				String s = cursor.getString(idComment);
+				if (!TextUtils.isEmpty(s)) {
+					buf.append("\t ");
+					buf.append(cursor.getString(idComment));
+				}
+				buf.append("\n");
+			} while (cursor.moveToNext());
+		}
+
+		buf.append("\n");
+		buf.append(this.getString(R.string.export_footer));
+		buf.append(" ");
+		buf.append(this.getString(R.string.website));
+		buf.append("\n");
+		in.putExtra(Intent.EXTRA_TEXT, buf.toString());
+		in.putExtra(Intent.EXTRA_SUBJECT, this
+				.getString(R.string.export_subject));
+		in.setType("text/plain");
+		this.startActivity(in);
+	}
+
+	/**
+	 * Parse number of seconds to a readable time format.
+	 * 
+	 * @param milliseconds
+	 *            milliseconds
+	 * @return parsed string
+	 */
+	static String getTime(final long milliseconds) {
+		String ret;
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(milliseconds);
+		int seconds = (int) (milliseconds / 1000);
+		int d = seconds / 86400;
+		int h = (seconds % 86400) / 3600;
+		int m = (seconds % 3600) / 60;
+		if (d > 0) {
+			ret = d + "d ";
+		} else {
+			ret = "";
+		}
+		if (h > 0 || d > 0) {
+			if (h < 10) {
+				ret += "0";
+			}
+			ret += h + ":";
+		}
+		if (m > 0 || h > 0 || d > 0) {
+			if (m < 10 && h > 0) {
+				ret += "0";
+			}
+		}
+		if (d == 0 && h == 0) {
+			if (m > 0) {
+				ret += m + "min";
+			} else {
+				ret += seconds + "s";
+			}
+		} else {
+			ret += m;
+		}
+		return ret;
+	}
+
+	/**
+	 * Round time as set in preferences.
+	 * 
+	 * @param time
+	 *            unrounded time
+	 * @return rounded time
+	 */
+	long roundTime(final long time) {
+		final int roundTo = this.prefsRound;
+		long m = time / MILLIS_A_MINUTE; // cut down to full minutes
+		if (roundTo == 0) {
+			return m * MILLIS_A_MINUTE;
+		}
+		final Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(m * MILLIS_A_MINUTE);
+		m = c.get(Calendar.MINUTE);
+		final int r = (int) (m % roundTo);
+		if (r != 0) {
+			if (r >= roundTo / 2) {
+				c.add(Calendar.MINUTE, -r + roundTo);
+			} else {
+				c.add(Calendar.MINUTE, -r);
+			}
+		}
+		return c.getTimeInMillis();
+	}
+
+	/**
+	 * Close open {@link de.ub0r.android.travelLog.data.DataProvider.Logs}.
+	 * 
+	 * @param cr
+	 *            {@link ContentResolver}
+	 * @param date
+	 *            date for TO.
+	 */
+	private void closeOpen(final ContentResolver cr, final long date) {
+		final ContentValues values = new ContentValues();
+		if (date <= 0L) {
+			values.put(DataProvider.Logs.TO, System.currentTimeMillis());
+		} else {
+			values.put(DataProvider.Logs.TO, date);
+		}
+		cr.update(DataProvider.Logs.CONTENT_URI_OPEN, values, null, null);
+	}
+
+	/**
+	 * Open new {@link de.ub0r.android.travelLog.data.DataProvider.Logs}.
+	 * 
+	 * @param cr
+	 *            {@link ContentResolver}
+	 * @param date
+	 *            date for FROM.
+	 * @param type
+	 *            type
+	 */
+	private void openNew(final ContentResolver cr, final long date,
+			final int type) {
+		final ContentValues values = new ContentValues();
+		if (date <= 0L) {
+			values.put(DataProvider.Logs.FROM, System.currentTimeMillis());
+		} else {
+			values.put(DataProvider.Logs.FROM, date);
+		}
+		values.put(DataProvider.Logs.TYPE, type);
+		cr.insert(DataProvider.Logs.CONTENT_URI, values);
+	}
+
+	/**
+	 * Change state.
+	 * 
+	 * @param logTypeType
+	 *            type of log type
+	 */
+	private void changeState(final int logTypeType) {
+		if (logTypeType == 0) {
+			this.changeState(0, 0, false);
+		} else {
+			Cursor cursor = this.getContentResolver().query(
+					DataProvider.Logtypes.CONTENT_URI,
+					DataProvider.Logtypes.PROJECTION,
+					DataProvider.Logtypes.TIME_TYPE + " = ?",
+					new String[] { String.valueOf(logTypeType) }, null);
+			int l = cursor.getCount();
+			final int[] ids = new int[l];
+			final String[] names = new String[l];
+			final int idId = cursor.getColumnIndex(DataProvider.Logtypes.ID);
+			final int idName = cursor
+					.getColumnIndex(DataProvider.Logtypes.NAME);
+			if (cursor.moveToFirst()) {
+				int i = 0;
+				do {
+					ids[i] = cursor.getInt(idId);
+					names[i] = cursor.getString(idName);
+					++i;
+				} while (cursor.moveToNext() && i <= l);
+			}
+			if (!cursor.isClosed()) {
+				cursor.close();
+			}
+			cursor = null;
+			if (l == 1) {
+				Log.d(TAG, "choose the only existing logtype: " + ids[0]);
+				Logs.this.changeState(logTypeType, ids[0], false);
+			} else {
+				AlertDialog.Builder b = new AlertDialog.Builder(this);
+				switch (logTypeType) {
+				case DataProvider.Logtypes.TYPE_PAUSE:
+					b.setTitle(R.string.start_pause);
+					break;
+				case DataProvider.Logtypes.TYPE_TRAVEL:
+					b.setTitle(R.string.start_travel);
+					break;
+				case DataProvider.Logtypes.TYPE_WORK:
+					b.setTitle(R.string.start_work);
+					break;
+				default:
+					break;
+				}
+				b.setItems(names, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						Logs.this.changeState(logTypeType, ids[which], false);
+					}
+				});
+				b.show();
+			}
+		}
+	}
+
+	/**
+	 * Change to state.
+	 * 
+	 * @param logTypeType
+	 *            type of log type
+	 * @param logTypeId
+	 *            id of log type
+	 * @param btnOnly
+	 *            set buttons only, do not modify items
+	 */
+	private void changeState(final int logTypeType, final int logTypeId,
+			final boolean btnOnly) {
+		final ContentResolver cr = this.getContentResolver();
+		if (!btnOnly) { // change state of logs
+			this.closeOpen(cr, 0L);
+
+			switch (logTypeType) {
+			case DataProvider.Logtypes.TYPE_PAUSE:
+				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_PAUSE);
+				break;
+			case DataProvider.Logtypes.TYPE_TRAVEL:
+				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_TRAVEL);
+				break;
+			case DataProvider.Logtypes.TYPE_WORK:
+				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_WORK);
+				break;
+			default:
+				break;
+			}
+		}
+
+		// set buttons
+		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		if (cursor.moveToFirst()) { // a log is open
+			final int idLogTypeType = cursor
+					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
+			final int logType = cursor.getInt(idLogTypeType);
+			int resId = -1;
+			switch (logType) {
+			case DataProvider.Logtypes.TYPE_PAUSE:
+				resId = R.string.stop_pause;
+				break;
+			case DataProvider.Logtypes.TYPE_TRAVEL:
+				resId = R.string.stop_travel;
+				break;
+			case DataProvider.Logtypes.TYPE_WORK:
+				resId = R.string.stop_work;
+				break;
+			default:
+				throw new IllegalStateException("Unknown logTypeType: "
+						+ logType);
+			}
+			TextView tv = (TextView) this.findViewById(R.id.stop);
+			tv.setText(resId);
+			tv.setVisibility(View.VISIBLE);
+		} else { // no log is open
+			this.findViewById(R.id.stop).setVisibility(View.GONE);
+		}
+		if (!cursor.isClosed()) {
+			cursor.close();
+		}
+		cursor = null;
+
+		this.requery();
+	}
+
+	/**
+	 * Requery data.
+	 */
+	private void requery() {
+		final ExpandableListView lv = (ExpandableListView) this
+				.findViewById(android.R.id.list);
+		try {
+			final boolean expandFirst = lv.isGroupExpanded(0);
+			((LogAdapter) lv.getExpandableListAdapter()).requery();
+			if (expandFirst) {
+				lv.collapseGroup(0);
+				lv.expandGroup(0);
+			}
+		} catch (NullPointerException e) {
+			Log.d(TAG, "NPE", e);
+			// nothing to do here
+		}
+	}
+
+	/**
+	 * Change date.
+	 * 
+	 * @param target
+	 *            target log entry.
+	 */
+	private void changeDate(final Uri target) {
+		Cursor cursor = this.getContentResolver().query(target,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
+		int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+		final Calendar cal = Calendar.getInstance();
+		if (cursor.moveToFirst()) {
+			final long from = cursor.getLong(idFrom);
+			final long to = cursor.getLong(idTo);
+			cal.setTimeInMillis(from);
+			new DatePickerDialog(Logs.this, new OnDateSetListener() {
+				@Override
+				public void onDateSet(final DatePicker view, final int year,
+						final int monthOfYear, final int dayOfMonth) {
+					final ContentValues values = new ContentValues();
+					cal.set(year, monthOfYear, dayOfMonth);
+					values.put(DataProvider.Logs.FROM, cal.getTimeInMillis());
+					cal.setTimeInMillis(to);
+					cal.set(year, monthOfYear, dayOfMonth);
+					values.put(DataProvider.Logs.TO, cal.getTimeInMillis());
+					Logs.this.getContentResolver().update(target, values, null,
+							null);
+					Logs.this.requery();
+				}
+			}, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
+					.get(Calendar.DAY_OF_MONTH)).show();
+		}
+	}
+
+	/**
+	 * Change time: from/to.
+	 * 
+	 * @param target
+	 *            target log entry.
+	 * @param field
+	 *            FROM or TO
+	 */
+	private void changeTime(final Uri target, final String field) {
+		Cursor cursor = this.getContentResolver().query(target,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		if (cursor.moveToFirst()) {
+			final int idTime = cursor.getColumnIndex(field);
+			final long time = cursor.getLong(idTime);
+			final Calendar cal = Calendar.getInstance();
+			if (time > 0L) {
+				cal.setTimeInMillis(time);
+			}
+			TimePickerDialog d = new TimePickerDialog(this,
+					new OnTimeSetListener() {
+						@Override
+						public void onTimeSet(final TimePicker view,
+								final int hourOfDay, final int minute) {
+							cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+							cal.set(Calendar.MINUTE, minute);
+							ContentValues values = new ContentValues(1);
+							values.put(field, cal.getTimeInMillis());
+							Logs.this.getContentResolver().update(target,
+									values, null, null);
+							Logs.this.requery();
+						}
+					}, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
+					FORMAT_AMPM);
+			String[] res = this.getResources().getStringArray(
+					R.array.action_child);
+			if (field.equals(DataProvider.Logs.FROM)) {
+				d.setTitle(res[ACTION_CHILD_CHG_START]);
+			} else {
+				d.setTitle(res[ACTION_CHILD_CHG_END]);
+			}
+			res = null;
+			d.show();
+		}
+	}
+
+	/**
+	 * Change type of log entry.
+	 * 
+	 * @param target
+	 *            target log entry.
+	 */
+	private void changeType(final Uri target) {
+		Cursor cursor = this.getContentResolver().query(
+				DataProvider.Logtypes.CONTENT_URI,
+				DataProvider.Logtypes.PROJECTION, null, null, null);
+		int l = cursor.getCount();
+		final int[] ids = new int[l];
+		final String[] names = new String[l];
+		final int idId = cursor.getColumnIndex(DataProvider.Logtypes.ID);
+		final int idName = cursor.getColumnIndex(DataProvider.Logtypes.NAME);
+		if (cursor.moveToFirst()) {
+			int i = 0;
+			do {
+				ids[i] = cursor.getInt(idId);
+				names[i] = cursor.getString(idName);
+				++i;
+			} while (cursor.moveToNext() && i <= l);
+		}
+		if (!cursor.isClosed()) {
+			cursor.close();
+		}
+		cursor = null;
+		AlertDialog.Builder b = new AlertDialog.Builder(Logs.this);
+		String[] res = Logs.this.getResources().getStringArray(
+				R.array.action_child);
+		b.setTitle(res[ACTION_CHILD_CHG_TYPE]);
+		res = null;
+		b.setItems(names, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				final ContentValues values = new ContentValues(1);
+				values.put(DataProvider.Logs.TYPE, ids[which]);
+				Logs.this.getContentResolver().update(target, values, null,
+						null);
+				Logs.this.requery();
+			}
+		});
+		b.show();
+	}
+
+	/**
+	 * Delete a log entry. * @param target target log entry.
+	 */
+	private void delete(final Uri target) {
+		this.getContentResolver().delete(target, null, null);
+		Logs.this.requery();
+	}
+}

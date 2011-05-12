@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2010 Felix Bechstein
+ * Copyright (C) 2009-2011 Felix Bechstein
  * 
  * This file is part of TraveLog.
  * 
@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License along with
  * this program; If not, see <http://www.gnu.org/licenses/>.
  */
-package de.ub0r.android.travelLog;
+package de.ub0r.android.travelLog.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import de.ub0r.android.travelLog.TravelLog.Preferences;
+import de.ub0r.android.travelLog.R;
 
 /**
  * Display About {@link Activity}.
