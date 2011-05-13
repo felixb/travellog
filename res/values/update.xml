@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>HEAD: major reimplement, move all data to database</item>
 		<item>v0.5.3: minor internal changes</item>
 		<item>v0.5.2: minor internal changes</item>
 		<item>v0.5.1: some more internal changes</item>
