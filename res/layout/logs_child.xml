@@ -18,7 +18,7 @@
 	-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent" android:layout_height="wrap_content"
-	android:layout_gravity="center_vertical">
+	android:paddingLeft="10dip" android:paddingRight="8dip">
 	<TextView android:id="@+id/time" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="id/time"
 		android:layout_alignParentRight="true" />
@@ -31,5 +31,6 @@
 		android:layout_alignParentLeft="true" android:layout_toLeftOf="@id/type" />
 	<TextView android:id="@+id/comment" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:text="id/comment"
-		android:layout_below="@id/time" />
+		android:layout_below="@id/time" android:layout_alignParentRight="true"
+		android:singleLine="false" />
 </RelativeLayout>

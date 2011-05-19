@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!--
-		Copyright (C) 2010 Felix Bechstein
+		Copyright (C) 2010-2011 Felix Bechstein
 	-->
 	<!--
 		This file is part of TravelLog. This program is free software; you can
@@ -18,12 +18,14 @@
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 	<PreferenceCategory android:title="@string/appearance_">
-		<ListPreference android:title="@string/theme_"
-			android:key="theme" android:entries="@array/themes"
-			android:entryValues="@array/themes_values" />
-		<ListPreference android:title="@string/textsize_"
-			android:key="textsize" android:entries="@array/textsize"
-			android:entryValues="@array/textsize_values" />
+		<ListPreference android:key="theme" android:title="@string/theme_"
+			android:entries="@array/themes" android:entryValues="@array/themes_values" />
+		<EditTextPreference android:key="textsize_group"
+			android:title="@string/textsize_group" android:summary="@string/textsize_hint"
+			android:defaultValue="16" android:inputType="number" />
+		<EditTextPreference android:key="textsize_child"
+			android:title="@string/textsize_child" android:summary="@string/textsize_hint"
+			android:defaultValue="14" android:inputType="number" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="@string/settings">
 		<EditTextPreference android:key="mail"

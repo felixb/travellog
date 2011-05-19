@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
 
 /**
@@ -15,20 +16,6 @@ import de.ub0r.android.travelLog.R;
 public class Preferences extends PreferenceActivity {
 	/** Preference's name: hide ads. */
 	static final String PREFS_HIDEADS = "hideads";
-	/** Preference's name: state. */
-	private static final String PREFS_STATE = "state";
-	/** Preference's name: travel item count. */
-	private static final String PREFS_LISTCOUNT = "log_n";
-	/** Preference's name: travel item start. */
-	private static final String PREFS_LIST_START = "log_start_";
-	/** Preference's name: travel item end. */
-	private static final String PREFS_LIST_STOP = "log_stop_";
-	/** Preference's name: travel item type. */
-	private static final String PREFS_LIST_TYPE = "log_type_";
-	/** Preference's name: mail. */
-	private static final String PREFS_MAIL = "mail";
-	/** Preference's name: flip export. */
-	private static final String PREFS_FLIP_EXPORT = "export_flip";
 	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
 	/** Preference's name: theme. */
@@ -37,12 +24,14 @@ public class Preferences extends PreferenceActivity {
 	private static final String THEME_BLACK = "black";
 	/** Theme: light. */
 	private static final String THEME_LIGHT = "light";
-	/** Preference's name: textsize. */
-	private static final String PREFS_TEXTSIZE = "textsize";
-	/** Textsize: black. */
-	private static final String TEXTSIZE_SMALL = "small";
-	/** Textsize: light. */
-	private static final String TEXTSIZE_MEDIUM = "medium";
+	/** Preference's name: text size group. */
+	private static final String PREFS_TEXTSIZE_GROUP = "textsize_group";
+	/** Preference's name: text size child. */
+	private static final String PREFS_TEXTSIZE_CHILD = "textsize_child";
+	/** Default text size. */
+	private static final float DEFAULT_TEXTSIZE_GROUP = 16f;
+	/** Default text size. */
+	private static final float DEFAULT_TEXTSIZE_CHILD = 14f;
 
 	/** Milliseconds per minute. */
 	static final long MILLIS_A_MINUTE = 60000;
@@ -87,13 +76,24 @@ public class Preferences extends PreferenceActivity {
 	 *            {@link Context}
 	 * @return theme
 	 */
-	public static final int getTextsize(final Context context) {
+	public static final float getTextSizeGroup(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		final String s = p.getString(PREFS_TEXTSIZE, TEXTSIZE_SMALL);
-		if (s != null && TEXTSIZE_MEDIUM.equals(s)) {
-			return android.R.style.TextAppearance_Medium;
-		}
-		return android.R.style.TextAppearance_Small;
+		final String s = p.getString(PREFS_TEXTSIZE_GROUP, "14");
+		return Utils.parseFloat(s, DEFAULT_TEXTSIZE_GROUP);
+	}
+
+	/**
+	 * Get Textsize from Preferences.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 * @return theme
+	 */
+	public static final float getTextSizeChild(final Context context) {
+		final SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		final String s = p.getString(PREFS_TEXTSIZE_CHILD, "12");
+		return Utils.parseFloat(s, DEFAULT_TEXTSIZE_CHILD);
 	}
 }

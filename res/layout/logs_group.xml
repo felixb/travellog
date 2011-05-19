@@ -18,12 +18,26 @@
 	-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent" android:minHeight="30dip"
-	android:layout_height="wrap_content" android:paddingLeft="40dip"
-	android:layout_gravity="center_vertical">
-	<TextView android:id="@+id/time" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="@id/time"
+	android:layout_height="wrap_content" android:paddingLeft="37dip"
+	android:layout_marginLeft="5dip" android:paddingRight="5dip"
+	android:paddingTop="1dip" android:paddingBottom="1dip">
+	<TextView android:id="@+id/time" android:text="id/time"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_alignParentRight="true" />
-	<TextView android:id="@+id/date" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:text="@id/date"
+	<TextView android:id="@+id/date" android:text="id/date"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
 		android:layout_alignParentLeft="true" android:layout_toLeftOf="@id/time" />
+	<LinearLayout android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:layout_below="@id/date"
+		android:paddingTop="2dip">
+		<TextView android:id="@+id/work" android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/work" />
+		<TextView android:id="@+id/travel" android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/travel" android:gravity="center_horizontal" />
+		<TextView android:id="@+id/pause" android:layout_width="match_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/pause" android:gravity="right" />
+	</LinearLayout>
 </RelativeLayout>

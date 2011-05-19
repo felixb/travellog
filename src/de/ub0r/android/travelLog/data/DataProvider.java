@@ -145,12 +145,8 @@ public final class DataProvider extends ContentProvider {
 	 */
 	public static final class Logs {
 		/** Table name. */
-		private static final String TABLE = "logs";
-		/** Joined {@link Logs} with {@link Logtypes}. */
-		private static final String JOIN_LOGTYPES = Logs.TABLE
-				+ " LEFT OUTER JOIN " + Logtypes.TABLE + " ON (" + Logs.TABLE
-				+ "." + Logs.TYPE + " = " + Logtypes.TABLE + "." + Logtypes.ID
-				+ ")";
+		static final String TABLE = "logs";
+
 		/** {@link HashMap} for projection. */
 		private static final HashMap<String, String> PROJECTION_MAP;
 
@@ -180,6 +176,21 @@ public final class DataProvider extends ContentProvider {
 		public static final String TYPE_NAME = "_type_name";
 		/** Type's type. */
 		public static final String TYPE_TYPE = "_type_type";
+		/** Sum of work. */
+		public static final String SUM_WORK = "_sum_work";
+		/** Sum of travel. */
+		public static final String SUM_TRAVEL = "_sum_travel";
+		/** Sum of pause. */
+		public static final String SUM_PAUSE = "_sum_pause";
+
+		/** Joined {@link Logs} with {@link Logtypes}. */
+		private static final String JOIN_LOGTYPES = Logs.TABLE
+				+ " LEFT OUTER JOIN " + Logtypes.TABLE + " ON (" + Logs.TABLE
+				+ "." + Logs.TYPE + " = " + Logtypes.TABLE + "." + Logtypes.ID
+				+ ")";
+		/** Where clause for open log entries. */
+		private static final String WHERE_OPEN = "(" + TO + " = 0 OR " + TO
+				+ " is NULL)";
 
 		/** Projection used for query. */
 		public static final String[] PROJECTION = new String[] { // .
@@ -187,11 +198,36 @@ public final class DataProvider extends ContentProvider {
 				FROM_D, TO, COMMENT, STARTBYAUTO,
 				Logtypes.TABLE + "." + Logtypes.ID + " AS " + TYPE_ID,
 				Logtypes.TABLE + "." + Logtypes.NAME + " AS " + TYPE_NAME,
-				Logtypes.TABLE + "." + Logtypes.TIME_TYPE + " AS " + TYPE_TYPE };
+				Logtypes.TABLE + "." + Logtypes.TIME_TYPE // .
+						+ " AS " + TYPE_TYPE };
+
 		/** Projection used for query. */
 		public static final String[] PROJECTION_SUM = new String[] { // .
-		ID, "min(" + FROM + ") AS " + FROM, FROM_Y, FROM_M, FROM_W, FROM_D,
-				"max(" + TO + ") AS " + TO };
+				ID,
+				"min(" + FROM + ") AS " + FROM,
+				FROM_Y,
+				FROM_M,
+				FROM_W,
+				FROM_D,
+				"max(" + TO + ") AS " + TO,
+				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
+						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
+						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
+						+ " in ( select " + Logtypes.ID + " from "
+						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
+						+ " = " + Logtypes.TYPE_WORK + ")) AS " + SUM_WORK,
+				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
+						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
+						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
+						+ " in ( select " + Logtypes.ID + " from "
+						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
+						+ " = " + Logtypes.TYPE_TRAVEL + ")) AS " + SUM_TRAVEL,
+				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
+						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
+						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
+						+ " in ( select " + Logtypes.ID + " from "
+						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
+						+ " = " + Logtypes.TYPE_PAUSE + ")) AS " + SUM_PAUSE };
 
 		/** Content {@link Uri}. */
 		public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -298,7 +334,7 @@ public final class DataProvider extends ContentProvider {
 	 */
 	public static final class Logtypes {
 		/** Table name. */
-		private static final String TABLE = "logtypes";
+		static final String TABLE = "logtypes";
 		/** {@link HashMap} for projection. */
 		private static final HashMap<String, String> PROJECTION_MAP;
 
@@ -389,7 +425,7 @@ public final class DataProvider extends ContentProvider {
 	 */
 	public static final class Cells {
 		/** Table name. */
-		private static final String TABLE = "cells";
+		static final String TABLE = "cells";
 		/** {@link HashMap} for projection. */
 		private static final HashMap<String, String> PROJECTION_MAP;
 
@@ -573,7 +609,7 @@ public final class DataProvider extends ContentProvider {
 					+ ContentUris.parseId(uri), selection), selectionArgs);
 			break;
 		case ID_OPENLOG:
-			ret = db.delete(Logs.TABLE, DbUtils.sqlAnd(Logs.TO + "= 0",
+			ret = db.delete(Logs.TABLE, DbUtils.sqlAnd(Logs.WHERE_OPEN,
 					selection), selectionArgs);
 			break;
 		case ID_LOGTYPES:
@@ -736,7 +772,7 @@ public final class DataProvider extends ContentProvider {
 				orderBy = sortOrder;
 			}
 			c = db.query(Logs.JOIN_LOGTYPES, projection, DbUtils.sqlAnd(
-					selection, Logs.TO + " = 0"), selectionArgs, groupBy, null,
+					selection, Logs.WHERE_OPEN), selectionArgs, groupBy, null,
 					orderBy);
 			break;
 		case ID_LOGSUM:
@@ -809,7 +845,7 @@ public final class DataProvider extends ContentProvider {
 			if (values.containsKey(Logs.FROM)) {
 				Logs.fixValues(values);
 			}
-			ret = db.update(Logs.TABLE, values, DbUtils.sqlAnd(Logs.TO + "= 0",
+			ret = db.update(Logs.TABLE, values, DbUtils.sqlAnd(Logs.WHERE_OPEN,
 					selection), selectionArgs);
 			break;
 		case ID_LOGTYPES:

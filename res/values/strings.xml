@@ -50,7 +50,6 @@
 	<string name="pause">Pause</string>
 	<string name="travel">Travel</string>
 	<string name="work">Work</string>
-	<string name="add_row">Add row</string>
 	<string name="clear_">Clear</string>
 	<string name="export_">Send as mail</string>
 	<string name="export_subject">TravelLog export</string>
@@ -58,7 +57,9 @@
 	<string name="export_flip">Flip export upside down</string>
 	<string name="appearance_">Appearance</string>
 	<string name="theme_">Theme</string>
-	<string name="textsize_">Text size</string>
+	<string name="textsize_group">Text size (summary)</string>
+	<string name="textsize_child">Text size (day)</string>
+	<string name="textsize_hint">Text size in pixels; leave empty for default.</string>
 	<string name="mail_">Mail address</string>
 	<string name="mail__">Mail address to export data</string>
 	<string name="for_">for</string>
@@ -70,6 +71,7 @@
 		<item>Work</item>
 	</string-array>
 	<string-array name="action_child">
+		<item>Set comment</item>
 		<item>Change date</item>
 		<item>Change start time</item>
 		<item>Change end time</item>
@@ -88,13 +90,5 @@
 	<string-array name="themes_values">
 		<item>black</item>
 		<item>light</item>
-	</string-array>
-	<string-array name="textsize">
-		<item>Small</item>
-		<item>Medium</item>
-	</string-array>
-	<string-array name="textsize_values">
-		<item>small</item>
-		<item>medium</item>
 	</string-array>
 </resources>

@@ -20,25 +20,25 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:background="?android:attr/colorBackground"
 	android:layout_height="fill_parent">
-	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:layout_weight="0"
-		style="@android:style/ButtonBar">
-		<Button android:text="" android:id="@+id/stop"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-		<Button android:text="@string/start_work" android:id="@+id/start_work_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-		<Button android:text="@string/start_travel" android:id="@+id/start_travel_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-		<Button android:text="@string/start_pause" android:id="@+id/start_pause_"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" />
-	</LinearLayout>
 	<ExpandableListView android:id="@android:id/list"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:layout_weight="1" />
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="0"
+		style="@android:style/ButtonBar">
+		<Button android:id="@+id/stop" android:text="id/stop"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_work_" android:text="@string/start_work"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_travel_" android:text="@string/start_travel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_pause_" android:text="@string/start_pause"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
 	<LinearLayout android:id="@+id/ad"
 		android:layout_alignParentBottom="true" android:visibility="gone"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"

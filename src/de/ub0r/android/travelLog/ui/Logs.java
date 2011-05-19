@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
@@ -96,6 +97,8 @@ public final class Logs extends ExpandableListActivity implements
 		private final java.text.DateFormat dateFormat;
 		/** {@link DateFormat}. */
 		private final java.text.DateFormat timeFormat;
+		/** {@link TextView}'s text size. */
+		private final float textSizeGroup, textSizeChild;
 
 		/**
 		 * Constructor.
@@ -108,6 +111,8 @@ public final class Logs extends ExpandableListActivity implements
 			this.cr = context.getContentResolver();
 			this.dateFormat = DateFormat.getDateFormat(context);
 			this.timeFormat = DateFormat.getTimeFormat(context);
+			this.textSizeGroup = Preferences.getTextSizeGroup(context);
+			this.textSizeChild = Preferences.getTextSizeChild(context);
 			this.requery();
 		}
 
@@ -141,24 +146,30 @@ public final class Logs extends ExpandableListActivity implements
 				dur = System.currentTimeMillis() - from;
 			}
 
-			((TextView) view.findViewById(R.id.time)).setText(getTime(dur));
+			TextView tv = (TextView) view.findViewById(R.id.time);
+			tv.setText(getTime(dur));
+			tv.setTextSize(this.textSizeChild);
+
 			String s = this.timeFormat.format(new Date(from));
 			if (to > 0L) {
 				s += " - " + this.timeFormat.format(new Date(to));
 			}
-			((TextView) view.findViewById(R.id.from_to)).setText(s);
+			tv = (TextView) view.findViewById(R.id.from_to);
+			tv.setText(s);
+			tv.setTextSize(this.textSizeChild);
 
-			((TextView) view.findViewById(R.id.type)).setText(typeName);
+			tv = (TextView) view.findViewById(R.id.type);
+			tv.setText(typeName);
+			tv.setTextSize(this.textSizeChild);
 
 			if (TextUtils.isEmpty(comment)) {
 				view.findViewById(R.id.comment).setVisibility(View.GONE);
 			} else {
-				final TextView tv = (TextView) view.findViewById(R.id.comment);
+				tv = (TextView) view.findViewById(R.id.comment);
 				tv.setText(comment);
-				tv.setVisibility(View.GONE);
+				tv.setTextSize(this.textSizeChild);
+				tv.setVisibility(View.VISIBLE);
 			}
-
-			// TODO Auto-generated method stub
 		}
 
 		/**
@@ -169,16 +180,59 @@ public final class Logs extends ExpandableListActivity implements
 				final Cursor cursor, final boolean isExpanded) {
 			final int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
 			final int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+			final int idSumWork = cursor
+					.getColumnIndex(DataProvider.Logs.SUM_WORK);
+			final int idSumTravel = cursor
+					.getColumnIndex(DataProvider.Logs.SUM_TRAVEL);
+			final int idSumPause = cursor
+					.getColumnIndex(DataProvider.Logs.SUM_PAUSE);
 			long to = cursor.getLong(idTo);
 			if (to == 0L) {
 				to = System.currentTimeMillis();
 			}
 			final long from = cursor.getLong(idFrom);
 			final long time = to - from;
-			((TextView) view.findViewById(R.id.date)).setText(this.dateFormat
-					.format(new Date(from)));
-			((TextView) view.findViewById(R.id.time)).setText(getTime(time));
-			// TODO Auto-generated method stub
+			final long sumWork = cursor.getLong(idSumWork);
+			final long sumTravel = cursor.getLong(idSumTravel);
+			final long sumPause = cursor.getLong(idSumPause);
+
+			TextView tv = (TextView) view.findViewById(R.id.date);
+			tv.setText(this.dateFormat.format(new Date(from)));
+			tv.setTextSize(this.textSizeGroup);
+
+			tv = (TextView) view.findViewById(R.id.time);
+			tv.setText(getTime(time));
+			tv.setTextSize(this.textSizeGroup);
+
+			tv = (TextView) view.findViewById(R.id.work);
+			if (sumWork > 0L) {
+				tv.setText(context.getString(R.string.work) + ": "
+						+ getTime(sumWork));
+				tv.setTextSize(this.textSizeChild);
+				tv.setVisibility(View.VISIBLE);
+			} else {
+				tv.setVisibility(View.GONE);
+			}
+
+			tv = (TextView) view.findViewById(R.id.travel);
+			if (sumTravel > 0L) {
+				tv.setText(context.getString(R.string.travel) + ": "
+						+ getTime(sumTravel));
+				tv.setTextSize(this.textSizeChild);
+				tv.setVisibility(View.VISIBLE);
+			} else {
+				tv.setVisibility(View.GONE);
+			}
+
+			tv = (TextView) view.findViewById(R.id.pause);
+			if (sumPause > 0L) {
+				tv.setText(context.getString(R.string.pause) + ": "
+						+ getTime(sumPause));
+				tv.setTextSize(this.textSizeChild);
+				tv.setVisibility(View.VISIBLE);
+			} else {
+				tv.setVisibility(View.GONE);
+			}
 
 		}
 
@@ -202,16 +256,18 @@ public final class Logs extends ExpandableListActivity implements
 		}
 	}
 
+	/** Action: add comment. */
+	private static final int ACTION_CHILD_COMMENT = 0;
 	/** Action: change date. */
-	private static final int ACTION_CHILD_CHG_DATE = 0;
+	private static final int ACTION_CHILD_CHG_DATE = 1;
 	/** Action: change start time. */
-	private static final int ACTION_CHILD_CHG_START = 1;
+	private static final int ACTION_CHILD_CHG_START = 2;
 	/** Action: change end time. */
-	private static final int ACTION_CHILD_CHG_END = 2;
+	private static final int ACTION_CHILD_CHG_END = 3;
 	/** Action: change type. */
-	private static final int ACTION_CHILD_CHG_TYPE = 3;
+	private static final int ACTION_CHILD_CHG_TYPE = 4;
 	/** Action: delete. */
-	private static final int ACTION_CHILD_DELETE = 4;
+	private static final int ACTION_CHILD_DELETE = 5;
 
 	/** Action: change date. */
 	private static final int ACTION_GROUP_CHG_DATE = 0;
@@ -362,6 +418,9 @@ public final class Logs extends ExpandableListActivity implements
 				final Uri target = ContentUris.withAppendedId(
 						DataProvider.Logs.CONTENT_URI, id);
 				switch (which) {
+				case ACTION_CHILD_COMMENT:
+					Logs.this.setComment(target);
+					return;
 				case ACTION_CHILD_CHG_DATE:
 					Logs.this.changeDate(target);
 					return;
@@ -727,10 +786,52 @@ public final class Logs extends ExpandableListActivity implements
 	}
 
 	/**
+	 * Set comment.
+	 * 
+	 * @param target
+	 *            target log entry
+	 */
+	private void setComment(final Uri target) {
+		final AlertDialog.Builder b = new AlertDialog.Builder(this);
+		String[] res = this.getResources().getStringArray(R.array.action_child);
+		b.setTitle(res[ACTION_CHILD_COMMENT]);
+		res = null;
+
+		final EditText et = new EditText(this);
+		Cursor cursor = this.getContentResolver().query(target,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		int idComment = cursor.getColumnIndex(DataProvider.Logs.COMMENT);
+		if (cursor.moveToFirst()) {
+			et.setText(cursor.getString(idComment));
+		}
+		if (!cursor.isClosed()) {
+			cursor.close();
+		}
+		cursor = null;
+
+		b.setView(et);
+		b.setNegativeButton(android.R.string.cancel, null);
+		b.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						final ContentValues values = new ContentValues(1);
+						values.put(DataProvider.Logs.COMMENT, et.getText()
+								.toString());
+						Logs.this.getContentResolver().update(target, values,
+								null, null);
+						Logs.this.requery();
+					}
+				});
+		b.show();
+	}
+
+	/**
 	 * Change date.
 	 * 
 	 * @param target
-	 *            target log entry.
+	 *            target log entry
 	 */
 	private void changeDate(final Uri target) {
 		Cursor cursor = this.getContentResolver().query(target,
