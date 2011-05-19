@@ -37,7 +37,6 @@ import android.widget.ExpandableListView;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
@@ -51,7 +50,7 @@ import de.ub0r.android.travelLog.data.DataProvider;
  * @author flx
  */
 public final class Logs extends ExpandableListActivity implements
-		OnClickListener, OnGroupClickListener {
+		OnClickListener {
 	/** Tag for output. */
 	private static final String TAG = "Logs";
 
@@ -92,9 +91,8 @@ public final class Logs extends ExpandableListActivity implements
 		/** {@link ContentResolver}. */
 		private final ContentResolver cr;
 		/** Where clause used for inner {@link Cursor}. */
-		private static final String INNER_SELECT = DataProvider.Logs.FROM_Y
-				+ "= ? AND " + DataProvider.Logs.FROM_M + "= ? AND "
-				+ DataProvider.Logs.FROM_D + "= ?";
+		private static final String INNER_SELECT = DataProvider.Logs.FROM_D
+				+ "= ?";
 		/** {@link DateFormat}. */
 		private final java.text.DateFormat dateFormat;
 		/** {@link DateFormat}. */
@@ -240,10 +238,8 @@ public final class Logs extends ExpandableListActivity implements
 			final int idFromD = groupCursor
 					.getColumnIndex(DataProvider.Logs.FROM_D);
 			return this.cr.query(DataProvider.Logs.CONTENT_URI,
-					DataProvider.Logs.PROJECTION, INNER_SELECT, new String[] {
-							groupCursor.getString(idFromY),
-							groupCursor.getString(idFromM),
-							groupCursor.getString(idFromD) },
+					DataProvider.Logs.PROJECTION, INNER_SELECT,
+					new String[] { groupCursor.getString(idFromD) },
 					DataProvider.Logs.FROM + " DESC");
 		}
 	}
@@ -347,7 +343,6 @@ public final class Logs extends ExpandableListActivity implements
 				.findViewById(android.R.id.list);
 		lv.setAdapter(new LogAdapter(this));
 		lv.setOnChildClickListener(this);
-		lv.setOnGroupClickListener(this);
 
 		this.findViewById(R.id.stop).setOnClickListener(this);
 		this.findViewById(R.id.start_pause_).setOnClickListener(this);
@@ -479,13 +474,6 @@ public final class Logs extends ExpandableListActivity implements
 		});
 		b.show();
 		return true;
-	}
-
-	@Override
-	public boolean onGroupClick(final ExpandableListView parent, final View v,
-			final int groupPosition, final long id) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	/**
