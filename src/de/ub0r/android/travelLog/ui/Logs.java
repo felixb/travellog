@@ -10,6 +10,7 @@ import android.app.ExpandableListActivity;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -18,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,8 +29,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -113,16 +115,6 @@ public final class Logs extends ExpandableListActivity implements
 			this.timeFormat = DateFormat.getTimeFormat(context);
 			this.textSizeGroup = Preferences.getTextSizeGroup(context);
 			this.textSizeChild = Preferences.getTextSizeChild(context);
-			this.requery();
-		}
-
-		/**
-		 * Requery.
-		 */
-		public void requery() {
-			this.setGroupCursor(this.cr.query(
-					DataProvider.Logs.CONTENT_URI_SUM,
-					DataProvider.Logs.PROJECTION_SUM, null, null, null));
 		}
 
 		/**
@@ -256,6 +248,41 @@ public final class Logs extends ExpandableListActivity implements
 		}
 	}
 
+	/**
+	 * Handle queries in background.
+	 * 
+	 * @author flx
+	 */
+	private final class BackgroundQueryHandler extends AsyncQueryHandler {
+
+		/**
+		 * A helper class to help make handling asynchronous
+		 * {@link ContentResolver} queries easier.
+		 * 
+		 * @param contentResolver
+		 *            {@link ContentResolver}
+		 */
+		public BackgroundQueryHandler(final ContentResolver contentResolver) {
+			super(contentResolver);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		protected void onQueryComplete(final int token, final Object cookie,
+				final Cursor cursor) {
+			switch (token) {
+			case LIST_QUERY_TOKEN:
+				Logs.this.requery(cursor);
+				Logs.this.setProgressBarVisibility(false);
+				return;
+			default:
+				return;
+			}
+		}
+	}
+
 	/** Action: add comment. */
 	private static final int ACTION_CHILD_COMMENT = 0;
 	/** Action: change date. */
@@ -289,6 +316,11 @@ public final class Logs extends ExpandableListActivity implements
 	/** Milliseconds per minute. */
 	static final long MILLIS_A_MINUTE = 60000;
 
+	/** Token for backgroundquery. */
+	private static final int LIST_QUERY_TOKEN = 1;
+	/** {@link BackgroundQueryHandler}. */
+	private BackgroundQueryHandler queryHandler = null;
+
 	/** Display ads? */
 	private boolean prefsNoAds;
 
@@ -301,27 +333,30 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.logs);
-		this.changeState(0, 0, true);
+
 		// FORMAT_DATE = this.getString(R.string.format_date);
 		FORMAT_TIME = this.getString(R.string.format_time);
 		FORMAT_AMPM = !FORMAT_TIME.endsWith("aa");
-		((Button) this.findViewById(R.id.stop)).setOnClickListener(this);
-		((Button) this.findViewById(R.id.start_pause_))
-				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.start_travel_))
-				.setOnClickListener(this);
-		((Button) this.findViewById(R.id.start_work_)).setOnClickListener(this);
 
+		this.queryHandler = new BackgroundQueryHandler(this
+				.getContentResolver());
 		final ExpandableListView lv = (ExpandableListView) this
 				.findViewById(android.R.id.list);
 		lv.setAdapter(new LogAdapter(this));
-		lv.expandGroup(0);
 		lv.setOnChildClickListener(this);
 		lv.setOnGroupClickListener(this);
 
+		this.findViewById(R.id.stop).setOnClickListener(this);
+		this.findViewById(R.id.start_pause_).setOnClickListener(this);
+		this.findViewById(R.id.start_travel_).setOnClickListener(this);
+		this.findViewById(R.id.start_work_).setOnClickListener(this);
+
 		Changelog.showChangelog(this);
+		this.changeState(0, 0, true);
+		this.requery();
 
 		this.prefsNoAds = DonationHelper.hideAds(this);
 	}
@@ -763,18 +798,42 @@ public final class Logs extends ExpandableListActivity implements
 		}
 		cursor = null;
 
-		this.requery();
+		if (!btnOnly) {
+			this.requery();
+		}
 	}
 
 	/**
 	 * Requery data.
 	 */
 	private void requery() {
+		// Cancel any pending queries
+		this.queryHandler.cancelOperation(LIST_QUERY_TOKEN);
+		try {
+			// Kick off the new query
+			this.setProgressBarVisibility(true);
+			this.queryHandler.startQuery(LIST_QUERY_TOKEN, null,
+					DataProvider.Logs.CONTENT_URI_SUM,
+					DataProvider.Logs.PROJECTION_SUM, null, null, null);
+		} catch (SQLiteException e) {
+			Log.e(TAG, "error starting query", e);
+		}
+	}
+
+	/**
+	 * Requery data.
+	 * 
+	 * @param cursor
+	 *            new {@link Cursor}
+	 */
+	private void requery(final Cursor cursor) {
 		final ExpandableListView lv = (ExpandableListView) this
 				.findViewById(android.R.id.list);
 		try {
-			final boolean expandFirst = lv.isGroupExpanded(0);
-			((LogAdapter) lv.getExpandableListAdapter()).requery();
+			final boolean expandFirst = lv.isGroupExpanded(0)
+					|| ((LogAdapter) lv.getExpandableListAdapter())
+							.getGroupCount() == 0;
+			((LogAdapter) lv.getExpandableListAdapter()).setGroupCursor(cursor);
 			if (expandFirst) {
 				lv.collapseGroup(0);
 				lv.expandGroup(0);
