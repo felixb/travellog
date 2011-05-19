@@ -53,6 +53,21 @@ public class Preferences extends PreferenceActivity {
 	}
 
 	/**
+	 * Get round from preferences.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 * @return round
+	 */
+	public static final int getRound(final Context context) {
+		final SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		final String s = p.getString(PREFS_ROUND, null);
+		return Utils.parseInt(s, 0);
+
+	}
+
+	/**
 	 * Get Theme from Preferences.
 	 * 
 	 * @param context
@@ -70,7 +85,7 @@ public class Preferences extends PreferenceActivity {
 	}
 
 	/**
-	 * Get Textsize from Preferences.
+	 * Get Text size from Preferences.
 	 * 
 	 * @param context
 	 *            {@link Context}
@@ -84,7 +99,7 @@ public class Preferences extends PreferenceActivity {
 	}
 
 	/**
-	 * Get Textsize from Preferences.
+	 * Get Text size from Preferences.
 	 * 
 	 * @param context
 	 *            {@link Context}

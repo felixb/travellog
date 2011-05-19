@@ -254,6 +254,8 @@ public final class Logs extends ExpandableListActivity implements
 	 * @author flx
 	 */
 	private final class BackgroundQueryHandler extends AsyncQueryHandler {
+		/** Token for {@link BackgroundQueryHandler}. */
+		private static final int LIST_QUERY_TOKEN = 1;
 
 		/**
 		 * A helper class to help make handling asynchronous
@@ -309,15 +311,13 @@ public final class Logs extends ExpandableListActivity implements
 	private static final String PREFS_FLIP_EXPORT = "export_flip";
 
 	/** DateFormat: time. */
-	private static String FORMAT_TIME = "kk:mm";
-	/** DateFormat: am/pm */
-	private static boolean FORMAT_AMPM = false;
+	private static String formatTime = "kk:mm";
+	/** DateFormat: am/pm. */
+	private static boolean formatAmPm = false;
 
 	/** Milliseconds per minute. */
-	static final long MILLIS_A_MINUTE = 60000;
+	private static final long MILLIS_A_MINUTE = 60000;
 
-	/** Token for backgroundquery. */
-	private static final int LIST_QUERY_TOKEN = 1;
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
@@ -325,7 +325,7 @@ public final class Logs extends ExpandableListActivity implements
 	private boolean prefsNoAds;
 
 	/** Round time to this. */
-	int prefsRound = 0;
+	private int prefsRound = 0;
 
 	/**
 	 * {@inheritDoc}
@@ -338,8 +338,8 @@ public final class Logs extends ExpandableListActivity implements
 		this.setContentView(R.layout.logs);
 
 		// FORMAT_DATE = this.getString(R.string.format_date);
-		FORMAT_TIME = this.getString(R.string.format_time);
-		FORMAT_AMPM = !FORMAT_TIME.endsWith("aa");
+		formatTime = this.getString(R.string.format_time);
+		formatAmPm = !formatTime.endsWith("aa");
 
 		this.queryHandler = new BackgroundQueryHandler(this
 				.getContentResolver());
@@ -427,6 +427,7 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		this.prefsRound = Preferences.getRound(this);
 		if (!this.prefsNoAds) {
 			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
 		}
@@ -611,12 +612,12 @@ public final class Logs extends ExpandableListActivity implements
 	 *            unrounded time
 	 * @return rounded time
 	 */
-	long roundTime(final long time) {
+	private long roundTime(final long time) {
 		final int roundTo = this.prefsRound;
-		long m = time / MILLIS_A_MINUTE; // cut down to full minutes
 		if (roundTo == 0) {
-			return m * MILLIS_A_MINUTE;
+			return time;
 		}
+		long m = time / MILLIS_A_MINUTE;
 		final Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(m * MILLIS_A_MINUTE);
 		m = c.get(Calendar.MINUTE);
@@ -640,12 +641,12 @@ public final class Logs extends ExpandableListActivity implements
 	 *            date for TO.
 	 */
 	private void closeOpen(final ContentResolver cr, final long date) {
-		final ContentValues values = new ContentValues();
+		long d = date;
 		if (date <= 0L) {
-			values.put(DataProvider.Logs.TO, System.currentTimeMillis());
-		} else {
-			values.put(DataProvider.Logs.TO, date);
+			d = System.currentTimeMillis();
 		}
+		final ContentValues values = new ContentValues(1);
+		values.put(DataProvider.Logs.TO, this.roundTime(d));
 		cr.update(DataProvider.Logs.CONTENT_URI_OPEN, values, null, null);
 	}
 
@@ -661,12 +662,12 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	private void openNew(final ContentResolver cr, final long date,
 			final int type) {
-		final ContentValues values = new ContentValues();
+		long d = date;
 		if (date <= 0L) {
-			values.put(DataProvider.Logs.FROM, System.currentTimeMillis());
-		} else {
-			values.put(DataProvider.Logs.FROM, date);
+			d = System.currentTimeMillis();
 		}
+		final ContentValues values = new ContentValues();
+		values.put(DataProvider.Logs.FROM, this.roundTime(d));
 		values.put(DataProvider.Logs.TYPE, type);
 		cr.insert(DataProvider.Logs.CONTENT_URI, values);
 	}
@@ -808,11 +809,13 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	private void requery() {
 		// Cancel any pending queries
-		this.queryHandler.cancelOperation(LIST_QUERY_TOKEN);
+		this.queryHandler
+				.cancelOperation(BackgroundQueryHandler.LIST_QUERY_TOKEN);
 		try {
 			// Kick off the new query
 			this.setProgressBarVisibility(true);
-			this.queryHandler.startQuery(LIST_QUERY_TOKEN, null,
+			this.queryHandler.startQuery(
+					BackgroundQueryHandler.LIST_QUERY_TOKEN, null,
 					DataProvider.Logs.CONTENT_URI_SUM,
 					DataProvider.Logs.PROJECTION_SUM, null, null, null);
 		} catch (SQLiteException e) {
@@ -953,7 +956,7 @@ public final class Logs extends ExpandableListActivity implements
 							Logs.this.requery();
 						}
 					}, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
-					FORMAT_AMPM);
+					formatAmPm);
 			String[] res = this.getResources().getStringArray(
 					R.array.action_child);
 			if (field.equals(DataProvider.Logs.FROM)) {
