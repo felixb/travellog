@@ -43,12 +43,19 @@
   <string name="stop_travel" formatted="false">Stopp Reise</string>
   <string name="start_pause" formatted="false">Start Pause</string>
   <string name="stop_pause" formatted="false">Stopp Pause</string>
+  <string name="pause" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Pause">Pause</string>
+  <string name="travel" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Travel">Reise</string>
+  <string name="work" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Work">Arbeit</string>
   <string name="clear_" formatted="false">Alle löschen</string>
   <string name="export_" formatted="false">Als Mail senden</string>
   <string name="export_subject" formatted="false">TravelLog Export</string>
+  <string name="export_footer" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Check out TravelLog at">Checkout TravelLog auf</string>
   <string name="export_flip" formatted="false">Export umdrehen</string>
   <string name="appearance_" formatted="false">Erscheinung</string>
   <string name="theme_" formatted="false">Theme</string>
+  <string name="textsize_group" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (summary)">Schriftgrad (Übersicht)</string>
+  <string name="textsize_child" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (day)">Schriftgrad (Tag)</string>
+  <string name="textsize_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size in pixels; leave empty for default.">Schriftgrad in Pixeln; leer lassen für Standard.</string>
   <string name="mail_" formatted="false">Mail Adresse</string>
   <string name="mail__" formatted="false">Eine Mail Adresse an die der Export geschickt wird</string>
   <string name="for_" formatted="false">für</string>
@@ -58,6 +65,18 @@
     <item>Pause</item>
     <item>Reise</item>
     <item>Arbeit</item>
+  </string-array>
+  <string-array name="action_child" username="flx &lt;f+translation@ub0r.de&gt;">
+    <item>Kommentar setzen</item>
+    <item>Datum ändern</item>
+    <item>Startzeit ändern</item>
+    <item>Endezeit ändern</item>
+    <item>Typ ändern</item>
+    <item>Löschen</item>
+  </string-array>
+  <string-array name="action_group" username="flx &lt;f+translation@ub0r.de&gt;">
+    <item>Datum ändern</item>
+    <item>Löschen</item>
   </string-array>
   <string-array name="themes">
     <item>Dunkel</item>
