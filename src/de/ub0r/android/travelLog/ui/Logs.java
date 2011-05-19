@@ -40,6 +40,7 @@ import android.widget.TimePicker;
 import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
+import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.Ads;
 import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
@@ -422,6 +423,7 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Utils.setLocale(this);
 		this.prefsRound = Preferences.getRound(this);
 		if (!this.prefsNoAds) {
 			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
@@ -667,6 +669,7 @@ public final class Logs extends ExpandableListActivity implements
 	 *            type of log type
 	 */
 	private void changeState(final int logTypeType) {
+		Log.d(TAG, "changeState(" + logTypeType + ")");
 		if (logTypeType == 0) {
 			this.changeState(0, 0, false);
 		} else {
@@ -735,22 +738,12 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	private void changeState(final int logTypeType, final int logTypeId,
 			final boolean btnOnly) {
+		Log.d(TAG, "changeState(" + logTypeType + "," + logTypeId + ")");
 		final ContentResolver cr = this.getContentResolver();
 		if (!btnOnly) { // change state of logs
 			this.closeOpen(cr, 0L);
-
-			switch (logTypeType) {
-			case DataProvider.Logtypes.TYPE_PAUSE:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_PAUSE);
-				break;
-			case DataProvider.Logtypes.TYPE_TRAVEL:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_TRAVEL);
-				break;
-			case DataProvider.Logtypes.TYPE_WORK:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_WORK);
-				break;
-			default:
-				break;
+			if (logTypeType > 0) {
+				this.openNew(cr, 0L, logTypeId);
 			}
 		}
 
@@ -762,6 +755,7 @@ public final class Logs extends ExpandableListActivity implements
 					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
 			final int logType = cursor.getInt(idLogTypeType);
 			int resId = -1;
+			int vis = View.VISIBLE;
 			switch (logType) {
 			case DataProvider.Logtypes.TYPE_PAUSE:
 				resId = R.string.stop_pause;
@@ -773,12 +767,13 @@ public final class Logs extends ExpandableListActivity implements
 				resId = R.string.stop_work;
 				break;
 			default:
-				throw new IllegalStateException("Unknown logTypeType: "
-						+ logType);
+				vis = View.GONE;
 			}
 			TextView tv = (TextView) this.findViewById(R.id.stop);
-			tv.setText(resId);
-			tv.setVisibility(View.VISIBLE);
+			if (resId > 0) {
+				tv.setText(resId);
+			}
+			tv.setVisibility(vis);
 		} else { // no log is open
 			this.findViewById(R.id.stop).setVisibility(View.GONE);
 		}

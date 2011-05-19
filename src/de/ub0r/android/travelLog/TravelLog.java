@@ -2,6 +2,7 @@ package de.ub0r.android.travelLog;
 
 import android.app.Application;
 import de.ub0r.android.lib.Log;
+import de.ub0r.android.lib.Utils;
 
 /**
  * Main Activity.
@@ -19,6 +20,6 @@ public final class TravelLog extends Application {
 	public void onCreate() {
 		super.onCreate();
 		Log.init(TAG);
-		// Utils.setLocale(this);
+		Utils.setLocale(this);
 	}
 }
