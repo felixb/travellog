@@ -37,6 +37,14 @@
 		<CheckBoxPreference android:key="export_flip"
 			android:title="@string/export_flip" />
 	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/logtypes_">
+		<PreferenceScreen android:title="@string/logtypes_"
+			android:summary="@string/logtypes_hint">
+			<intent android:action="android.intent.action.MAIN"
+				android:targetPackage="de.ub0r.android.travelLog"
+				android:targetClass="de.ub0r.android.travelLog.ui.LogTypes" />
+		</PreferenceScreen>
+	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/about_">
 		<PreferenceScreen android:title="@string/about_"

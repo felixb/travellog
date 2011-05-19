@@ -37,10 +37,10 @@ import android.widget.ExpandableListView;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
+import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.Ads;
 import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
@@ -51,7 +51,7 @@ import de.ub0r.android.travelLog.data.DataProvider;
  * @author flx
  */
 public final class Logs extends ExpandableListActivity implements
-		OnClickListener, OnGroupClickListener {
+		OnClickListener {
 	/** Tag for output. */
 	private static final String TAG = "Logs";
 
@@ -92,9 +92,8 @@ public final class Logs extends ExpandableListActivity implements
 		/** {@link ContentResolver}. */
 		private final ContentResolver cr;
 		/** Where clause used for inner {@link Cursor}. */
-		private static final String INNER_SELECT = DataProvider.Logs.FROM_Y
-				+ "= ? AND " + DataProvider.Logs.FROM_M + "= ? AND "
-				+ DataProvider.Logs.FROM_D + "= ?";
+		private static final String INNER_SELECT = DataProvider.Logs.FROM_D
+				+ "= ?";
 		/** {@link DateFormat}. */
 		private final java.text.DateFormat dateFormat;
 		/** {@link DateFormat}. */
@@ -240,10 +239,8 @@ public final class Logs extends ExpandableListActivity implements
 			final int idFromD = groupCursor
 					.getColumnIndex(DataProvider.Logs.FROM_D);
 			return this.cr.query(DataProvider.Logs.CONTENT_URI,
-					DataProvider.Logs.PROJECTION, INNER_SELECT, new String[] {
-							groupCursor.getString(idFromY),
-							groupCursor.getString(idFromM),
-							groupCursor.getString(idFromD) },
+					DataProvider.Logs.PROJECTION, INNER_SELECT,
+					new String[] { groupCursor.getString(idFromD) },
 					DataProvider.Logs.FROM + " DESC");
 		}
 	}
@@ -347,7 +344,6 @@ public final class Logs extends ExpandableListActivity implements
 				.findViewById(android.R.id.list);
 		lv.setAdapter(new LogAdapter(this));
 		lv.setOnChildClickListener(this);
-		lv.setOnGroupClickListener(this);
 
 		this.findViewById(R.id.stop).setOnClickListener(this);
 		this.findViewById(R.id.start_pause_).setOnClickListener(this);
@@ -427,6 +423,7 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Utils.setLocale(this);
 		this.prefsRound = Preferences.getRound(this);
 		if (!this.prefsNoAds) {
 			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
@@ -479,13 +476,6 @@ public final class Logs extends ExpandableListActivity implements
 		});
 		b.show();
 		return true;
-	}
-
-	@Override
-	public boolean onGroupClick(final ExpandableListView parent, final View v,
-			final int groupPosition, final long id) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	/**
@@ -679,6 +669,7 @@ public final class Logs extends ExpandableListActivity implements
 	 *            type of log type
 	 */
 	private void changeState(final int logTypeType) {
+		Log.d(TAG, "changeState(" + logTypeType + ")");
 		if (logTypeType == 0) {
 			this.changeState(0, 0, false);
 		} else {
@@ -747,22 +738,12 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	private void changeState(final int logTypeType, final int logTypeId,
 			final boolean btnOnly) {
+		Log.d(TAG, "changeState(" + logTypeType + "," + logTypeId + ")");
 		final ContentResolver cr = this.getContentResolver();
 		if (!btnOnly) { // change state of logs
 			this.closeOpen(cr, 0L);
-
-			switch (logTypeType) {
-			case DataProvider.Logtypes.TYPE_PAUSE:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_PAUSE);
-				break;
-			case DataProvider.Logtypes.TYPE_TRAVEL:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_TRAVEL);
-				break;
-			case DataProvider.Logtypes.TYPE_WORK:
-				this.openNew(cr, 0L, DataProvider.Logtypes.TYPE_WORK);
-				break;
-			default:
-				break;
+			if (logTypeType > 0) {
+				this.openNew(cr, 0L, logTypeId);
 			}
 		}
 
@@ -774,6 +755,7 @@ public final class Logs extends ExpandableListActivity implements
 					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
 			final int logType = cursor.getInt(idLogTypeType);
 			int resId = -1;
+			int vis = View.VISIBLE;
 			switch (logType) {
 			case DataProvider.Logtypes.TYPE_PAUSE:
 				resId = R.string.stop_pause;
@@ -785,12 +767,13 @@ public final class Logs extends ExpandableListActivity implements
 				resId = R.string.stop_work;
 				break;
 			default:
-				throw new IllegalStateException("Unknown logTypeType: "
-						+ logType);
+				vis = View.GONE;
 			}
 			TextView tv = (TextView) this.findViewById(R.id.stop);
-			tv.setText(resId);
-			tv.setVisibility(View.VISIBLE);
+			if (resId > 0) {
+				tv.setText(resId);
+			}
+			tv.setVisibility(vis);
 		} else { // no log is open
 			this.findViewById(R.id.stop).setVisibility(View.GONE);
 		}

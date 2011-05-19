@@ -56,6 +56,9 @@
 	<string name="mail__">Mail address to export data</string>
 	<string name="for_">for</string>
 	<string name="round_">Round time</string>
+	<string name="logtypes_">Log types</string>
+	<string name="logtypes_hint">Define your own Work, Travel or Pause types.</string>
+	<string name="add_">Add</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>
@@ -72,6 +75,10 @@
 	</string-array>
 	<string-array name="action_group">
 		<item>Change date</item>
+		<item>Delete</item>
+	</string-array>
+	<string-array name="action_logtype">
+		<item>Rename</item>
 		<item>Delete</item>
 	</string-array>
 	

@@ -30,6 +30,8 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".ui.Preferences" />
+		<activity android:name=".ui.LogTypes" android:configChanges="orientation|keyboardHidden"
+			android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" />
 		<activity android:name=".ui.About" android:configChanges="orientation|keyboardHidden"
 			android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" />
 		<provider android:name=".data.DataProvider"
