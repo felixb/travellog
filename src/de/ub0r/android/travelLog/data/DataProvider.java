@@ -56,7 +56,7 @@ public final class DataProvider extends ContentProvider {
 	/** Name of the {@link SQLiteDatabase}. */
 	private static final String DATABASE_NAME = "travellog.db";
 	/** Version of the {@link SQLiteDatabase}. */
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	/** Internal id: Logs. */
 	private static final int ID_LOGS = 0;
@@ -437,10 +437,16 @@ public final class DataProvider extends ContentProvider {
 		public static final String SEEN_FIRST = "_seen_first";
 		/** Last seen. */
 		public static final String SEEN_LAST = "_seen_last";
+		/** Latitude. */
+		public static final String LATITUDE = "_lat";
+		/** Longitude. */
+		public static final String LONGITUDE = "_long";
+		/** Radius. */
+		public static final String RADIUS = "_rad";
 
 		/** Projection used for query. */
 		public static final String[] PROJECTION = new String[] { // .
-		ID, TYPE, SEEN_FIRST, SEEN_LAST };
+		ID, TYPE, SEEN_FIRST, SEEN_LAST, LATITUDE, LONGITUDE, RADIUS };
 
 		/** Content {@link Uri}. */
 		public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -477,7 +483,10 @@ public final class DataProvider extends ContentProvider {
 					+ ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " // .
 					+ TYPE + " INTEGER,"// .
 					+ SEEN_FIRST + " LONG,"// .
-					+ SEEN_LAST + " LONG"// .
+					+ SEEN_LAST + " LONG,"// .
+					+ LATITUDE + " INTEGER,"// .
+					+ LONGITUDE + " INTEGER,"// .
+					+ RADIUS + " INTEGER"// .
 					+ ");");
 		}
 
@@ -529,7 +538,7 @@ public final class DataProvider extends ContentProvider {
 			proj = new String[cols.length - 1];
 			int i = 0;
 			for (String c : cols) {
-				if (strip.equals(c)) {
+				if (strip.equals(c) || c.startsWith(strip + " ")) {
 					continue;
 				}
 				proj[i] = c;

@@ -330,6 +330,7 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.init("TravelLog"); // FIXME
 		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.logs);

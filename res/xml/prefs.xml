@@ -44,6 +44,11 @@
 				android:targetPackage="de.ub0r.android.travelLog"
 				android:targetClass="de.ub0r.android.travelLog.ui.LogTypes" />
 		</PreferenceScreen>
+		<PreferenceScreen android:title="@string/map_">
+			<intent android:action="android.intent.action.MAIN"
+				android:targetPackage="de.ub0r.android.travelLog"
+				android:targetClass="de.ub0r.android.travelLog.ui.Map" />
+		</PreferenceScreen>
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/about_">

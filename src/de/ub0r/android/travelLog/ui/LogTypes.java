@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2010 Felix Bechstein, The Android Open Source Project
+ * Copyright (C) 2009-2011 Felix Bechstein
  * 
  * This file is part of TravelLog.
  * 
@@ -39,14 +39,14 @@ import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
 /**
- * {@link ListActivity} for setting plans.
+ * {@link ListActivity} for setting log types.
  * 
  * @author flx
  */
 public class LogTypes extends ListActivity implements OnClickListener,
 		OnItemClickListener {
 	/**
-	 * Adapter binding plans to View.
+	 * Adapter binding log types to {@link View}.
 	 * 
 	 * @author flx
 	 */
