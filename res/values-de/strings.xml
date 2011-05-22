@@ -1,73 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!--
-		Copyright (C) 2010 Felix Bechstein
-	-->
-	<!--
-		This file is part of TravelLog. This program is free software; you can
-		redistribute it and/or modify it under the terms of the GNU General
-		Public License as published by the Free Software Foundation; either
-		version 3 of the License, or (at your option) any later version.
-	-->
-	<!--
-		This program is distributed in the hope that it will be useful, but
-		WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-		General Public License for more details. You should have received a
-		copy of the GNU General Public License along with this program; If
-		not, see <http://www.gnu.org/licenses/>.
-	-->
+       <!--
+               Copyright (C) 2009-2011 Felix Bechstein
+       -->
+       <!--
+               This file is part of TravelLog. This program is free software; you can
+               redistribute it and/or modify it under the terms of the GNU General
+               Public License as published by the Free Software Foundation; either
+               version 3 of the License, or (at your option) any later version.
+       -->
+       <!--
+               This program is distributed in the hope that it will be useful, but
+               WITHOUT ANY WARRANTY; without even the implied warranty of
+               MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+               General Public License for more details. You should have received a
+               copy of the GNU General Public License along with this program; If
+               not, see <http://www.gnu.org/licenses/>.
+       -->
+      <!--
+               This file is generated automatically by ub0rlib/php.
+               Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=strings.xml to edit the file.
+       -->
 <resources>
-	<string name="lang">de</string>
-	<string name="author_">Autor:</string>
-	<string name="faq_hint">Ein paar Tipps und Tricks, wie man diese App einstellt.</string>
-	<string name="feedback_">Feedback</string>
-	<string name="feedback_hint">Bugreports, feature requests ...</string>
-	<string name="twitter_hint">Follow auf twitter.\nUpdate Infos etc...</string>
-	<string name="license_">Lizenz:</string>
-	<string name="license">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
-	<string name="send_">Senden</string>
-	<string name="remove_ads_">Werbung entfernen</string>
-	<string name="settings">Einstellungen</string>
-	<string name="about_">Über TravelLog</string>
-	<string name="more_">Mehr Apps..</string>
-	<string name="about">TravelLog ist eine ein-Klick-App, mit der du deine Geschäftsreisen loggen kannst um sie später einfacher abzurechnen.</string>
-	<string name="start_work">Start Arbeit</string>
-	<string name="stop_work">Stopp Arbeit</string>
-	<string name="start_travel">Start Reise</string>
-	<string name="stop_travel">Stopp Reise</string>
-	<string name="start_pause">Start Pause</string>
-	<string name="stop_pause">Stopp Pause</string>
-	<string name="add_row">Zeile hinzu</string>
-	<string name="clear_">Alle löschen</string>
-	<string name="export_">Als Mail senden</string>
-	<string name="export_subject">TravelLog Export</string>
-	<string name="export_flip">Export umdrehen</string>
-	<string name="appearance_">Erscheinung</string>
-	<string name="theme_">Theme</string>
-	<string name="textsize_">Schriftgrad</string>
-	<string name="mail_">Mail Adresse</string>
-	<string name="mail__">Eine Mail Adresse an die der Export geschickt wird</string>
-	<string name="for_">für</string>
-	<string name="round_">Zeit runden</string>
-	<string-array name="state">
-		<item>Nichts</item>
-		<item>Pause</item>
-		<item>Reise</item>
-		<item>Arbeit</item>
-	</string-array>
-	<string-array name="action">
-		<item>Ändere Datum</item>
-		<item>Ändere Startzeit</item>
-		<item>Ändere Endzeit</item>
-		<item>Ändere Art</item>
-		<item>Löschen</item>
-	</string-array>
-	<string-array name="themes">
-		<item>Dunkel</item>
-		<item>Hell</item>
-	</string-array>
-	<string-array name="textsize">
-		<item>Klein</item>
-		<item>Mittel</item>
-	</string-array>
+  <string name="author_" formatted="false">Autor:</string>
+  <string name="version_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Version:">Version:</string>
+  <string name="license_" formatted="false">Lizenz:</string>
+  <string name="license" formatted="false">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
+  <string name="source_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sourcescode:">Sourcescode:</string>
+  <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
+  <string name="faq_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="FAQ">FAQ</string>
+  <string name="faq_hint" formatted="false">Ein paar Tipps und Tricks, wie man diese App einstellt.</string>
+  <string name="feedback_" formatted="false">Feedback</string>
+  <string name="feedback_hint" formatted="false">Bugreports, feature requests ...</string>
+  <string name="twitter_hint" formatted="false">Follow auf twitter.\nUpdate Infos etc...</string>
+  <string name="send_" formatted="false">Senden</string>
+  <string name="settings" formatted="false">Einstellungen</string>
+  <string name="about_" formatted="false">Über TravelLog</string>
+  <string name="more_" formatted="false">Mehr Apps..</string>
+  <string name="about" formatted="false">TravelLog ist eine ein-Klick-App, mit der du deine Geschäftsreisen loggen kannst um sie später einfacher abzurechnen.</string>
+  <string name="start_work" formatted="false">Start Arbeit</string>
+  <string name="stop_work" formatted="false">Stopp Arbeit</string>
+  <string name="start_travel" formatted="false">Start Reise</string>
+  <string name="stop_travel" formatted="false">Stopp Reise</string>
+  <string name="start_pause" formatted="false">Start Pause</string>
+  <string name="stop_pause" formatted="false">Stopp Pause</string>
+  <string name="pause" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Pause">Pause</string>
+  <string name="travel" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Travel">Reise</string>
+  <string name="work" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Work">Arbeit</string>
+  <string name="clear_" formatted="false">Alle löschen</string>
+  <string name="export_" formatted="false">Als Mail senden</string>
+  <string name="export_subject" formatted="false">TravelLog Export</string>
+  <string name="export_footer" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Check out TravelLog at">Checkout TravelLog auf</string>
+  <string name="export_flip" formatted="false">Export umdrehen</string>
+  <string name="appearance_" formatted="false">Erscheinung</string>
+  <string name="theme_" formatted="false">Theme</string>
+  <string name="textsize_group" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (summary)">Schriftgrad (Übersicht)</string>
+  <string name="textsize_child" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (day)">Schriftgrad (Tag)</string>
+  <string name="textsize_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size in pixels; leave empty for default.">Schriftgrad in Pixeln; leer lassen für Standard.</string>
+  <string name="mail_" formatted="false">Mail Adresse</string>
+  <string name="mail__" formatted="false">Eine Mail Adresse an die der Export geschickt wird</string>
+  <string name="for_" formatted="false">für</string>
+  <string name="round_" formatted="false">Zeit runden</string>
+  <string-array name="state">
+    <item>Nichts</item>
+    <item>Pause</item>
+    <item>Reise</item>
+    <item>Arbeit</item>
+  </string-array>
+  <string-array name="action_child" username="flx &lt;f+translation@ub0r.de&gt;">
+    <item>Kommentar setzen</item>
+    <item>Datum ändern</item>
+    <item>Startzeit ändern</item>
+    <item>Endezeit ändern</item>
+    <item>Typ ändern</item>
+    <item>Löschen</item>
+  </string-array>
+  <string-array name="action_group" username="flx &lt;f+translation@ub0r.de&gt;">
+    <item>Datum ändern</item>
+    <item>Löschen</item>
+  </string-array>
+  <string-array name="themes">
+    <item>Dunkel</item>
+    <item>Hell</item>
+  </string-array>
 </resources>

@@ -18,23 +18,9 @@
        -->
       <!--
                This file is generated automatically by ub0rlib/php.
-               Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=arrays.xml to edit the file.
+               Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=format.xml to edit the file.
        -->
 <resources>
-  <string-array name="round" username="flx &lt;f+translation@ub0r.de&gt;">
-    <item>0</item>
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-  </string-array>
-  <string-array name="round_">
-    <item>nicht runden</item>
-    <item>5min</item>
-    <item>10min</item>
-    <item>15min</item>
-    <item>30min</item>
-    <item>60min</item>
-  </string-array>
+  <string name="format_date" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="dd.MM.">dd.MM.</string>
+  <string name="format_time" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="kk:mm">kk:mm</string>
 </resources>
