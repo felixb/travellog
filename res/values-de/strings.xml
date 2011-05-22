@@ -60,6 +60,9 @@
   <string name="mail__" formatted="false">Eine Mail Adresse an die der Export geschickt wird</string>
   <string name="for_" formatted="false">für</string>
   <string name="round_" formatted="false">Zeit runden</string>
+  <string name="logtypes_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Log types">Logtypen</string>
+  <string name="logtypes_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeit-, Reise und Pausetypen.</string>
+  <string name="add_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Add">Hinzufügen</string>
   <string-array name="state">
     <item>Nichts</item>
     <item>Pause</item>
@@ -76,6 +79,10 @@
   </string-array>
   <string-array name="action_group" username="flx &lt;f+translation@ub0r.de&gt;">
     <item>Datum ändern</item>
+    <item>Löschen</item>
+  </string-array>
+  <string-array name="action_logtype" username="flx &lt;f+translator@ub0r.de&gt;">
+    <item>Umnennen</item>
     <item>Löschen</item>
   </string-array>
   <string-array name="themes">
