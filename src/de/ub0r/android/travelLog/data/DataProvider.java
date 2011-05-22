@@ -443,10 +443,26 @@ public final class DataProvider extends ContentProvider {
 		public static final String LONGITUDE = "_long";
 		/** Radius. */
 		public static final String RADIUS = "_rad";
+		/** Type's id. */
+		public static final String TYPE_ID = "_type_id";
+		/** Type's name. */
+		public static final String TYPE_NAME = "_type_name";
+		/** Type's type. */
+		public static final String TYPE_TYPE = "_type_type";
+
+		/** Joined {@link Cells} with {@link Logtypes}. */
+		private static final String JOIN_LOGTYPES = Cells.TABLE
+				+ " LEFT OUTER JOIN " + Logtypes.TABLE + " ON (" + Cells.TABLE
+				+ "." + Cells.TYPE + " = " + Logtypes.TABLE + "." + Logtypes.ID
+				+ ")";
 
 		/** Projection used for query. */
 		public static final String[] PROJECTION = new String[] { // .
-		ID, TYPE, SEEN_FIRST, SEEN_LAST, LATITUDE, LONGITUDE, RADIUS };
+		TABLE + "." + ID, TYPE, SEEN_FIRST, SEEN_LAST, LATITUDE, LONGITUDE,
+				RADIUS, Logtypes.TABLE + "." + Logtypes.ID + " AS " + TYPE_ID,
+				Logtypes.TABLE + "." + Logtypes.NAME + " AS " + TYPE_NAME,
+				Logtypes.TABLE + "." + Logtypes.TIME_TYPE // .
+						+ " AS " + TYPE_TYPE };
 
 		/** Content {@link Uri}. */
 		public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -801,10 +817,14 @@ public final class DataProvider extends ContentProvider {
 			qb.setProjectionMap(Logtypes.PROJECTION_MAP);
 			break;
 		case ID_CELLID:
-			qb.appendWhere(Cells.ID + "=" + ContentUris.parseId(uri));
+			c = db.query(Cells.JOIN_LOGTYPES, projection, DbUtils.sqlAnd(
+					selection, Cells.TABLE + "." + Cells.ID + " = "
+							+ ContentUris.parseId(uri)), selectionArgs,
+					groupBy, null, orderBy);
+			break;
 		case ID_CELLS:
-			qb.setTables(Cells.TABLE);
-			qb.setProjectionMap(Cells.PROJECTION_MAP);
+			c = db.query(Cells.JOIN_LOGTYPES, projection, selection,
+					selectionArgs, groupBy, null, orderBy);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown Uri " + uri);
