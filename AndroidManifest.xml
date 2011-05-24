@@ -19,8 +19,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="de.ub0r.android.travelLog" android:versionCode="181"
 	android:versionName="2.0beta1" android:installLocation="auto">
-	<application name=".TravelLog" android:icon="@drawable/icon"
-		android:label="@string/app_name" android:hardwareAccelerated="true">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:hardwareAccelerated="true">
 		<activity android:name=".ui.Logs" android:label="@string/app_name"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize">
@@ -41,6 +41,13 @@
 		<activity android:name="de.ub0r.android.lib.DonationHelper"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
+		<receiver android:name=".data.LocationChecker">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.HOME" />
+			</intent-filter>
+		</receiver>
 		<activity android:name="de.ub0r.android.lib.Changelog"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
@@ -64,10 +71,13 @@
 		android:required="false" />
 	<uses-feature android:name="android.hardware.location"
 		android:required="false" />
+		
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 	<!-- AdMob SDK permissions -->
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
