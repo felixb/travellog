@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!--
-		Copyright (C) 2010 Felix Bechstein
+		Copyright (C) 2010-2011 Felix Bechstein
 	-->
 	<!--
 		This file is part of TravelLog. This program is free software; you can
@@ -59,6 +59,8 @@
 	<string name="logtypes_">Log types</string>
 	<string name="logtypes_hint">Define your own Work, Travel or Pause types.</string>
 	<string name="add_">Add</string>
+	<string name="update_interval_">Update interval</string>
+	<string name="update_interval_hint">Shorter period will use more battery.</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>
@@ -80,10 +82,18 @@
 	<string-array name="action_logtype">
 		<item>Rename</item>
 		<item>Delete</item>
-	</string-array>
-	
+	</string-array>	
 	<string-array name="themes">
 		<item>Black</item>
 		<item>Light</item>
+	</string-array>
+	<string-array name="update_interval">
+		<item>Manually only</item>
+		<item>5 minutes</item>
+		<item>10 minutes</item>
+		<item>15 minutes</item>
+		<item>30 minutes</item>
+		<item>One hour</item>
+		<item>Two hours</item>
 	</string-array>
 </resources>

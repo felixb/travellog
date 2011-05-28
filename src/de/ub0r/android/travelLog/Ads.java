@@ -21,6 +21,9 @@ package de.ub0r.android.travelLog;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.view.View;
 import android.webkit.WebViewDatabase;
@@ -106,6 +109,13 @@ public final class Ads {
 		final AdRequest ar = new AdRequest();
 		if (keywords != null) {
 			ar.setKeywords(keywords);
+			final LocationManager lm = (LocationManager) activity
+					.getSystemService(Context.LOCATION_SERVICE);
+			final Location currentLocation = lm
+					.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			if (currentLocation != null) {
+				ar.setLocation(currentLocation);
+			}
 		}
 
 		adv.setAdListener(new AdListener() {

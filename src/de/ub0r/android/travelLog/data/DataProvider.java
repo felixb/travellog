@@ -39,11 +39,16 @@ import android.text.TextUtils;
 import de.ub0r.android.lib.DbUtils;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.travelLog.R;
+import de.ub0r.android.travelLog.ui.Preferences;
 
 /**
  * @author flx
  */
 public final class DataProvider extends ContentProvider {
+	static {
+		Log.init("TravelLog");
+	}
+
 	/** Tag for output. */
 	private static final String TAG = "dp";
 
@@ -146,6 +151,9 @@ public final class DataProvider extends ContentProvider {
 	public static final class Logs {
 		/** Table name. */
 		static final String TABLE = "logs";
+
+		/** Milliseconds per minute. */
+		private static final long MILLIS_A_MINUTE = 60000;
 
 		/** {@link HashMap} for projection. */
 		private static final HashMap<String, String> PROJECTION_MAP;
@@ -324,6 +332,77 @@ public final class DataProvider extends ContentProvider {
 			values.put(Logs.FROM_M, cal.get(Calendar.MONTH));
 			values.put(Logs.FROM_W, cal.get(Calendar.WEEK_OF_YEAR));
 			values.put(Logs.FROM_D, cal.get(Calendar.DAY_OF_YEAR));
+		}
+
+		/**
+		 * Close open {@link Logs}.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 * @param date
+		 *            date for TO.
+		 */
+		public static void closeOpen(final Context context, final long date) {
+			long d = date;
+			if (date <= 0L) {
+				d = System.currentTimeMillis();
+			}
+			final ContentValues values = new ContentValues(1);
+			values.put(DataProvider.Logs.TO, roundTime(context, d));
+			context.getContentResolver().update(
+					DataProvider.Logs.CONTENT_URI_OPEN, values, null, null);
+		}
+
+		/**
+		 * Open new {@link Logs}.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 * @param date
+		 *            date for FROM.
+		 * @param type
+		 *            type
+		 */
+		public static void openNew(final Context context, final long date,
+				final int type) {
+			long d = date;
+			if (date <= 0L) {
+				d = System.currentTimeMillis();
+			}
+			final ContentValues values = new ContentValues();
+			values.put(DataProvider.Logs.FROM, roundTime(context, d));
+			values.put(DataProvider.Logs.TYPE, type);
+			context.getContentResolver().insert(DataProvider.Logs.CONTENT_URI,
+					values);
+		}
+
+		/**
+		 * Round time as set in preferences.
+		 * 
+		 * @param context
+		 *            {@link Context}
+		 * @param time
+		 *            unrounded time
+		 * @return rounded time
+		 */
+		private static long roundTime(final Context context, final long time) {
+			final int roundTo = Preferences.getRound(context);
+			if (roundTo == 0) {
+				return time;
+			}
+			long m = time / MILLIS_A_MINUTE;
+			final Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(m * MILLIS_A_MINUTE);
+			m = c.get(Calendar.MINUTE);
+			final int r = (int) (m % roundTo);
+			if (r != 0) {
+				if (r >= roundTo / 2) {
+					c.add(Calendar.MINUTE, -r + roundTo);
+				} else {
+					c.add(Calendar.MINUTE, -r);
+				}
+			}
+			return c.getTimeInMillis();
 		}
 	}
 

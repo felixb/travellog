@@ -16,6 +16,8 @@ import de.ub0r.android.travelLog.R;
 public class Preferences extends PreferenceActivity {
 	/** Preference's name: hide ads. */
 	static final String PREFS_HIDEADS = "hideads";
+	/** Preference's name: update interval. */
+	public static final String PREFS_UPDATE_INTERVAL = "update_interval";
 	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
 	/** Preference's name: theme. */

@@ -52,6 +52,10 @@ import de.ub0r.android.travelLog.data.DataProvider;
  */
 public final class Logs extends ExpandableListActivity implements
 		OnClickListener {
+	static {
+		Log.init("TravelLog");
+	}
+
 	/** Tag for output. */
 	private static final String TAG = "Logs";
 
@@ -232,10 +236,10 @@ public final class Logs extends ExpandableListActivity implements
 		 */
 		@Override
 		protected Cursor getChildrenCursor(final Cursor groupCursor) {
-			final int idFromY = groupCursor
-					.getColumnIndex(DataProvider.Logs.FROM_Y);
-			final int idFromM = groupCursor
-					.getColumnIndex(DataProvider.Logs.FROM_M);
+			// final int idFromY = groupCursor
+			// .getColumnIndex(DataProvider.Logs.FROM_Y);
+			// final int idFromM = groupCursor
+			// .getColumnIndex(DataProvider.Logs.FROM_M);
 			final int idFromD = groupCursor
 					.getColumnIndex(DataProvider.Logs.FROM_D);
 			return this.cr.query(DataProvider.Logs.CONTENT_URI,
@@ -296,9 +300,9 @@ public final class Logs extends ExpandableListActivity implements
 	private static final int ACTION_CHILD_DELETE = 5;
 
 	/** Action: change date. */
-	private static final int ACTION_GROUP_CHG_DATE = 0;
+	// private static final int ACTION_GROUP_CHG_DATE = 0;
 	/** Action: delete. */
-	private static final int ACTION_GROUP_DELETE = 4;
+	// private static final int ACTION_GROUP_DELETE = 4;
 
 	/** Preference's name: hide ads. */
 	static final String PREFS_HIDEADS = "hideads";
@@ -312,17 +316,11 @@ public final class Logs extends ExpandableListActivity implements
 	/** DateFormat: am/pm. */
 	private static boolean formatAmPm = false;
 
-	/** Milliseconds per minute. */
-	private static final long MILLIS_A_MINUTE = 60000;
-
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
 	/** Display ads? */
 	private boolean prefsNoAds;
-
-	/** Round time to this. */
-	private int prefsRound = 0;
 
 	/**
 	 * {@inheritDoc}
@@ -425,7 +423,6 @@ public final class Logs extends ExpandableListActivity implements
 	protected void onResume() {
 		super.onResume();
 		Utils.setLocale(this);
-		this.prefsRound = Preferences.getRound(this);
 		if (!this.prefsNoAds) {
 			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
 		}
@@ -597,73 +594,6 @@ public final class Logs extends ExpandableListActivity implements
 	}
 
 	/**
-	 * Round time as set in preferences.
-	 * 
-	 * @param time
-	 *            unrounded time
-	 * @return rounded time
-	 */
-	private long roundTime(final long time) {
-		final int roundTo = this.prefsRound;
-		if (roundTo == 0) {
-			return time;
-		}
-		long m = time / MILLIS_A_MINUTE;
-		final Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(m * MILLIS_A_MINUTE);
-		m = c.get(Calendar.MINUTE);
-		final int r = (int) (m % roundTo);
-		if (r != 0) {
-			if (r >= roundTo / 2) {
-				c.add(Calendar.MINUTE, -r + roundTo);
-			} else {
-				c.add(Calendar.MINUTE, -r);
-			}
-		}
-		return c.getTimeInMillis();
-	}
-
-	/**
-	 * Close open {@link de.ub0r.android.travelLog.data.DataProvider.Logs}.
-	 * 
-	 * @param cr
-	 *            {@link ContentResolver}
-	 * @param date
-	 *            date for TO.
-	 */
-	private void closeOpen(final ContentResolver cr, final long date) {
-		long d = date;
-		if (date <= 0L) {
-			d = System.currentTimeMillis();
-		}
-		final ContentValues values = new ContentValues(1);
-		values.put(DataProvider.Logs.TO, this.roundTime(d));
-		cr.update(DataProvider.Logs.CONTENT_URI_OPEN, values, null, null);
-	}
-
-	/**
-	 * Open new {@link de.ub0r.android.travelLog.data.DataProvider.Logs}.
-	 * 
-	 * @param cr
-	 *            {@link ContentResolver}
-	 * @param date
-	 *            date for FROM.
-	 * @param type
-	 *            type
-	 */
-	private void openNew(final ContentResolver cr, final long date,
-			final int type) {
-		long d = date;
-		if (date <= 0L) {
-			d = System.currentTimeMillis();
-		}
-		final ContentValues values = new ContentValues();
-		values.put(DataProvider.Logs.FROM, this.roundTime(d));
-		values.put(DataProvider.Logs.TYPE, type);
-		cr.insert(DataProvider.Logs.CONTENT_URI, values);
-	}
-
-	/**
 	 * Change state.
 	 * 
 	 * @param logTypeType
@@ -742,9 +672,9 @@ public final class Logs extends ExpandableListActivity implements
 		Log.d(TAG, "changeState(" + logTypeType + "," + logTypeId + ")");
 		final ContentResolver cr = this.getContentResolver();
 		if (!btnOnly) { // change state of logs
-			this.closeOpen(cr, 0L);
+			DataProvider.Logs.closeOpen(this, 0L);
 			if (logTypeType > 0) {
-				this.openNew(cr, 0L, logTypeId);
+				DataProvider.Logs.openNew(this, 0L, logTypeId);
 			}
 		}
 
