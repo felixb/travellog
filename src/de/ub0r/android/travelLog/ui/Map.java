@@ -18,6 +18,7 @@
  */
 package de.ub0r.android.travelLog.ui;
 
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -31,6 +32,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,11 +78,11 @@ public final class Map extends MapActivity {
 	 */
 	private static class CellOverlay extends ItemizedOverlay<OverlayItem> {
 		/** Transparency for fill. */
-		private final int TRANS_FILL = 0x80;
+		private static final int TRANS_FILL = 0x80;
 		/** Transparency for stroke. */
-		private final int TRANS_STROKE = 0xD0;
+		private static final int TRANS_STROKE = 0xD0;
 		/** Color for circles. */
-		private final int[][] COLOR = new int[][] {
+		private static final int[][] COLOR = new int[][] {
 				new int[] { 0xFF, 0xFF, 0xFF }, // nothing
 				new int[] { 0x00, 0xFF, 0x00 }, // pause
 				new int[] { 0x00, 0x00, 0xFF }, // travel
@@ -93,8 +95,8 @@ public final class Map extends MapActivity {
 		private final Context ctx;
 
 		/** Column ids. */
-		private final int idId, idType, idTypeName, idTypeType, idLat, idLong,
-				idRad, idSeenFirst, idSeenLast;
+		private final int idId, idTypeName, idTypeType, idLat, idLong, idRad,
+				idSeenFirst, idSeenLast;
 
 		/**
 		 * Get the overlay.
@@ -111,7 +113,6 @@ public final class Map extends MapActivity {
 					DataProvider.Cells.PROJECTION, null, null, null);
 
 			this.idId = this.cursor.getColumnIndex(DataProvider.Cells.ID);
-			this.idType = this.cursor.getColumnIndex(DataProvider.Cells.TYPE);
 			this.idTypeName = this.cursor
 					.getColumnIndex(DataProvider.Cells.TYPE_NAME);
 			this.idTypeType = this.cursor
@@ -240,6 +241,7 @@ public final class Map extends MapActivity {
 								type = (int) sp.getSelectedItemId();
 							}
 							CellOverlay.this.add(p, type, radius);
+							mapView.invalidate();
 						}
 					});
 			b.setNegativeButton(android.R.string.cancel, null);
@@ -256,16 +258,30 @@ public final class Map extends MapActivity {
 			if (!this.cursor.moveToPosition(item)) {
 				return super.onTap(item);
 			}
+			java.text.DateFormat dFormat = DateFormat.getDateFormat(this.ctx);
+			java.text.DateFormat tFormat = DateFormat.getTimeFormat(this.ctx);
 			AlertDialog.Builder b = new AlertDialog.Builder(this.ctx);
 			b.setTitle(R.string.cell_);
 			LayoutInflater inflater = LayoutInflater.from(this.ctx);
 			View v = inflater.inflate(R.layout.map_item_show, null);
+			String t = this.cursor.getString(this.idTypeName);
+			if (t == null) {
+				t = this.ctx.getString(R.string.nulltype_);
+			}
 			((TextView) v.findViewById(R.id.type)).setText(this.ctx
 					.getString(R.string.type_)
-					+ " " + this.cursor.getString(this.idTypeName));
+					+ " " + t);
 			((TextView) v.findViewById(R.id.radius)).setText(this.ctx
 					.getString(R.string.radius_)
 					+ " " + this.cursor.getString(this.idRad));
+			Date d = new Date(this.cursor.getLong(this.idSeenFirst));
+			((TextView) v.findViewById(R.id.first_seen)).setText(this.ctx
+					.getString(R.string.first_seen_)
+					+ " " + dFormat.format(d) + " " + tFormat.format(d));
+			d = new Date(this.cursor.getLong(this.idSeenLast));
+			((TextView) v.findViewById(R.id.last_seen)).setText(this.ctx
+					.getString(R.string.last_seen_)
+					+ " " + dFormat.format(d) + " " + tFormat.format(d));
 			b.setView(v);
 			b.setCancelable(true);
 			b.setPositiveButton(android.R.string.ok, null);
@@ -313,13 +329,17 @@ public final class Map extends MapActivity {
 					// paint circles
 					Paint paint;
 					paint = new Paint();
-					paint.setARGB(this.TRANS_FILL, this.COLOR[type][0],
-							this.COLOR[type][1], this.COLOR[type][2]);
+					paint.setARGB(CellOverlay.TRANS_FILL,
+							CellOverlay.COLOR[type][0],
+							CellOverlay.COLOR[type][1],
+							CellOverlay.COLOR[type][2]);
 					paint.setAntiAlias(true);
 					paint.setStyle(Paint.Style.FILL);
 					canvas.drawCircle(center.x, center.y, radius, paint);
-					paint.setARGB(this.TRANS_STROKE, this.COLOR[type][0],
-							this.COLOR[type][1], this.COLOR[type][2]);
+					paint.setARGB(CellOverlay.TRANS_STROKE,
+							CellOverlay.COLOR[type][0],
+							CellOverlay.COLOR[type][1],
+							CellOverlay.COLOR[type][2]);
 					paint.setStyle(Paint.Style.STROKE);
 					canvas.drawCircle(center.x, center.y, radius, paint);
 				} while (this.cursor.moveToNext());
@@ -333,6 +353,8 @@ public final class Map extends MapActivity {
 	/** Default zoom level. */
 	private static final int DEFAULT_ZOOM = 12;
 
+	/** {@link MapView}. */
+	private MapView mv;
 	/** Cell overlay. */
 	private CellOverlay cellOverlay;
 	/** {@link MyLocationOverlay}. */
@@ -351,26 +373,26 @@ public final class Map extends MapActivity {
 		this.setTitle(this.getString(R.string.settings) + " > "
 				+ this.getString(R.string.map_));
 		this.setContentView(R.layout.map);
-		MapView mv = (MapView) this.findViewById(R.id.mapview);
-		mv.setBuiltInZoomControls(true);
-		final MapController mc = mv.getController();
+		this.mv = (MapView) this.findViewById(R.id.mapview);
+		this.mv.setBuiltInZoomControls(true);
+		final MapController mc = this.mv.getController();
 		mc.setZoom(DEFAULT_ZOOM);
 
-		List<Overlay> overlays = mv.getOverlays();
+		List<Overlay> overlays = this.mv.getOverlays();
 
 		this.cellOverlay = new CellOverlay(this);
 
 		Log.d(TAG, "autoLogOverlay.size: " + this.cellOverlay.size());
 		overlays.add(this.cellOverlay);
 
-		this.myLocationOverly = new MyLocationOverlay(this, mv);
+		this.myLocationOverly = new MyLocationOverlay(this, this.mv);
 		this.myLocationOverly.runOnFirstFix(new Runnable() {
 			public void run() {
 				mc.animateTo(Map.this.myLocationOverly.getMyLocation());
 			}
 		});
 		overlays.add(this.myLocationOverly);
-		mv.invalidate();
+		this.mv.invalidate();
 	}
 
 	/**

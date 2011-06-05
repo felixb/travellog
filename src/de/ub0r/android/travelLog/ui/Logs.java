@@ -44,6 +44,7 @@ import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.Ads;
 import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
+import de.ub0r.android.travelLog.data.LocationChecker;
 
 /**
  * Main Activity.
@@ -85,6 +86,8 @@ public final class Logs extends ExpandableListActivity implements
 		AD_KEYWORDS.add("business");
 		AD_KEYWORDS.add("travel");
 		AD_KEYWORDS.add("trip");
+		AD_KEYWORDS.add("accounting");
+		AD_KEYWORDS.add("time");
 	}
 
 	/**
@@ -311,11 +314,6 @@ public final class Logs extends ExpandableListActivity implements
 	/** Preference's name: flip export. */
 	private static final String PREFS_FLIP_EXPORT = "export_flip";
 
-	/** DateFormat: time. */
-	private static String formatTime = "kk:mm";
-	/** DateFormat: am/pm. */
-	private static boolean formatAmPm = false;
-
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
@@ -328,14 +326,9 @@ public final class Logs extends ExpandableListActivity implements
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.init("TravelLog"); // FIXME
 		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.logs);
-
-		// FORMAT_DATE = this.getString(R.string.format_date);
-		formatTime = this.getString(R.string.format_time);
-		formatAmPm = !formatTime.endsWith("aa");
 
 		this.queryHandler = new BackgroundQueryHandler(this
 				.getContentResolver());
@@ -351,7 +344,6 @@ public final class Logs extends ExpandableListActivity implements
 
 		Changelog.showChangelog(this);
 		this.changeState(0, 0, true);
-		this.requery();
 
 		this.prefsNoAds = DonationHelper.hideAds(this);
 	}
@@ -423,6 +415,13 @@ public final class Logs extends ExpandableListActivity implements
 	protected void onResume() {
 		super.onResume();
 		Utils.setLocale(this);
+
+		// update logs from cells
+		this.sendBroadcast(new Intent(this, LocationChecker.class));
+
+		// refresh query
+		this.requery();
+
 		if (!this.prefsNoAds) {
 			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
 		}
@@ -672,9 +671,9 @@ public final class Logs extends ExpandableListActivity implements
 		Log.d(TAG, "changeState(" + logTypeType + "," + logTypeId + ")");
 		final ContentResolver cr = this.getContentResolver();
 		if (!btnOnly) { // change state of logs
-			DataProvider.Logs.closeOpen(this, 0L);
+			DataProvider.Logs.closeOpen(this, 0L, false);
 			if (logTypeType > 0) {
-				DataProvider.Logs.openNew(this, 0L, logTypeId);
+				DataProvider.Logs.openNew(this, 0L, logTypeId, false);
 			}
 		}
 
@@ -870,7 +869,7 @@ public final class Logs extends ExpandableListActivity implements
 							Logs.this.requery();
 						}
 					}, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
-					formatAmPm);
+					DateFormat.is24HourFormat(Logs.this));
 			String[] res = this.getResources().getStringArray(
 					R.array.action_child);
 			if (field.equals(DataProvider.Logs.FROM)) {

@@ -341,16 +341,23 @@ public final class DataProvider extends ContentProvider {
 		 *            {@link Context}
 		 * @param date
 		 *            date for TO.
+		 * @param byauto
+		 *            if true, only logs opened by automation are closed
 		 */
-		public static void closeOpen(final Context context, final long date) {
+		public static void closeOpen(final Context context, final long date,
+				final boolean byauto) {
 			long d = date;
 			if (date <= 0L) {
 				d = System.currentTimeMillis();
 			}
 			final ContentValues values = new ContentValues(1);
-			values.put(DataProvider.Logs.TO, roundTime(context, d));
+			values.put(TO, roundTime(context, d));
+			String where = null;
+			if (byauto) {
+				where = STARTBYAUTO + " = 1";
+			}
 			context.getContentResolver().update(
-					DataProvider.Logs.CONTENT_URI_OPEN, values, null, null);
+					DataProvider.Logs.CONTENT_URI_OPEN, values, where, null);
 		}
 
 		/**
@@ -362,16 +369,19 @@ public final class DataProvider extends ContentProvider {
 		 *            date for FROM.
 		 * @param type
 		 *            type
+		 * @param byauto
+		 *            opened by automation
 		 */
 		public static void openNew(final Context context, final long date,
-				final int type) {
+				final int type, final boolean byauto) {
 			long d = date;
 			if (date <= 0L) {
 				d = System.currentTimeMillis();
 			}
 			final ContentValues values = new ContentValues();
-			values.put(DataProvider.Logs.FROM, roundTime(context, d));
-			values.put(DataProvider.Logs.TYPE, type);
+			values.put(FROM, roundTime(context, d));
+			values.put(TYPE, type);
+			values.put(STARTBYAUTO, byauto);
 			context.getContentResolver().insert(DataProvider.Logs.CONTENT_URI,
 					values);
 		}

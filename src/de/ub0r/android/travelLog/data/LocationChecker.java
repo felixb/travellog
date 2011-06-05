@@ -23,6 +23,9 @@ import java.util.Date;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -50,13 +53,14 @@ public final class LocationChecker extends BroadcastReceiver {
 	private static final String TAG = "lc";
 
 	/** Time between to location checks. */
-	static final long DELAY = 60; // 30min
+	private static final long DELAY = 60; // 30min
 	/** Factor for time between location checks. */
-	static final long DELAY_FACTOR = 60000;
+	private static final long DELAY_FACTOR = 60000;
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		Log.i(TAG, "onReceive(" + intent + ")");
+
 		// get wakelock
 		final PowerManager pm = (PowerManager) context
 				.getSystemService(Context.POWER_SERVICE);
@@ -64,8 +68,14 @@ public final class LocationChecker extends BroadcastReceiver {
 				PowerManager.PARTIAL_WAKE_LOCK, TAG);
 		wakelock.acquire();
 		Log.i(TAG, "got wakelock");
-		// do actual work
-		this.checkLocation(context);
+
+		final String a = intent.getAction();
+		Log.d(TAG, "action: " + a);
+		if (a == null || !a.equals(Intent.ACTION_BOOT_COMPLETED)) {
+			// do actual work
+			this.checkLocation(context);
+		}
+
 		// schedule next run
 		schedNext(context);
 		// release wakelock
@@ -88,10 +98,12 @@ public final class LocationChecker extends BroadcastReceiver {
 			Log.i(TAG, "no current location known");
 			return;
 		}
-		final Cursor cursor = context.getContentResolver().query(
-				DataProvider.Cells.CONTENT_URI, DataProvider.Cells.PROJECTION,
-				null, null, null);
+		boolean foundcell = false;
+		final ContentResolver cr = context.getContentResolver();
+		final Cursor cursor = cr.query(DataProvider.Cells.CONTENT_URI,
+				DataProvider.Cells.PROJECTION, null, null, null);
 		if (cursor.moveToFirst()) {
+			final int idId = cursor.getColumnIndex(DataProvider.Cells.ID);
 			final int idLat = cursor
 					.getColumnIndex(DataProvider.Cells.LATITUDE);
 			final int idLong = cursor
@@ -99,35 +111,65 @@ public final class LocationChecker extends BroadcastReceiver {
 			final int idType = cursor.getColumnIndex(DataProvider.Cells.TYPE);
 			final int idRadius = cursor
 					.getColumnIndex(DataProvider.Cells.RADIUS);
+			final int idFirstSeen = cursor
+					.getColumnIndex(DataProvider.Cells.SEEN_FIRST);
 			do {
 				final Location l = new Location(
 						LocationManager.NETWORK_PROVIDER);
-				l.setLatitude(cursor.getInt(idLat) / 1E6);
-				l.setLongitude(cursor.getInt(idLong) / 1E6);
+				final int cLat = cursor.getInt(idLat);
+				final int cLong = cursor.getInt(idLong);
+				l.setLatitude(cLat / 1E6);
+				l.setLongitude(cLong / 1E6);
+				// save last location
+				PreferenceManager.getDefaultSharedPreferences(context).edit()
+						.putLong(Preferences.PREFS_LAST_LATITUDE, cLat)
+						.putLong(Preferences.PREFS_LAST_LONGITUDE, cLong)
+						.commit();
 				if (currentLocation.distanceTo(l) <= cursor.getInt(idRadius)) {
+					final long id = cursor.getLong(idId);
 					final int t = cursor.getInt(idType);
+					Log.i(TAG, "loc in cell: " + id + " / type: " + t);
 					if (t == 0) {
-						DataProvider.Logs.closeOpen(context, 0L);
+						DataProvider.Logs.closeOpen(context, 0L, false);
 					} else {
-						final Cursor c = context.getContentResolver().query(
+						final Cursor c = cr.query(
 								DataProvider.Logs.CONTENT_URI_OPEN,
 								DataProvider.Logs.PROJECTION,
 								DataProvider.Logs.TYPE + " = ?",
 								new String[] { String.valueOf(t) }, null);
 						final boolean openNew = c.getCount() == 0;
-						if (!cursor.isClosed()) {
-							cursor.close();
+						if (!c.isClosed()) {
+							c.close();
 						}
 						if (openNew) { // skip if already running with same type
-							DataProvider.Logs.openNew(context, 0L, t);
+							DataProvider.Logs.closeOpen(context, 0L, false);
+							DataProvider.Logs.openNew(context, 0L, t, true);
+						} else {
+							Log.i(TAG, "skip open new log with same type");
 						}
 					}
+					ContentValues values = new ContentValues(2);
+					values.put(DataProvider.Cells.SEEN_LAST, System
+							.currentTimeMillis());
+					if (cursor.getLong(idFirstSeen) <= 0L) {
+						values.put(DataProvider.Cells.SEEN_FIRST, System
+								.currentTimeMillis());
+					}
+					cr.update(ContentUris.withAppendedId(
+							DataProvider.Cells.CONTENT_URI, id), values, null,
+							null);
+					foundcell = true;
 					break;
 				}
 			} while (cursor.moveToNext());
 		}
 		if (!cursor.isClosed()) {
 			cursor.close();
+		}
+		if (!foundcell) {
+			// close logs opened by automation
+			Log.d(TAG, "close all autoopend logs");
+			DataProvider.Logs.closeOpen(context, 0L, true);
 		}
 	}
 
@@ -137,7 +179,7 @@ public final class LocationChecker extends BroadcastReceiver {
 	 * @param context
 	 *            {@link Context}
 	 */
-	public static void schedNext(final Context context) {
+	private static void schedNext(final Context context) {
 		final Intent i = new Intent(context, LocationChecker.class);
 		final PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		final long l = Utils.parseLong(PreferenceManager

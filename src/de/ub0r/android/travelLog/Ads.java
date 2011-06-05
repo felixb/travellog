@@ -22,9 +22,11 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.webkit.WebViewDatabase;
 import android.widget.LinearLayout;
@@ -37,6 +39,8 @@ import com.google.ads.AdView;
 import com.google.ads.AdRequest.ErrorCode;
 
 import de.ub0r.android.lib.Log;
+import de.ub0r.android.lib.Utils;
+import de.ub0r.android.travelLog.ui.Preferences;
 
 /**
  * Class managing ads.
@@ -107,6 +111,21 @@ public final class Ads {
 		}
 
 		final AdRequest ar = new AdRequest();
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(activity);
+		if (Utils.parseLong(p
+				.getString(Preferences.PREFS_UPDATE_INTERVAL, null), 0L) > 0L) {
+			final long cLat = p.getLong(Preferences.PREFS_LAST_LATITUDE, 0L);
+			final long cLong = p.getLong(Preferences.PREFS_LAST_LATITUDE, 0L);
+			if (cLat != 0L || cLong != 0L) {
+				final Location l = new Location(
+						LocationManager.NETWORK_PROVIDER);
+				Log.d(TAG, "set location to ar: " + cLat + "," + cLong);
+				l.setLatitude(cLat / 1E6);
+				l.setLongitude(cLong / 1E6);
+				ar.setLocation(l);
+			}
+		}
 		if (keywords != null) {
 			ar.setKeywords(keywords);
 			final LocationManager lm = (LocationManager) activity
