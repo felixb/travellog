@@ -36,7 +36,6 @@
   <string name="settings" formatted="false">Einstellungen</string>
   <string name="about_" formatted="false">Über TravelLog</string>
   <string name="more_" formatted="false">Mehr Apps..</string>
-  <string name="about" formatted="false">TravelLog ist eine ein-Klick-App, mit der du deine Geschäftsreisen loggen kannst um sie später einfacher abzurechnen.</string>
   <string name="start_work" formatted="false">Start Arbeit</string>
   <string name="stop_work" formatted="false">Stopp Arbeit</string>
   <string name="start_travel" formatted="false">Start Reise</string>
@@ -63,6 +62,8 @@
   <string name="logtypes_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Log types">Logtypen</string>
   <string name="logtypes_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeit-, Reise und Pausetypen.</string>
   <string name="add_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Add">Hinzufügen</string>
+  <string name="update_interval_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Update interval">Update Intervall</string>
+  <string name="update_interval_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Shorter period will use more battery.">Eine kürzere Periode verbraucht mehr Akku.</string>
   <string-array name="state">
     <item>Nichts</item>
     <item>Pause</item>
@@ -88,5 +89,14 @@
   <string-array name="themes">
     <item>Dunkel</item>
     <item>Hell</item>
+  </string-array>
+  <string-array name="update_interval" username="flx &lt;f+translator@ub0r.de&gt;">
+    <item>Nur manuell</item>
+    <item>5 Minuten</item>
+    <item>10 Minuten</item>
+    <item>15 Minuten</item>
+    <item>30 Minuten</item>
+    <item>Eine Stunde</item>
+    <item>Zwei Stunden</item>
   </string-array>
 </resources>
