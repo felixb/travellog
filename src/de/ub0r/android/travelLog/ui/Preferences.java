@@ -18,6 +18,10 @@ public class Preferences extends PreferenceActivity {
 	static final String PREFS_HIDEADS = "hideads";
 	/** Preference's name: update interval. */
 	public static final String PREFS_UPDATE_INTERVAL = "update_interval";
+	/** Preference's name: last latitude. */
+	public static final String PREFS_LAST_LATITUDE = "last_lat";
+	/** Preference's name: last longitude. */
+	public static final String PREFS_LAST_LONGITUDE = "last_long";
 	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
 	/** Preference's name: theme. */

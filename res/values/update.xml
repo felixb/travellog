@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>HEAD: location based logging</item>
 		<item>v2.0beta1: major reimplement, move all data to database</item>
 		<item>v0.5.3: minor internal changes</item>
 		<item>v0.5.2: minor internal changes</item>

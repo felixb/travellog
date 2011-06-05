@@ -28,6 +28,11 @@
 		<TextView android:id="@+id/radius" android:text="@string/radius_"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+		<TextView android:id="@+id/first_seen" android:text="@string/first_seen_"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
+		<TextView android:id="@+id/last_seen" android:text="@string/last_seen_"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" />
 
 	</LinearLayout>
 </ScrollView>

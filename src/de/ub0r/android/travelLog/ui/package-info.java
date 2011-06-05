@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Felix Bechstein
+ * Copyright (C) 2010-2011 Felix Bechstein
  * 
  * This file is part of TravelLog.
  * 
@@ -20,7 +20,6 @@
 /**
  * This package is holding all GUI stuff from main activity.
  * 
- * @version 3.0
  * @author flx
  */
 package de.ub0r.android.travelLog.ui;
