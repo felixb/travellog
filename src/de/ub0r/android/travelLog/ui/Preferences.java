@@ -14,14 +14,13 @@ import de.ub0r.android.travelLog.R;
  * @author flx
  */
 public class Preferences extends PreferenceActivity {
-	/** Preference's name: hide ads. */
-	static final String PREFS_HIDEADS = "hideads";
 	/** Preference's name: update interval. */
 	public static final String PREFS_UPDATE_INTERVAL = "update_interval";
 	/** Preference's name: last latitude. */
 	public static final String PREFS_LAST_LATITUDE = "last_lat";
 	/** Preference's name: last longitude. */
 	public static final String PREFS_LAST_LONGITUDE = "last_long";
+
 	/** Preference's name: round. */
 	private static final String PREFS_ROUND = "round";
 	/** Preference's name: theme. */
@@ -38,16 +37,6 @@ public class Preferences extends PreferenceActivity {
 	private static final float DEFAULT_TEXTSIZE_GROUP = 16f;
 	/** Default text size. */
 	private static final float DEFAULT_TEXTSIZE_CHILD = 14f;
-
-	/** Milliseconds per minute. */
-	static final long MILLIS_A_MINUTE = 60000;
-
-	/** DateFormat: date. */
-	static String FORMAT_DATE = "dd.MM.";
-	/** DateFormat: time. */
-	static String FORMAT_TIME = "kk:mm";
-	/** DateFormat: am/pm */
-	static boolean FORMAT_AMPM = false;
 
 	/**
 	 * {@inheritDoc}

@@ -86,6 +86,8 @@ public final class Logs extends ExpandableListActivity implements
 		AD_KEYWORDS.add("business");
 		AD_KEYWORDS.add("travel");
 		AD_KEYWORDS.add("trip");
+		AD_KEYWORDS.add("accounting");
+		AD_KEYWORDS.add("time");
 	}
 
 	/**
@@ -312,11 +314,6 @@ public final class Logs extends ExpandableListActivity implements
 	/** Preference's name: flip export. */
 	private static final String PREFS_FLIP_EXPORT = "export_flip";
 
-	/** DateFormat: time. */
-	private static String formatTime = "kk:mm";
-	/** DateFormat: am/pm. */
-	private static boolean formatAmPm = false;
-
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
@@ -332,10 +329,6 @@ public final class Logs extends ExpandableListActivity implements
 		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.logs);
-
-		// FORMAT_DATE = this.getString(R.string.format_date);
-		formatTime = this.getString(R.string.format_time);
-		formatAmPm = !formatTime.endsWith("aa");
 
 		this.queryHandler = new BackgroundQueryHandler(this
 				.getContentResolver());
@@ -876,7 +869,7 @@ public final class Logs extends ExpandableListActivity implements
 							Logs.this.requery();
 						}
 					}, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE),
-					formatAmPm);
+					DateFormat.is24HourFormat(Logs.this));
 			String[] res = this.getResources().getStringArray(
 					R.array.action_child);
 			if (field.equals(DataProvider.Logs.FROM)) {
