@@ -199,8 +199,10 @@ public final class Logs extends ExpandableListActivity implements
 			tv.setTextSize(this.textSizeGroup);
 
 			tv = (TextView) view.findViewById(R.id.time);
-			tv.setText(getTime(time));
-			tv.setTextSize(this.textSizeGroup);
+			if (tv != null) {
+				tv.setText(getTime(time));
+				tv.setTextSize(this.textSizeGroup);
+			}
 
 			tv = (TextView) view.findViewById(R.id.work);
 			if (sumWork > 0L) {

@@ -51,11 +51,6 @@
 		<activity android:name="de.ub0r.android.lib.Changelog"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
-		<receiver android:name="de.ub0r.android.lib.DonationReceiver">
-			<intent-filter>
-				<action android:name="de.ub0r.android.donator.REGISTERED" />
-			</intent-filter>
-		</receiver>
 		<activity android:name="com.google.ads.AdActivity"
 			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
 			android:configChanges="keyboard|keyboardHidden|orientation" />
