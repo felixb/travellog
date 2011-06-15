@@ -23,15 +23,7 @@
 	<string name="license">GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt</string>
 	<string name="source_">Sourcescode:</string>
 	<string name="website_">Website:</string>
-	<string name="faq_">FAQ</string>
-	<string name="faq_hint">Some tips and tricks, how to set up this app.</string>
-	<string name="feedback_">Feedback</string>
-	<string name="feedback_hint">Report bugs, request features ...</string>
-	<string name="twitter_hint">Follow me on twitter.\nGet update notifications etc.</string>
 	<string name="send_">Send</string>
-	<string name="settings">Preferences</string>
-	<string name="about_">About TravelLog</string>
-	<string name="more_">More Apps..</string>
 	<string name="start_work">Start work</string>
 	<string name="stop_work">Stop work</string>
 	<string name="start_travel">Start travel</string>
@@ -42,24 +34,8 @@
 	<string name="travel">Travel</string>
 	<string name="work">Work</string>
 	<string name="clear_">Clear</string>
-	<string name="export_">Send as mail</string>
-	<string name="export_subject">TravelLog export</string>
-	<string name="export_footer">Check out TravelLog at</string>
-	<string name="export_flip">Flip export upside down</string>
-	<string name="appearance_">Appearance</string>
-	<string name="theme_">Theme</string>
-	<string name="textsize_group">Text size (summary)</string>
-	<string name="textsize_child">Text size (day)</string>
-	<string name="textsize_hint">Text size in pixels; leave empty for default.</string>
-	<string name="mail_">Mail address</string>
-	<string name="mail__">Mail address to export data</string>
 	<string name="for_">for</string>
-	<string name="round_">Round time</string>
-	<string name="logtypes_">Log types</string>
-	<string name="logtypes_hint">Define your own Work, Travel or Pause types.</string>
 	<string name="add_">Add</string>
-	<string name="update_interval_">Update interval</string>
-	<string name="update_interval_hint">Shorter period will use more battery.</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>
@@ -81,18 +57,5 @@
 	<string-array name="action_logtype">
 		<item>Rename</item>
 		<item>Delete</item>
-	</string-array>	
-	<string-array name="themes">
-		<item>Black</item>
-		<item>Light</item>
-	</string-array>
-	<string-array name="update_interval">
-		<item>Manually only</item>
-		<item>5 minutes</item>
-		<item>10 minutes</item>
-		<item>15 minutes</item>
-		<item>30 minutes</item>
-		<item>One hour</item>
-		<item>Two hours</item>
 	</string-array>
 </resources>

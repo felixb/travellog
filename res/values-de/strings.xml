@@ -27,15 +27,7 @@
   <string name="license" formatted="false">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
   <string name="source_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sourcescode:">Sourcescode:</string>
   <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
-  <string name="faq_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="FAQ">FAQ</string>
-  <string name="faq_hint" formatted="false">Ein paar Tipps und Tricks, wie man diese App einstellt.</string>
-  <string name="feedback_" formatted="false">Feedback</string>
-  <string name="feedback_hint" formatted="false">Bugreports, feature requests ...</string>
-  <string name="twitter_hint" formatted="false">Follow auf twitter.\nUpdate Infos etc...</string>
   <string name="send_" formatted="false">Senden</string>
-  <string name="settings" formatted="false">Einstellungen</string>
-  <string name="about_" formatted="false">Über TravelLog</string>
-  <string name="more_" formatted="false">Mehr Apps..</string>
   <string name="start_work" formatted="false">Start Arbeit</string>
   <string name="stop_work" formatted="false">Stopp Arbeit</string>
   <string name="start_travel" formatted="false">Start Reise</string>
@@ -46,24 +38,8 @@
   <string name="travel" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Travel">Reise</string>
   <string name="work" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Work">Arbeit</string>
   <string name="clear_" formatted="false">Alle löschen</string>
-  <string name="export_" formatted="false">Als Mail senden</string>
-  <string name="export_subject" formatted="false">TravelLog Export</string>
-  <string name="export_footer" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Check out TravelLog at">Checkout TravelLog auf</string>
-  <string name="export_flip" formatted="false">Export umdrehen</string>
-  <string name="appearance_" formatted="false">Erscheinung</string>
-  <string name="theme_" formatted="false">Theme</string>
-  <string name="textsize_group" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (summary)">Schriftgrad (Übersicht)</string>
-  <string name="textsize_child" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size (day)">Schriftgrad (Tag)</string>
-  <string name="textsize_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Text size in pixels; leave empty for default.">Schriftgrad in Pixeln; leer lassen für Standard.</string>
-  <string name="mail_" formatted="false">Mail Adresse</string>
-  <string name="mail__" formatted="false">Eine Mail Adresse an die der Export geschickt wird</string>
   <string name="for_" formatted="false">für</string>
-  <string name="round_" formatted="false">Zeit runden</string>
-  <string name="logtypes_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Log types">Logtypen</string>
-  <string name="logtypes_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeit-, Reise und Pausetypen.</string>
   <string name="add_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Add">Hinzufügen</string>
-  <string name="update_interval_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Update interval">Update Intervall</string>
-  <string name="update_interval_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Shorter period will use more battery.">Eine kürzere Periode verbraucht mehr Akku.</string>
   <string-array name="state">
     <item>Nichts</item>
     <item>Pause</item>
@@ -85,18 +61,5 @@
   <string-array name="action_logtype" username="flx &lt;f+translator@ub0r.de&gt;">
     <item>Umnennen</item>
     <item>Löschen</item>
-  </string-array>
-  <string-array name="themes">
-    <item>Dunkel</item>
-    <item>Hell</item>
-  </string-array>
-  <string-array name="update_interval" username="flx &lt;f+translator@ub0r.de&gt;">
-    <item>Nur manuell</item>
-    <item>5 Minuten</item>
-    <item>10 Minuten</item>
-    <item>15 Minuten</item>
-    <item>30 Minuten</item>
-    <item>Eine Stunde</item>
-    <item>Zwei Stunden</item>
   </string-array>
 </resources>

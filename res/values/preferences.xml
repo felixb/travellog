@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		Copyright (C) 2010-2011 Felix Bechstein
+	-->
+	<!--
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
+	-->
+	<!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+	-->
+<resources>
+	<string name="author_">Author:</string>
+	<string name="version_">Version:</string>
+	<string name="license_">License:</string>
+	<string name="license">GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt</string>
+	<string name="source_">Sourcescode:</string>
+	<string name="website_">Website:</string>
+	<string name="send_">Send</string>
+	<string name="mail_">Mail address</string>
+	<string name="mail__">Mail address to export data</string>
+	<string name="export_">Send as mail</string>
+	<string name="export_subject">TravelLog export</string>
+	<string name="export_footer">Check out TravelLog at</string>
+	<string name="export_flip">Flip export upside down</string>
+	<string name="appearance_">Appearance</string>
+	<string name="theme_">Theme</string>
+	<string name="textsize_group">Text size (summary)</string>
+	<string name="textsize_child">Text size (day)</string>
+	<string name="textsize_hint">Text size in pixels; leave empty for default.</string>
+	<string name="round_">Round time</string>
+	<string name="logtypes_">Log types</string>
+	<string name="logtypes_hint">Define your own Work, Travel or Pause types.</string>
+	<string name="update_interval_">Update interval</string>
+	<string name="update_interval_hint">Shorter period will use more battery.</string>
+	<string-array name="themes">
+    <item>Dark</item>
+    <item>Light</item>
+  </string-array>
+	<string-array name="update_interval">
+		<item>Manually only</item>
+		<item>5 minutes</item>
+		<item>10 minutes</item>
+		<item>15 minutes</item>
+		<item>30 minutes</item>
+		<item>One hour</item>
+		<item>Two hours</item>
+	</string-array>
+</resources>
