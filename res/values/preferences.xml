@@ -40,6 +40,20 @@
 	<string name="logtypes_hint">Define your own Work, Travel or Pause types.</string>
 	<string name="update_interval_">Update interval</string>
 	<string name="update_interval_hint">Shorter period will use more battery.</string>
+	<string name="go_home_">Go home!</string>
+	<string name="go_home_hint">Check working time and notify user at certain limits.</string>
+	<string name="count_travel_">Count work and travel</string>
+	<string name="count_travel_hint">Count work and travel time when checking limits.</string>
+	<string name="limit_warn_">Warning</string>
+	<string name="limit_alert_">Alert</string>
+	<string name="limit_hint">Time in hours at which the app should notify</string>
+	<string name="limit_sound_">Sound</string>
+	<string name="limit_sound_hint">Sound to play in warning mode</string>
+	<string name="limit_repetitions_">Repetitions</string>
+	<string name="limit_repetitions_hint">Repetitions for playing the sound; -1 for unlimited repetitions</string>
+	<string name="limit_delay_">Delay</string>
+	<string name="limit_delay_hint">Delay between repetitions in seconds</string>
+	<string name="limit_alert_gt_warn_">Alert hours need to be greater than warning hours!</string>
 	<string-array name="themes">
     <item>Dark</item>
     <item>Light</item>

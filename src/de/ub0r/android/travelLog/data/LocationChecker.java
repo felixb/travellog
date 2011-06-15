@@ -18,9 +18,12 @@
  */
 package de.ub0r.android.travelLog.data;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -28,15 +31,19 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
+import de.ub0r.android.travelLog.R;
+import de.ub0r.android.travelLog.ui.Logs;
 import de.ub0r.android.travelLog.ui.Preferences;
 
 /**
@@ -57,6 +64,13 @@ public final class LocationChecker extends BroadcastReceiver {
 	/** Factor for time between location checks. */
 	private static final long DELAY_FACTOR = 60000;
 
+	/** LED color for notification. */
+	private static final int NOTIFICATION_LED_COLOR = 0xffff0000;
+	/** LED blink on (ms) for notification. */
+	private static final int NOTIFICATION_LED_ON = 500;
+	/** LED blink off (ms) for notification. */
+	private static final int NOTIFICATION_LED_OFF = 2000;
+
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		Log.i(TAG, "onReceive(" + intent + ")");
@@ -74,6 +88,7 @@ public final class LocationChecker extends BroadcastReceiver {
 		if (a == null || !a.equals(Intent.ACTION_BOOT_COMPLETED)) {
 			// do actual work
 			this.checkLocation(context);
+			this.checkWarning(context);
 		}
 
 		// schedule next run
@@ -170,6 +185,119 @@ public final class LocationChecker extends BroadcastReceiver {
 			// close logs opened by automation
 			Log.d(TAG, "close all autoopend logs");
 			DataProvider.Logs.closeOpen(context, 0L, true);
+		}
+	}
+
+	/**
+	 * Check warnings and notify user.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 */
+	private void checkWarning(final Context context) {
+		Log.d(TAG, "checkWarning()");
+		Cursor cursor = context.getContentResolver().query(
+				DataProvider.Logs.CONTENT_URI_OPEN,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		if (!cursor.moveToFirst()) {
+			cursor.close();
+			Log.i(TAG, "no open log");
+			NotificationManager nm = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			Log.d(TAG, "nm.cancelAll()");
+			nm.cancelAll();
+			return; // no open log. no need to notify
+		}
+		cursor.close();
+
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		boolean countTravel = p.getBoolean(Preferences.PREFS_COUNT_TRAVEL,
+				false);
+		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
+				.getString(Preferences.PREFS_LIMIT_WARN_HOURS, null), 0));
+		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
+				.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
+		Log.d(TAG, "countTravel: " + countTravel);
+		Log.d(TAG, "warn: " + warn);
+		Log.d(TAG, "alert: " + alert);
+
+		final Calendar c = Calendar.getInstance();
+		String where = DataProvider.Logs.FROM_D + "=? AND "
+				+ DataProvider.Logs.TYPE_TYPE + "=?";
+		String[] args;
+		if (countTravel) {
+			where += " AND " + DataProvider.Logs.TYPE_TYPE + "=?";
+			args = new String[] { String.valueOf(c.get(Calendar.DAY_OF_YEAR)),
+					String.valueOf(DataProvider.Logtypes.TYPE_WORK),
+					String.valueOf(DataProvider.Logtypes.TYPE_TRAVEL) };
+		} else {
+			args = new String[] { String.valueOf(c.get(Calendar.DAY_OF_YEAR)),
+					String.valueOf(DataProvider.Logtypes.TYPE_WORK) };
+		}
+
+		cursor = context.getContentResolver().query(
+				DataProvider.Logs.CONTENT_URI, DataProvider.Logs.PROJECTION,
+				where, args, null);
+
+		long d = 0;
+		if (cursor.moveToFirst()) {
+			final int idFrom = cursor.getColumnIndex(DataProvider.Logs.FROM);
+			final int idTo = cursor.getColumnIndex(DataProvider.Logs.TO);
+			do {
+				long from = cursor.getLong(idFrom);
+				long to = cursor.getLong(idTo);
+
+				if (to <= 0L) {
+					to = c.getTimeInMillis();
+				}
+				d += to - from;
+				Log.d(TAG, "d: " + d);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+
+		Notification n = null;
+		if (d > warn) {
+			String ticker, title, text;
+			int flags;
+			Uri sound;
+			if (d > alert) {
+				ticker = context.getString(R.string.alert_ticker);
+				title = context.getString(R.string.alert_title);
+				text = context.getString(R.string.alert_text);
+				sound = Uri.parse(p.getString(
+						Preferences.PREFS_LIMIT_ALERT_SOUND, null));
+				flags = Notification.FLAG_NO_CLEAR
+						| Notification.FLAG_ONGOING_EVENT;
+			} else {
+				ticker = context.getString(R.string.warn_ticker);
+				title = context.getString(R.string.warn_title);
+				text = context.getString(R.string.warn_text);
+				sound = Uri.parse(p.getString(
+						Preferences.PREFS_LIMIT_WARN_SOUND, null));
+				flags = Notification.FLAG_AUTO_CANCEL;
+			}
+			n = new Notification(android.R.drawable.stat_notify_error, ticker,
+					System.currentTimeMillis());
+			n.setLatestEventInfo(context, title, text, PendingIntent
+					.getActivity(context, 0, new Intent(context, Logs.class),
+							PendingIntent.FLAG_CANCEL_CURRENT));
+			n.flags = flags;
+			n.sound = sound;
+			n.ledARGB = NOTIFICATION_LED_COLOR;
+			n.ledOnMS = NOTIFICATION_LED_ON;
+			n.ledOffMS = NOTIFICATION_LED_OFF;
+		}
+
+		NotificationManager nm = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (n == null) {
+			Log.d(TAG, "nm.cancelAll()");
+			nm.cancelAll();
+		} else {
+			Log.d(TAG, "nm.notify(0, " + n + ")");
+			nm.notify(0, n);
 		}
 	}
 

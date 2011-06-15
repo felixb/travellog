@@ -36,6 +36,12 @@
 	<string name="clear_">Clear</string>
 	<string name="for_">for</string>
 	<string name="add_">Add</string>
+	<string name="warn_ticker">TravelLog: warning</string>
+	<string name="warn_title">Warning: Working time reached limit!</string>
+	<string name="warn_text">Working time has reached limit!</string>
+	<string name="alert_ticker">TravelLog: ALERT!</string>
+	<string name="alert_title">Alert: Working time reached limit!</string>
+	<string name="alert_text">Working time has reached critical limit!</string>
 	<string-array name="state">
 		<item>Nothing</item>
 		<item>Pause</item>

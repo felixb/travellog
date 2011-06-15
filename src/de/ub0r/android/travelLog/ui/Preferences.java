@@ -3,8 +3,11 @@ package de.ub0r.android.travelLog.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.preference.Preference.OnPreferenceChangeListener;
+import android.widget.Toast;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
 
@@ -37,6 +40,29 @@ public class Preferences extends PreferenceActivity {
 	private static final float DEFAULT_TEXTSIZE_GROUP = 16f;
 	/** Default text size. */
 	private static final float DEFAULT_TEXTSIZE_CHILD = 14f;
+	/** Preference's name: go home menu. */
+	private static final String PREFS_GO_HOME = "go_home";
+	/** Preference's name: count travel time. */
+	public static final String PREFS_COUNT_TRAVEL = "count_travel";
+	/** Preference's name: work hours limit for warning. */
+	public static final String PREFS_LIMIT_WARN_HOURS = "limit_warn";
+	/** Preference's name: sound for warning. */
+	public static final String PREFS_LIMIT_WARN_SOUND = "limit_sound_warn";
+	/** Preference's name: repetitions for warning. */
+	public static final String PREFS_LIMIT_WARN_REPETITIONS = // .
+	"limit_repetitions_warn";
+	/** Preference's name: delay between repetitions for warning. */
+	public static final String PREFS_LIMIT_WARN_DELAY = "limit_delay_warn";
+
+	/** Preference's name: work hours limit for alert. */
+	public static final String PREFS_LIMIT_ALERT_HOURS = "limit_alert";
+	/** Preference's name: sound for alert. */
+	public static final String PREFS_LIMIT_ALERT_SOUND = "limit_sound_alert";
+	/** Preference's name: repetitions for alert. */
+	public static final String PREFS_LIMIT_ALERT_REPETITIONS = // .
+	"limit_repetitions_alert";
+	/** Preference's name: delay between repetitions for alert. */
+	public static final String PREFS_LIMIT_ALERT_DELAY = "limit_delay_alert";
 
 	/**
 	 * {@inheritDoc}
@@ -47,6 +73,103 @@ public class Preferences extends PreferenceActivity {
 		this.setTitle(R.string.settings);
 		this.addPreferencesFromResource(R.xml.prefs);
 		Utils.setLocale(this);
+		this.findPreference(PREFS_UPDATE_INTERVAL)
+				.setOnPreferenceChangeListener(
+						new OnPreferenceChangeListener() {
+							@Override
+							public boolean onPreferenceChange(
+									final Preference preference,
+									final Object newValue) {
+								return Preferences.this.checkIntervall(newValue
+										.toString());
+							}
+						});
+		this.findPreference(PREFS_LIMIT_WARN_HOURS)
+				.setOnPreferenceChangeListener(
+						new OnPreferenceChangeListener() {
+							@Override
+							public boolean onPreferenceChange(
+									final Preference preference,
+									final Object newValue) {
+								return Preferences.this.checkWarning(newValue
+										.toString());
+							}
+						});
+		this.findPreference(PREFS_LIMIT_ALERT_HOURS)
+				.setOnPreferenceChangeListener(
+						new OnPreferenceChangeListener() {
+							@Override
+							public boolean onPreferenceChange(
+									final Preference preference,
+									final Object newValue) {
+								return Preferences.this.checkAlert(newValue
+										.toString());
+							}
+						});
+
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		this.checkIntervall(p.getString(PREFS_UPDATE_INTERVAL, null));
+		this.checkWarning(p.getString(PREFS_LIMIT_WARN_HOURS, null));
+		this.checkAlert(p.getString(PREFS_LIMIT_ALERT_HOURS, null));
+	}
+
+	/**
+	 * Check prefererence: intervall.
+	 * 
+	 * @param newValue
+	 *            new value
+	 * @return update preference?
+	 */
+	private boolean checkIntervall(final String newValue) {
+		Preferences.this.findPreference(PREFS_GO_HOME).setEnabled(
+				Utils.parseInt(newValue, 0) > 0);
+		return true;
+	}
+
+	/**
+	 * Check prefererence: warning.
+	 * 
+	 * @param newValue
+	 *            new value
+	 * @return update preference?
+	 */
+	private boolean checkWarning(final String newValue) {
+		boolean enable = Utils.parseFloat(newValue, 0) > 0;
+		Preferences.this.findPreference(PREFS_LIMIT_WARN_DELAY).setEnabled(
+				enable);
+		Preferences.this.findPreference(PREFS_LIMIT_WARN_REPETITIONS)
+				.setEnabled(enable);
+		Preferences.this.findPreference(PREFS_LIMIT_WARN_SOUND).setEnabled(
+				enable);
+		return true;
+	}
+
+	/**
+	 * Check prefererence: alert.
+	 * 
+	 * @param newValue
+	 *            new value
+	 * @return update preference?
+	 */
+	private boolean checkAlert(final String newValue) {
+		final float alertHours = Utils.parseFloat(newValue, 0);
+		final float warnHours = Utils.parseFloat(PreferenceManager
+				.getDefaultSharedPreferences(Preferences.this).getString(
+						PREFS_LIMIT_WARN_HOURS, null), 0);
+		if (warnHours > 0 && alertHours < warnHours) {
+			Toast.makeText(Preferences.this, R.string.limit_alert_gt_warn_,
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
+		boolean enable = alertHours > 0;
+		Preferences.this.findPreference(PREFS_LIMIT_ALERT_DELAY).setEnabled(
+				enable);
+		Preferences.this.findPreference(PREFS_LIMIT_ALERT_REPETITIONS)
+				.setEnabled(enable);
+		Preferences.this.findPreference(PREFS_LIMIT_ALERT_SOUND).setEnabled(
+				enable);
+		return true;
 	}
 
 	/**
