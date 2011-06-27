@@ -173,6 +173,32 @@ public final class Map extends MapActivity {
 		}
 
 		/**
+		 * Set a {@link OverlayItem}.
+		 * 
+		 * @parem item item
+		 * @param type
+		 *            log type
+		 * @param radius
+		 *            radius
+		 */
+		private void set(final int item, final int type, final int radius) {
+			if (!this.cursor.moveToPosition(item)) {
+				return;
+			}
+			final long id = this.cursor.getLong(this.idId);
+
+			ContentValues values = new ContentValues();
+			values.put(DataProvider.Cells.TYPE, type);
+			values.put(DataProvider.Cells.RADIUS, radius);
+
+			this.ctx.getContentResolver().update(
+					ContentUris.withAppendedId(DataProvider.Cells.CONTENT_URI,
+							id), values, null, null);
+			this.cursor.requery();
+			this.populate();
+		}
+
+		/**
 		 * {@inheritDoc}
 		 */
 		@Override
@@ -205,8 +231,40 @@ public final class Map extends MapActivity {
 			if (!addItem) {
 				return super.onTap(p, mapView);
 			}
+			this.showCreateDialog(p, mapView, -1);
+			return true;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean onTap(final int item) {
+			if (!this.cursor.moveToPosition(item)) {
+				return super.onTap(item);
+			}
+			this.showItemDialog(item);
+			return true;
+		}
+
+		/**
+		 * Show create/edit dialog.
+		 * 
+		 * @param p
+		 *            {@link GeoPoint}
+		 * @param mapView
+		 *            {@link MapView}
+		 * @param oldItem
+		 *            old item
+		 */
+		private void showCreateDialog(final GeoPoint p, final MapView mapView,
+				final int oldItem) {
 			AlertDialog.Builder b = new AlertDialog.Builder(this.ctx);
-			b.setTitle(R.string.add_cell_);
+			if (oldItem < 0) {
+				b.setTitle(R.string.add_cell_);
+			} else {
+				b.setTitle(R.string.edit_cell_);
+			}
 			LayoutInflater inflater = LayoutInflater.from(this.ctx);
 			View v = inflater.inflate(R.layout.map_item_add, null);
 			final Spinner sp = (Spinner) v.findViewById(R.id.type);
@@ -227,6 +285,13 @@ public final class Map extends MapActivity {
 				}
 			});
 			final EditText et = (EditText) v.findViewById(R.id.radius);
+			if (oldItem >= 0) {
+				Log.d(TAG, "fill data from old item: " + oldItem);
+				this.cursor.moveToPosition(oldItem);
+				boolean nothing = this.cursor.getInt(this.idTypeType) == 0;
+				cb.setChecked(nothing);
+				et.setText(this.cursor.getString(this.idRad));
+			}
 			b.setView(v);
 			b.setCancelable(true);
 			b.setPositiveButton(android.R.string.ok,
@@ -240,24 +305,25 @@ public final class Map extends MapActivity {
 							if (!cb.isChecked()) {
 								type = (int) sp.getSelectedItemId();
 							}
-							CellOverlay.this.add(p, type, radius);
-							mapView.invalidate();
+							if (oldItem >= 0) {
+								CellOverlay.this.set(oldItem, type, radius);
+							} else {
+								CellOverlay.this.add(p, type, radius);
+								mapView.invalidate();
+							}
 						}
 					});
 			b.setNegativeButton(android.R.string.cancel, null);
 			b.show();
-
-			return true;
 		}
 
 		/**
-		 * {@inheritDoc}
+		 * Show an item.
+		 * 
+		 * @param item
+		 *            item
 		 */
-		@Override
-		public boolean onTap(final int item) {
-			if (!this.cursor.moveToPosition(item)) {
-				return super.onTap(item);
-			}
+		private void showItemDialog(final int item) {
 			java.text.DateFormat dFormat = DateFormat.getDateFormat(this.ctx);
 			java.text.DateFormat tFormat = DateFormat.getTimeFormat(this.ctx);
 			AlertDialog.Builder b = new AlertDialog.Builder(this.ctx);
@@ -285,6 +351,14 @@ public final class Map extends MapActivity {
 			b.setView(v);
 			b.setCancelable(true);
 			b.setPositiveButton(android.R.string.ok, null);
+			b.setNeutralButton(R.string.edit_,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							CellOverlay.this.showCreateDialog(null, null, item);
+						}
+					});
 			b.setNegativeButton(R.string.delete,
 					new DialogInterface.OnClickListener() {
 						@Override
@@ -294,7 +368,6 @@ public final class Map extends MapActivity {
 						}
 					});
 			b.show();
-			return true;
 		}
 
 		/**

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!--
-		Copyright (C) 2010 Felix Bechstein
+		Copyright (C) 2010-2011 Felix Bechstein
 	-->
 	<!--
 		This file is part of TravelLog. This program is free software; you can
@@ -26,5 +26,7 @@
 	<string name="radius_">Radius:</string>
 	<string name="last_seen_">Last seen:</string>
 	<string name="first_seen_">First seen:</string>
+	<string name="edit_">Edit</string>
+	<string name="edit_cell_">Edit cell</string>
 	<string name="delete">Delete</string>
 </resources>

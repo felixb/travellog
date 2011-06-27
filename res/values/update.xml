@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 	<!--
-		Copyright (C) 2010 Felix Bechstein
+		Copyright (C) 2010-2011 Felix Bechstein
 	-->
 	<!--
 		This file is part of Call Meter NG. This program is free software; you
@@ -19,7 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
-		<item>HEAD: add 'go home' feature</item>
+		<item>HEAD: add \'go home\' feature, edit cells</item>
 		<item>v2.0: minor changes</item>
 		<item>v2.0beta2: location based logging</item>
 		<item>v2.0beta1: major reimplement, move all data to database</item>
