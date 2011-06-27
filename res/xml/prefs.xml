@@ -67,9 +67,6 @@
 				<RingtonePreference android:key="limit_sound_warn"
 					android:title="@string/limit_sound_" android:summary="@string/limit_sound_hint"
 					android:ringtoneType="notification" android:defaultValue="content://settings/system/notification_sound" />
-				<EditTextPreference android:key="limit_repetitions_warn"
-					android:title="@string/limit_repetitions_" android:summary="@string/limit_repetitions_hint"
-					android:inputType="number" />
 				<EditTextPreference android:key="limit_delay_warn"
 					android:title="@string/limit_delay_" android:summary="@string/limit_delay_hint"
 					android:inputType="number" />
@@ -81,9 +78,6 @@
 				<RingtonePreference android:key="limit_sound_alert"
 					android:title="@string/limit_sound_" android:summary="@string/limit_sound_hint"
 					android:ringtoneType="notification" android:defaultValue="content://settings/system/notification_sound" />
-				<EditTextPreference android:key="limit_repetitions_alert"
-					android:title="@string/limit_repetitions_" android:summary="@string/limit_repetitions_hint"
-					android:inputType="number" />
 				<EditTextPreference android:key="limit_delay_alert"
 					android:title="@string/limit_delay_" android:summary="@string/limit_delay_hint"
 					android:inputType="number" />

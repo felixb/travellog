@@ -60,7 +60,7 @@ public final class LocationChecker extends BroadcastReceiver {
 	private static final String TAG = "lc";
 
 	/** Time between to location checks. */
-	private static final long DELAY = 60; // 30min
+	private static final long DELAY = 30; // 30min
 	/** Factor for time between location checks. */
 	private static final long DELAY_FACTOR = 60000;
 
@@ -70,6 +70,22 @@ public final class LocationChecker extends BroadcastReceiver {
 	private static final int NOTIFICATION_LED_ON = 500;
 	/** LED blink off (ms) for notification. */
 	private static final int NOTIFICATION_LED_OFF = 2000;
+
+	/** Notify user / warning. */
+	private static final String ACTION_NOTIFY = LocationChecker.class
+			.getPackage()
+			+ ".NOTIFY";
+
+	/** Preference's name: last notification. */
+	private static final String PREFS_LAST_NOTIFY = "last_notify";
+	/** Preference's name: last level. */
+	private static final String PREFS_LAST_LEVEL = "last_level";
+	/** Normal. */
+	private static final int LEVEL_NOTHING = 0;
+	/** Warning. */
+	private static final int LEVEL_WARN = 1;
+	/** Alert. */
+	private static final int LEVEL_ALERT = 2;
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
@@ -85,14 +101,15 @@ public final class LocationChecker extends BroadcastReceiver {
 
 		final String a = intent.getAction();
 		Log.d(TAG, "action: " + a);
+		long delay = -1L;
 		if (a == null || !a.equals(Intent.ACTION_BOOT_COMPLETED)) {
 			// do actual work
-			this.checkLocation(context);
-			this.checkWarning(context);
+			checkLocation(context);
+			delay = checkWarning(context);
 		}
 
 		// schedule next run
-		schedNext(context);
+		schedNext(context, delay);
 		// release wakelock
 		wakelock.release();
 		Log.i(TAG, "wakelock released");
@@ -104,7 +121,7 @@ public final class LocationChecker extends BroadcastReceiver {
 	 * @param context
 	 *            {@link Context}
 	 */
-	private void checkLocation(final Context context) {
+	private static void checkLocation(final Context context) {
 		final LocationManager lm = (LocationManager) context
 				.getSystemService(Context.LOCATION_SERVICE);
 		final Location currentLocation = lm
@@ -189,13 +206,67 @@ public final class LocationChecker extends BroadcastReceiver {
 	}
 
 	/**
+	 * Get {@link Notification} for current level.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 * @param level
+	 *            level
+	 * @return {@link Notification}
+	 */
+	private static Notification getNotification(final Context context,
+			final int level) {
+		Notification n;
+		String ticker, title, text;
+		int flags;
+		Uri sound;
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		switch (level) {
+		case LEVEL_ALERT:
+			ticker = context.getString(R.string.alert_ticker);
+			title = context.getString(R.string.alert_title);
+			text = context.getString(R.string.alert_text);
+			sound = Uri.parse(p.getString(Preferences.PREFS_LIMIT_ALERT_SOUND,
+					null));
+			flags = Notification.FLAG_NO_CLEAR
+					| Notification.FLAG_ONGOING_EVENT;
+			break;
+		case LEVEL_WARN:
+			ticker = context.getString(R.string.warn_ticker);
+			title = context.getString(R.string.warn_title);
+			text = context.getString(R.string.warn_text);
+			sound = Uri.parse(p.getString(Preferences.PREFS_LIMIT_WARN_SOUND,
+					null));
+			flags = Notification.FLAG_AUTO_CANCEL;
+			break;
+		default:
+			return null;
+		}
+		n = new Notification(android.R.drawable.stat_notify_error, ticker,
+				System.currentTimeMillis());
+		n.setLatestEventInfo(context, title, text, PendingIntent.getActivity(
+				context, 0, new Intent(context, Logs.class),
+				PendingIntent.FLAG_CANCEL_CURRENT));
+		n.flags = flags;
+		n.sound = sound;
+		n.ledARGB = NOTIFICATION_LED_COLOR;
+		n.ledOnMS = NOTIFICATION_LED_ON;
+		n.ledOffMS = NOTIFICATION_LED_OFF;
+		return n;
+	}
+
+	/**
 	 * Check warnings and notify user.
 	 * 
 	 * @param context
 	 *            {@link Context}
+	 * @return delay to next notification
 	 */
-	private void checkWarning(final Context context) {
+	private static long checkWarning(final Context context) {
 		Log.d(TAG, "checkWarning()");
+		SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
 		Cursor cursor = context.getContentResolver().query(
 				DataProvider.Logs.CONTENT_URI_OPEN,
 				DataProvider.Logs.PROJECTION, null, null, null);
@@ -204,14 +275,14 @@ public final class LocationChecker extends BroadcastReceiver {
 			Log.i(TAG, "no open log");
 			NotificationManager nm = (NotificationManager) context
 					.getSystemService(Context.NOTIFICATION_SERVICE);
-			Log.d(TAG, "nm.cancelAll()");
-			nm.cancelAll();
-			return; // no open log. no need to notify
+			Log.d(TAG, "nm.cancel(0)");
+			nm.cancel(0);
+			p.edit().remove(PREFS_LAST_LEVEL).remove(PREFS_LAST_NOTIFY)
+					.commit();
+			return -1L; // no open log. no need to notify
 		}
 		cursor.close();
 
-		SharedPreferences p = PreferenceManager
-				.getDefaultSharedPreferences(context);
 		boolean countTravel = p.getBoolean(Preferences.PREFS_COUNT_TRAVEL,
 				false);
 		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
@@ -257,47 +328,51 @@ public final class LocationChecker extends BroadcastReceiver {
 		}
 		cursor.close();
 
-		Notification n = null;
-		if (d > warn) {
-			String ticker, title, text;
-			int flags;
-			Uri sound;
-			if (d > alert) {
-				ticker = context.getString(R.string.alert_ticker);
-				title = context.getString(R.string.alert_title);
-				text = context.getString(R.string.alert_text);
-				sound = Uri.parse(p.getString(
-						Preferences.PREFS_LIMIT_ALERT_SOUND, null));
-				flags = Notification.FLAG_NO_CLEAR
-						| Notification.FLAG_ONGOING_EVENT;
-			} else {
-				ticker = context.getString(R.string.warn_ticker);
-				title = context.getString(R.string.warn_title);
-				text = context.getString(R.string.warn_text);
-				sound = Uri.parse(p.getString(
-						Preferences.PREFS_LIMIT_WARN_SOUND, null));
-				flags = Notification.FLAG_AUTO_CANCEL;
-			}
-			n = new Notification(android.R.drawable.stat_notify_error, ticker,
-					System.currentTimeMillis());
-			n.setLatestEventInfo(context, title, text, PendingIntent
-					.getActivity(context, 0, new Intent(context, Logs.class),
-							PendingIntent.FLAG_CANCEL_CURRENT));
-			n.flags = flags;
-			n.sound = sound;
-			n.ledARGB = NOTIFICATION_LED_COLOR;
-			n.ledOnMS = NOTIFICATION_LED_ON;
-			n.ledOffMS = NOTIFICATION_LED_OFF;
+		int lastLevel = p.getInt(PREFS_LAST_LEVEL, LEVEL_NOTHING);
+		long lastNotify = p.getLong(PREFS_LAST_NOTIFY, 0L);
+		long desiredPeriod = 0L;
+		// get current level
+		int level = LEVEL_NOTHING;
+		if (d > alert) {
+			level = LEVEL_ALERT;
+			desiredPeriod = Utils.parseLong(p.getString(
+					Preferences.PREFS_LIMIT_ALERT_DELAY, null), 0L)
+					* Utils.N_1000;
+		} else if (d > warn) {
+			level = LEVEL_WARN;
+			desiredPeriod = Utils.parseLong(p.getString(
+					Preferences.PREFS_LIMIT_WARN_DELAY, null), 0L)
+					* Utils.N_1000;
 		}
 
+		final long now = System.currentTimeMillis();
+		Notification n = null;
+		// show notification?
+		if (level > LEVEL_NOTHING && (level != lastLevel || // .
+				(desiredPeriod > 0L && lastNotify < now - desiredPeriod))) {
+			Log.d(TAG, "level: " + level);
+			Log.d(TAG, "lastLevel: " + lastLevel);
+			Log.d(TAG, "desiredPeriod: " + desiredPeriod);
+			Log.d(TAG, "lastNotify: " + lastNotify);
+			Log.d(TAG, "now-p:      " + (now - desiredPeriod));
+			n = getNotification(context, level);
+		}
 		NotificationManager nm = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		if (n == null) {
-			Log.d(TAG, "nm.cancelAll()");
-			nm.cancelAll();
-		} else {
+		if (level == LEVEL_NOTHING) {
+			p.edit().remove(PREFS_LAST_LEVEL).remove(PREFS_LAST_NOTIFY)
+					.commit();
+			Log.d(TAG, "nm.cancel(0)");
+			nm.cancel(0);
+			return -1L;
+		} else if (n != null) {
+			p.edit().putInt(PREFS_LAST_LEVEL, level).putLong(PREFS_LAST_NOTIFY,
+					now - Utils.N_100).commit();
 			Log.d(TAG, "nm.notify(0, " + n + ")");
 			nm.notify(0, n);
+			return desiredPeriod;
+		} else {
+			return lastNotify - now + desiredPeriod;
 		}
 	}
 
@@ -306,23 +381,36 @@ public final class LocationChecker extends BroadcastReceiver {
 	 * 
 	 * @param context
 	 *            {@link Context}
+	 * @param delay
+	 *            delay for next notification
 	 */
-	private static void schedNext(final Context context) {
-		final Intent i = new Intent(context, LocationChecker.class);
-		final PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+	private static void schedNext(final Context context, final long delay) {
+		Log.d(TAG, "schedNext(ctx, " + delay + ")");
 		final long l = Utils.parseLong(PreferenceManager
 				.getDefaultSharedPreferences(context).getString(
 						Preferences.PREFS_UPDATE_INTERVAL,
 						String.valueOf(DELAY)), DELAY)
 				* DELAY_FACTOR;
-		if (l == 0L) {
+		if (l == 0L && delay <= 0L) {
 			return;
 		}
-		final long t = SystemClock.elapsedRealtime() + l;
+		final Intent i = new Intent(context, LocationChecker.class);
+		long t = SystemClock.elapsedRealtime();
+		if (delay > 0L && l > delay) {
+			i.setAction(ACTION_NOTIFY);
+			Log.i(TAG, // .
+					"next location check in: "
+							+ DateFormat.getTimeFormat(context).format(
+									new Date(delay)));
+			t += delay + Utils.N_100;
+		} else {
+			Log.i(TAG, "next location check in: "
+					+ DateFormat.getTimeFormat(context).format(new Date(l)));
+			t += l;
+		}
+		final PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		final AlarmManager mgr = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
-		Log.i(TAG, "next location check: "
-				+ DateFormat.getTimeFormat(context).format(new Date(t)));
 		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, t, pi);
 	}
 }

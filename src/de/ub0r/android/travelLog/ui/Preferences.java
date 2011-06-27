@@ -48,9 +48,6 @@ public class Preferences extends PreferenceActivity {
 	public static final String PREFS_LIMIT_WARN_HOURS = "limit_warn";
 	/** Preference's name: sound for warning. */
 	public static final String PREFS_LIMIT_WARN_SOUND = "limit_sound_warn";
-	/** Preference's name: repetitions for warning. */
-	public static final String PREFS_LIMIT_WARN_REPETITIONS = // .
-	"limit_repetitions_warn";
 	/** Preference's name: delay between repetitions for warning. */
 	public static final String PREFS_LIMIT_WARN_DELAY = "limit_delay_warn";
 
@@ -58,9 +55,6 @@ public class Preferences extends PreferenceActivity {
 	public static final String PREFS_LIMIT_ALERT_HOURS = "limit_alert";
 	/** Preference's name: sound for alert. */
 	public static final String PREFS_LIMIT_ALERT_SOUND = "limit_sound_alert";
-	/** Preference's name: repetitions for alert. */
-	public static final String PREFS_LIMIT_ALERT_REPETITIONS = // .
-	"limit_repetitions_alert";
 	/** Preference's name: delay between repetitions for alert. */
 	public static final String PREFS_LIMIT_ALERT_DELAY = "limit_delay_alert";
 
@@ -138,8 +132,6 @@ public class Preferences extends PreferenceActivity {
 		boolean enable = Utils.parseFloat(newValue, 0) > 0;
 		Preferences.this.findPreference(PREFS_LIMIT_WARN_DELAY).setEnabled(
 				enable);
-		Preferences.this.findPreference(PREFS_LIMIT_WARN_REPETITIONS)
-				.setEnabled(enable);
 		Preferences.this.findPreference(PREFS_LIMIT_WARN_SOUND).setEnabled(
 				enable);
 		return true;
@@ -165,8 +157,6 @@ public class Preferences extends PreferenceActivity {
 		boolean enable = alertHours > 0;
 		Preferences.this.findPreference(PREFS_LIMIT_ALERT_DELAY).setEnabled(
 				enable);
-		Preferences.this.findPreference(PREFS_LIMIT_ALERT_REPETITIONS)
-				.setEnabled(enable);
 		Preferences.this.findPreference(PREFS_LIMIT_ALERT_SOUND).setEnabled(
 				enable);
 		return true;

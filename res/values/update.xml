@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>HEAD: add 'go home' feature</item>
 		<item>v2.0: minor changes</item>
 		<item>v2.0beta2: location based logging</item>
 		<item>v2.0beta1: major reimplement, move all data to database</item>
