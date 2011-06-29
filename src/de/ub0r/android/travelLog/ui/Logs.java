@@ -44,7 +44,6 @@ import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.Ads;
 import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
-import de.ub0r.android.travelLog.data.LocationChecker;
 
 /**
  * Main Activity.
@@ -419,7 +418,7 @@ public final class Logs extends ExpandableListActivity implements
 		Utils.setLocale(this);
 
 		// update logs from cells
-		this.sendBroadcast(new Intent(this, LocationChecker.class));
+		Preferences.registerLocationChecker(this);
 
 		// refresh query
 		this.requery();

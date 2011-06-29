@@ -1,15 +1,20 @@
 package de.ub0r.android.travelLog.ui;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.widget.Toast;
+import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
+import de.ub0r.android.travelLog.data.LocationChecker;
 
 /**
  * Preferences.
@@ -17,6 +22,13 @@ import de.ub0r.android.travelLog.R;
  * @author flx
  */
 public class Preferences extends PreferenceActivity {
+	static {
+		Log.init("TravelLog");
+	}
+
+	/** Tag for output. */
+	private static final String TAG = "prefs";
+
 	/** Preference's name: update interval. */
 	public static final String PREFS_UPDATE_INTERVAL = "update_interval";
 	/** Preference's name: last latitude. */
@@ -57,6 +69,9 @@ public class Preferences extends PreferenceActivity {
 	public static final String PREFS_LIMIT_ALERT_SOUND = "limit_sound_alert";
 	/** Preference's name: delay between repetitions for alert. */
 	public static final String PREFS_LIMIT_ALERT_DELAY = "limit_delay_alert";
+
+	/** Minimal distance in meters between location updates. */
+	private static final int MINDISTANCE = 100;
 
 	/**
 	 * {@inheritDoc}
@@ -220,5 +235,28 @@ public class Preferences extends PreferenceActivity {
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_TEXTSIZE_CHILD, "12");
 		return Utils.parseFloat(s, DEFAULT_TEXTSIZE_CHILD);
+	}
+
+	/**
+	 * Register the LocationChecker Service.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 */
+	public static final void registerLocationChecker(final Context context) {
+		Log.d(TAG, "registerLocationChecker()");
+		final LocationManager lm = (LocationManager) context
+				.getSystemService(Context.LOCATION_SERVICE);
+		final PendingIntent pi = PendingIntent.getBroadcast(context, 0,
+				new Intent(context, LocationChecker.class),
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		lm.removeUpdates(pi);
+		final SharedPreferences p = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		long interval = Utils.parseLong(p
+				.getString(PREFS_UPDATE_INTERVAL, null), 0L);
+		interval *= Utils.MINUTES_IN_MILLIS;
+		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, interval,
+				MINDISTANCE, pi);
 	}
 }

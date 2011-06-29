@@ -101,15 +101,18 @@ public final class LocationChecker extends BroadcastReceiver {
 
 		final String a = intent.getAction();
 		Log.d(TAG, "action: " + a);
-		long delay = -1L;
-		if (a == null || !a.equals(Intent.ACTION_BOOT_COMPLETED)) {
+		if (a != null && a.equals(Intent.ACTION_BOOT_COMPLETED)) {
+			Preferences.registerLocationChecker(context);
+		} else {
 			// do actual work
 			checkLocation(context);
-			delay = checkWarning(context);
+			long delay = checkWarning(context);
+			if (delay > 0L) {
+				// schedule next run
+				schedNext(context, delay);
+			}
 		}
 
-		// schedule next run
-		schedNext(context, delay);
 		// release wakelock
 		wakelock.release();
 		Log.i(TAG, "wakelock released");
@@ -122,8 +125,10 @@ public final class LocationChecker extends BroadcastReceiver {
 	 *            {@link Context}
 	 */
 	private static void checkLocation(final Context context) {
+		Log.d(TAG, "checkLocation()");
 		final LocationManager lm = (LocationManager) context
 				.getSystemService(Context.LOCATION_SERVICE);
+
 		final Location currentLocation = lm
 				.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if (currentLocation == null) {
@@ -267,8 +272,8 @@ public final class LocationChecker extends BroadcastReceiver {
 		Log.d(TAG, "checkWarning()");
 		SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		Cursor cursor = context.getContentResolver().query(
-				DataProvider.Logs.CONTENT_URI_OPEN,
+		ContentResolver cr = context.getContentResolver();
+		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
 				DataProvider.Logs.PROJECTION, null, null, null);
 		if (!cursor.moveToFirst()) {
 			cursor.close();
@@ -290,26 +295,26 @@ public final class LocationChecker extends BroadcastReceiver {
 		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
 				.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
 		Log.d(TAG, "countTravel: " + countTravel);
-		Log.d(TAG, "warn: " + warn);
+		Log.d(TAG, "warn:  " + warn);
 		Log.d(TAG, "alert: " + alert);
 
 		final Calendar c = Calendar.getInstance();
-		String where = DataProvider.Logs.FROM_D + "=? AND "
-				+ DataProvider.Logs.TYPE_TYPE + "=?";
+		String where = DataProvider.Logs.FROM_D + "=?";
 		String[] args;
 		if (countTravel) {
-			where += " AND " + DataProvider.Logs.TYPE_TYPE + "=?";
+			where += " AND (" + DataProvider.Logs.TYPE_TYPE + "=? OR "
+					+ DataProvider.Logs.TYPE_TYPE + "=?)";
 			args = new String[] { String.valueOf(c.get(Calendar.DAY_OF_YEAR)),
 					String.valueOf(DataProvider.Logtypes.TYPE_WORK),
 					String.valueOf(DataProvider.Logtypes.TYPE_TRAVEL) };
 		} else {
+			where += " AND " + DataProvider.Logs.TYPE_TYPE + "=?";
 			args = new String[] { String.valueOf(c.get(Calendar.DAY_OF_YEAR)),
 					String.valueOf(DataProvider.Logtypes.TYPE_WORK) };
 		}
 
-		cursor = context.getContentResolver().query(
-				DataProvider.Logs.CONTENT_URI, DataProvider.Logs.PROJECTION,
-				where, args, null);
+		cursor = cr.query(DataProvider.Logs.CONTENT_URI,
+				DataProvider.Logs.PROJECTION, where, args, null);
 
 		long d = 0;
 		if (cursor.moveToFirst()) {
@@ -323,10 +328,12 @@ public final class LocationChecker extends BroadcastReceiver {
 					to = c.getTimeInMillis();
 				}
 				d += to - from;
-				Log.d(TAG, "d: " + d);
+				Log.d(TAG, "d:    " + d);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
+
+		Log.d(TAG, "d:    " + d);
 
 		int lastLevel = p.getInt(PREFS_LAST_LEVEL, LEVEL_NOTHING);
 		long lastNotify = p.getLong(PREFS_LAST_NOTIFY, 0L);
@@ -386,28 +393,16 @@ public final class LocationChecker extends BroadcastReceiver {
 	 */
 	private static void schedNext(final Context context, final long delay) {
 		Log.d(TAG, "schedNext(ctx, " + delay + ")");
-		final long l = Utils.parseLong(PreferenceManager
-				.getDefaultSharedPreferences(context).getString(
-						Preferences.PREFS_UPDATE_INTERVAL,
-						String.valueOf(DELAY)), DELAY)
-				* DELAY_FACTOR;
-		if (l == 0L && delay <= 0L) {
-			return;
-		}
+
 		final Intent i = new Intent(context, LocationChecker.class);
 		long t = SystemClock.elapsedRealtime();
-		if (delay > 0L && l > delay) {
-			i.setAction(ACTION_NOTIFY);
-			Log.i(TAG, // .
-					"next location check in: "
-							+ DateFormat.getTimeFormat(context).format(
-									new Date(delay)));
-			t += delay + Utils.N_100;
-		} else {
-			Log.i(TAG, "next location check in: "
-					+ DateFormat.getTimeFormat(context).format(new Date(l)));
-			t += l;
-		}
+		i.setAction(ACTION_NOTIFY);
+		Log.i(TAG, // .
+				"next location check in: "
+						+ DateFormat.getTimeFormat(context).format(
+								new Date(delay)));
+		t += delay + Utils.N_100;
+
 		final PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 		final AlarmManager mgr = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
