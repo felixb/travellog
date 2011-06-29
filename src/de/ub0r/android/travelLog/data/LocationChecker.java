@@ -272,32 +272,8 @@ public final class LocationChecker extends BroadcastReceiver {
 		Log.d(TAG, "checkWarning()");
 		SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		ContentResolver cr = context.getContentResolver();
-		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
-				DataProvider.Logs.PROJECTION, null, null, null);
-		if (!cursor.moveToFirst()) {
-			cursor.close();
-			Log.i(TAG, "no open log");
-			NotificationManager nm = (NotificationManager) context
-					.getSystemService(Context.NOTIFICATION_SERVICE);
-			Log.d(TAG, "nm.cancel(0)");
-			nm.cancel(0);
-			p.edit().remove(PREFS_LAST_LEVEL).remove(PREFS_LAST_NOTIFY)
-					.commit();
-			return -1L; // no open log. no need to notify
-		}
-		cursor.close();
-
 		boolean countTravel = p.getBoolean(Preferences.PREFS_COUNT_TRAVEL,
 				false);
-		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
-				.getString(Preferences.PREFS_LIMIT_WARN_HOURS, null), 0));
-		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
-				.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
-		Log.d(TAG, "countTravel: " + countTravel);
-		Log.d(TAG, "warn:  " + warn);
-		Log.d(TAG, "alert: " + alert);
-
 		final Calendar c = Calendar.getInstance();
 		String where = DataProvider.Logs.FROM_D + "=?";
 		String[] args;
@@ -312,6 +288,30 @@ public final class LocationChecker extends BroadcastReceiver {
 			args = new String[] { String.valueOf(c.get(Calendar.DAY_OF_YEAR)),
 					String.valueOf(DataProvider.Logtypes.TYPE_WORK) };
 		}
+
+		ContentResolver cr = context.getContentResolver();
+		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
+				DataProvider.Logs.PROJECTION, where, args, null);
+		if (!cursor.moveToFirst()) {
+			cursor.close();
+			Log.i(TAG, "no open log");
+			NotificationManager nm = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			Log.d(TAG, "nm.cancel(0)");
+			nm.cancel(0);
+			p.edit().remove(PREFS_LAST_LEVEL).remove(PREFS_LAST_NOTIFY)
+					.commit();
+			return -1L; // no open log. no need to notify
+		}
+		cursor.close();
+
+		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
+				.getString(Preferences.PREFS_LIMIT_WARN_HOURS, null), 0));
+		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
+				.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
+		Log.d(TAG, "countTravel: " + countTravel);
+		Log.d(TAG, "warn:  " + warn);
+		Log.d(TAG, "alert: " + alert);
 
 		cursor = cr.query(DataProvider.Logs.CONTENT_URI,
 				DataProvider.Logs.PROJECTION, where, args, null);
