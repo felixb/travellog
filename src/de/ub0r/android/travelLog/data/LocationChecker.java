@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
@@ -222,9 +223,8 @@ public final class LocationChecker extends BroadcastReceiver {
 	private static Notification getNotification(final Context context,
 			final int level) {
 		Notification n;
-		String ticker, title, text;
+		String ticker, title, text, sound;
 		int flags;
-		Uri sound;
 		SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		switch (level) {
@@ -232,8 +232,7 @@ public final class LocationChecker extends BroadcastReceiver {
 			ticker = context.getString(R.string.alert_ticker);
 			title = context.getString(R.string.alert_title);
 			text = context.getString(R.string.alert_text);
-			sound = Uri.parse(p.getString(Preferences.PREFS_LIMIT_ALERT_SOUND,
-					null));
+			sound = p.getString(Preferences.PREFS_LIMIT_ALERT_SOUND, null);
 			flags = Notification.FLAG_NO_CLEAR
 					| Notification.FLAG_ONGOING_EVENT;
 			break;
@@ -241,8 +240,7 @@ public final class LocationChecker extends BroadcastReceiver {
 			ticker = context.getString(R.string.warn_ticker);
 			title = context.getString(R.string.warn_title);
 			text = context.getString(R.string.warn_text);
-			sound = Uri.parse(p.getString(Preferences.PREFS_LIMIT_WARN_SOUND,
-					null));
+			sound = p.getString(Preferences.PREFS_LIMIT_WARN_SOUND, null);
 			flags = Notification.FLAG_AUTO_CANCEL;
 			break;
 		default:
@@ -254,7 +252,11 @@ public final class LocationChecker extends BroadcastReceiver {
 				context, 0, new Intent(context, Logs.class),
 				PendingIntent.FLAG_CANCEL_CURRENT));
 		n.flags = flags;
-		n.sound = sound;
+		if (TextUtils.isEmpty(sound)) {
+			n.sound = null;
+		} else {
+			n.sound = Uri.parse(sound);
+		}
 		n.ledARGB = NOTIFICATION_LED_COLOR;
 		n.ledOnMS = NOTIFICATION_LED_ON;
 		n.ledOffMS = NOTIFICATION_LED_OFF;
