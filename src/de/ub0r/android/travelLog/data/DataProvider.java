@@ -218,22 +218,22 @@ public final class DataProvider extends ContentProvider {
 				FROM_W,
 				FROM_D,
 				"max(" + TO + ") AS " + TO,
-				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
-						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
-						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
-						+ " in ( select " + Logtypes.ID + " from "
+				"(select sum(COALESCE(" + TO + ",?) - " + FROM + ") from "
+						+ TABLE + " AS INNERLOGSW where INNERLOGSW." + FROM_D
+						+ " = " + TABLE + "." + FROM_D + " AND INNERLOGSW."
+						+ TYPE + " in ( select " + Logtypes.ID + " from "
 						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
 						+ " = " + Logtypes.TYPE_WORK + ")) AS " + SUM_WORK,
-				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
-						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
-						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
-						+ " in ( select " + Logtypes.ID + " from "
+				"(select sum(COALESCE(" + TO + ",?) - " + FROM + ") from "
+						+ TABLE + " AS INNERLOGSW where INNERLOGSW." + FROM_D
+						+ " = " + TABLE + "." + FROM_D + " AND INNERLOGSW."
+						+ TYPE + " in ( select " + Logtypes.ID + " from "
 						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
 						+ " = " + Logtypes.TYPE_TRAVEL + ")) AS " + SUM_TRAVEL,
-				"(select sum(" + TO + " - " + FROM + ") from " + TABLE
-						+ " AS INNERLOGSW where INNERLOGSW." + FROM_D + " = "
-						+ TABLE + "." + FROM_D + " AND INNERLOGSW." + TYPE
-						+ " in ( select " + Logtypes.ID + " from "
+				"(select sum(COALESCE(" + TO + ",?) - " + FROM + ") from "
+						+ TABLE + " AS INNERLOGSW where INNERLOGSW." + FROM_D
+						+ " = " + TABLE + "." + FROM_D + " AND INNERLOGSW."
+						+ TYPE + " in ( select " + Logtypes.ID + " from "
 						+ Logtypes.TABLE + " where " + Logtypes.TIME_TYPE
 						+ " = " + Logtypes.TYPE_PAUSE + ")) AS " + SUM_PAUSE };
 

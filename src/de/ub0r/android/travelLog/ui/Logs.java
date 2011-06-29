@@ -279,6 +279,7 @@ public final class Logs extends ExpandableListActivity implements
 		@Override
 		protected void onQueryComplete(final int token, final Object cookie,
 				final Cursor cursor) {
+			Log.d(TAG, "onQueryComplete(" + token + "," + cookie + ",c)");
 			switch (token) {
 			case LIST_QUERY_TOKEN:
 				Logs.this.requery(cursor);
@@ -722,16 +723,23 @@ public final class Logs extends ExpandableListActivity implements
 	 * Requery data.
 	 */
 	private void requery() {
+		Log.d(TAG, "requery()");
 		// Cancel any pending queries
 		this.queryHandler
 				.cancelOperation(BackgroundQueryHandler.LIST_QUERY_TOKEN);
 		try {
 			// Kick off the new query
 			this.setProgressBarVisibility(true);
+			final String v = String.valueOf(System.currentTimeMillis());
+			final String[] p = DataProvider.Logs.PROJECTION_SUM.clone();
+			final int l = p.length;
+			for (int i = 0; i < l; i++) {
+				p[i] = p[i].replace("?", v);
+				Log.d(TAG, "p[" + i + "] = " + p[i]);
+			}
 			this.queryHandler.startQuery(
 					BackgroundQueryHandler.LIST_QUERY_TOKEN, null,
-					DataProvider.Logs.CONTENT_URI_SUM,
-					DataProvider.Logs.PROJECTION_SUM, null, null, null);
+					DataProvider.Logs.CONTENT_URI_SUM, p, null, null, null);
 		} catch (SQLiteException e) {
 			Log.e(TAG, "error starting query", e);
 		}
