@@ -754,18 +754,32 @@ public final class Logs extends ExpandableListActivity implements
 	private void requery(final Cursor cursor) {
 		final ExpandableListView lv = (ExpandableListView) this
 				.findViewById(android.R.id.list);
-		try {
-			final boolean expandFirst = lv.isGroupExpanded(0)
-					|| ((LogAdapter) lv.getExpandableListAdapter())
-							.getGroupCount() == 0;
-			((LogAdapter) lv.getExpandableListAdapter()).setGroupCursor(cursor);
-			if (expandFirst) {
-				lv.collapseGroup(0);
-				lv.expandGroup(0);
+		Cursor c = ((LogAdapter) lv.getExpandableListAdapter()).getCursor();
+		if (c != null && !c.isClosed()) {
+			c.close();
+		}
+		c = null;
+		if (cursor != null && !cursor.isClosed() && cursor.getCount() > 0) {
+			this.findViewById(R.id.hint).setVisibility(View.GONE);
+			try {
+				final boolean expandFirst = lv.isGroupExpanded(0)
+						|| ((LogAdapter) lv.getExpandableListAdapter())
+								.getGroupCount() == 0;
+				((LogAdapter) lv.getExpandableListAdapter())
+						.setGroupCursor(cursor);
+				if (expandFirst) {
+					lv.collapseGroup(0);
+					lv.expandGroup(0);
+				}
+			} catch (NullPointerException e) {
+				Log.d(TAG, "NPE", e);
+				// nothing to do here
 			}
-		} catch (NullPointerException e) {
-			Log.d(TAG, "NPE", e);
-			// nothing to do here
+			lv.setVisibility(View.VISIBLE);
+		} else {
+			lv.setVisibility(View.GONE);
+			this.findViewById(R.id.hint).setVisibility(View.VISIBLE);
+			this.changeState(0, 0, true);
 		}
 	}
 

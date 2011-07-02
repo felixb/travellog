@@ -20,9 +20,15 @@
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:background="?android:attr/colorBackground"
 	android:layout_height="fill_parent">
-	<ExpandableListView android:id="@android:id/list"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_weight="1" />
+	<FrameLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="1">
+		<ExpandableListView android:id="@android:id/list"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<TextView android:id="@+id/hint" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:padding="10dip"
+			android:layout_gravity="center" android:text="@string/hint" />
+	</FrameLayout>
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:layout_weight="0"
 		style="@android:style/ButtonBar">

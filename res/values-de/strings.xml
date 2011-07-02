@@ -27,6 +27,7 @@
   <string name="license" formatted="false">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
   <string name="source_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sourcescode:">Sourcescode:</string>
   <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
+  <string name="hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;">Diese Ansicht zeigt deine Arbeitszeiten.\n\nDrücke einfach einen der Knöpfe unten um einen neuen Eintrag zu starten.</string>
   <string name="send_" formatted="false">Senden</string>
   <string name="start_work" formatted="false">Start Arbeit</string>
   <string name="stop_work" formatted="false">Stopp Arbeit</string>

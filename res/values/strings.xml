@@ -23,6 +23,7 @@
 	<string name="license">GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt</string>
 	<string name="source_">Sourcescode:</string>
 	<string name="website_">Website:</string>
+	<string name="hint">This view holds a list of log items with your working time.\n\nJust press one of the buttons below to start a new one.</string>
 	<string name="send_">Send</string>
 	<string name="start_work">Start work</string>
 	<string name="stop_work">Stop work</string>
