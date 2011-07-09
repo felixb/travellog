@@ -24,7 +24,6 @@
 	<string name="source">http://github.com/felixb/travellog</string>
 	<string name="website">http://code.google.com/p/ub0rapps/</string>
 	<string name="twitter_">twitter</string>
-	<string name="donate_url">https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=9284303</string>
 	<string-array name="themes_values">
 		<item>black</item>
 		<item>light</item>
