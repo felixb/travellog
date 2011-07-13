@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-       <!--
+<!--
                Copyright (C) 2009-2011 Felix Bechstein
        -->
-       <!--
+<!--
                This file is part of TravelLog. This program is free software; you can
                redistribute it and/or modify it under the terms of the GNU General
                Public License as published by the Free Software Foundation; either
                version 3 of the License, or (at your option) any later version.
        -->
-       <!--
+<!--
                This program is distributed in the hope that it will be useful, but
                WITHOUT ANY WARRANTY; without even the implied warranty of
                MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -16,7 +16,7 @@
                copy of the GNU General Public License along with this program; If
                not, see <http://www.gnu.org/licenses/>.
        -->
-      <!--
+<!--
                This file is generated automatically by ub0rlib/php.
                Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=strings.xml to edit the file.
        -->
@@ -63,4 +63,10 @@
     <item>Umnennen</item>
     <item>Löschen</item>
   </string-array>
+  <string name="warn_ticker" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="TravelLog: warning">TravelLog: Warnung</string>
+  <string name="warn_title" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Warning: Working time reached limit!">Warnung: Arbeitszeit hat das Limit erreicht!</string>
+  <string name="warn_text" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Working time has reached limit!">Arbeitszeit hat das Limit erreicht!</string>
+  <string name="alert_ticker" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="TravelLog: ALERT!">TravelLog: ALARM!</string>
+  <string name="alert_title" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Alert: Working time reached limit!">Alarm: Arbeitszeit hat das Limit erreicht!</string>
+  <string name="alert_text" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Working time has reached critical limit!">Arbeitszeit hat ein kritisches Level erreicht!</string>
 </resources>
