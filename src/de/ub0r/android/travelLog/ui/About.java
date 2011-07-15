@@ -19,7 +19,9 @@
 package de.ub0r.android.travelLog.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import de.ub0r.android.travelLog.R;
 
 /**
@@ -27,16 +29,32 @@ import de.ub0r.android.travelLog.R;
  * 
  * @author flx
  */
-public class About extends Activity {
+public final class About extends Activity {
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void onCreate(final Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.about);
 		this.setTitle(this.getString(R.string.about_) + " v"
 				+ this.getString(R.string.app_version));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			Intent intent = new Intent(this, Logs.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }

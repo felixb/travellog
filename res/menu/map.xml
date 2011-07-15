@@ -18,5 +18,5 @@
 	-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:title="@string/add_cell_" android:id="@+id/item_add_cell"
-		android:icon="@android:drawable/ic_menu_add" />
+		android:icon="@android:drawable/ic_menu_add" android:showAsAction="always|withText" />
 </menu>

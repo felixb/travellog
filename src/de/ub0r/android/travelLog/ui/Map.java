@@ -26,11 +26,13 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -466,6 +468,12 @@ public final class Map extends MapActivity {
 		});
 		overlays.add(this.myLocationOverly);
 		this.mv.invalidate();
+
+		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
+		if (preHoney) {
+			Toast.makeText(this, R.string.add_cell_toast, Toast.LENGTH_LONG)
+					.show();
+		}
 	}
 
 	/**
@@ -509,9 +517,13 @@ public final class Map extends MapActivity {
 					.show();
 			addItem = true;
 			return true;
+		case android.R.id.home:
+			Intent intent = new Intent(this, Logs.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(intent);
+			return true;
 		default:
-			return false;
+			return super.onOptionsItemSelected(item);
 		}
 	}
-
 }

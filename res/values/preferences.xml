@@ -24,6 +24,7 @@
 	<string name="feedback_">Feedback</string>
 	<string name="feedback_hint">Report bugs, request features ...</string>
 	<string name="more_">More Apps..</string>
+  <string name="about_">About TravelLog</string>
 	<string name="settings">Preferences</string>
 	<string name="settings_common">Preferences - Common</string>
 	<string name="settings_connectors">Preferences - Connectors</string>

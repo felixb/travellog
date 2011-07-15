@@ -48,7 +48,8 @@
 			android:title="@string/update_interval_" android:summary="@string/update_interval_hint"
 			android:entries="@array/update_interval" android:entryValues="@array/update_interval_values"
 			android:defaultValue="60" />
-		<PreferenceScreen android:title="@string/map_">
+		<PreferenceScreen android:key="map" android:title="@string/map_"
+			android:summary="@string/map_hint">
 			<intent android:action="android.intent.action.MAIN"
 				android:targetPackage="de.ub0r.android.travelLog"
 				android:targetClass="de.ub0r.android.travelLog.ui.Map" />
@@ -56,32 +57,11 @@
 	</PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/go_home_">
-		<PreferenceScreen android:title="@string/go_home_"
-			android:summary="@string/go_home_hint" android:key="go_home">
-			<CheckBoxPreference android:key="count_travel"
-				android:title="@string/count_travel_" android:summary="@string/count_travel_hint" />
-			<PreferenceScreen android:title="@string/limit_warn_">
-				<EditTextPreference android:key="limit_warn"
-					android:title="@string/limit_warn_" android:summary="@string/limit_hint"
-					android:inputType="numberDecimal" />
-				<RingtonePreference android:key="limit_sound_warn"
-					android:title="@string/limit_sound_" android:summary="@string/limit_sound_hint"
-					android:ringtoneType="notification" android:defaultValue="content://settings/system/notification_sound" />
-				<EditTextPreference android:key="limit_delay_warn"
-					android:title="@string/limit_delay_" android:summary="@string/limit_delay_hint"
-					android:inputType="number" />
-			</PreferenceScreen>
-			<PreferenceScreen android:title="@string/limit_alert_">
-				<EditTextPreference android:key="limit_alert"
-					android:title="@string/limit_alert_" android:summary="@string/limit_hint"
-					android:inputType="numberDecimal" />
-				<RingtonePreference android:key="limit_sound_alert"
-					android:title="@string/limit_sound_" android:summary="@string/limit_sound_hint"
-					android:ringtoneType="notification" android:defaultValue="content://settings/system/notification_sound" />
-				<EditTextPreference android:key="limit_delay_alert"
-					android:title="@string/limit_delay_" android:summary="@string/limit_delay_hint"
-					android:inputType="number" />
-			</PreferenceScreen>
+		<PreferenceScreen android:key="go_home"
+			android:title="@string/go_home_" android:summary="@string/go_home_hint">
+			<intent android:action="android.intent.action.MAIN"
+				android:targetPackage="de.ub0r.android.travelLog"
+				android:targetClass="de.ub0r.android.travelLog.ui.PreferencesGoHome" />
 		</PreferenceScreen>
 	</PreferenceCategory>
 

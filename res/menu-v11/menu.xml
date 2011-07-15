@@ -17,6 +17,17 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/item_stop" android:icon="@drawable/ic_menu_stop"
+		android:showAsAction="always" />
+	<item android:id="@+id/start_work_" android:title="@string/start_work"
+		android:icon="@android:drawable/ic_menu_recent_history"
+		android:showAsAction="always|withText" />
+	<item android:id="@+id/start_travel_" android:title="@string/start_travel"
+		android:icon="@android:drawable/ic_menu_recent_history"
+		android:showAsAction="always|withText" />
+	<item android:id="@+id/start_pause_" android:title="@string/start_pause"
+		android:icon="@android:drawable/ic_menu_recent_history"
+		android:showAsAction="always|withText" />
 	<item android:id="@+id/item_settings" android:title="@string/settings"
 		android:icon="@android:drawable/ic_menu_preferences"
 		android:showAsAction="never" />

@@ -22,9 +22,11 @@
        -->
 <resources>
   <string name="map_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Map">Karte</string>
+	<string name="map_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;">Füge Zellen auf der Karte hinzu, um automatisch Logeinträge zu erstellen.</string>
   <string name="cell_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Cell">Zelle</string>
   <string name="add_cell_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Add cell">Zelle hinzufügen</string>
   <string name="add_cell_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Touch the map to add a cell.">Karte berühren um Zelle hinzuzufügen.</string>
+	<string name="add_cell_toast" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;">Drücke den Menüknopf um eine Zelle hinzu zu fügen.</string>
   <string name="type_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Type:">Typ:</string>
   <string name="nulltype_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Nothing">Nichts</string>
   <string name="radius_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Radius:">Radius:</string>

@@ -35,6 +35,7 @@
 	<string name="travel">Travel</string>
 	<string name="work">Work</string>
 	<string name="clear_">Clear</string>
+	<string name="clear_hint">Do you really want to clear <b>all</b> records?</string>
 	<string name="for_">for</string>
 	<string name="add_">Add</string>
 	<string name="warn_ticker">TravelLog: warning</string>

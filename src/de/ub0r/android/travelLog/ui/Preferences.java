@@ -1,16 +1,38 @@
+/*
+ * Copyright (C) 2010-2011 Felix Bechstein
+ * 
+ * This file is part of TravelLog.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.ub0r.android.travelLog.ui;
+
+import java.util.List;
 
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.widget.Toast;
+import android.view.MenuItem;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
@@ -21,7 +43,7 @@ import de.ub0r.android.travelLog.data.LocationChecker;
  * 
  * @author flx
  */
-public class Preferences extends PreferenceActivity {
+public final class Preferences extends PreferenceActivity {
 	static {
 		Log.init("TravelLog");
 	}
@@ -77,10 +99,10 @@ public class Preferences extends PreferenceActivity {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void onCreate(final Bundle savedInstanceState) {
+	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setTitle(R.string.settings);
 		this.addPreferencesFromResource(R.xml.prefs);
+		this.setTitle(R.string.settings);
 		Utils.setLocale(this);
 		this.findPreference(PREFS_UPDATE_INTERVAL)
 				.setOnPreferenceChangeListener(
@@ -93,38 +115,39 @@ public class Preferences extends PreferenceActivity {
 										.toString());
 							}
 						});
-		this.findPreference(PREFS_LIMIT_WARN_HOURS)
-				.setOnPreferenceChangeListener(
-						new OnPreferenceChangeListener() {
-							@Override
-							public boolean onPreferenceChange(
-									final Preference preference,
-									final Object newValue) {
-								return Preferences.this.checkWarning(newValue
-										.toString());
-							}
-						});
-		this.findPreference(PREFS_LIMIT_ALERT_HOURS)
-				.setOnPreferenceChangeListener(
-						new OnPreferenceChangeListener() {
-							@Override
-							public boolean onPreferenceChange(
-									final Preference preference,
-									final Object newValue) {
-								return Preferences.this.checkAlert(newValue
-										.toString());
-							}
-						});
+
+		Preference pr = this.findPreference("map");
+		if (getLocationProvider(this) == null) {
+			pr.setEnabled(false);
+			pr.setSummary(R.string.map_unavail);
+		} else {
+			pr.setSummary(R.string.map_hint);
+			pr.setEnabled(true);
+		}
 
 		SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		this.checkIntervall(p.getString(PREFS_UPDATE_INTERVAL, null));
-		this.checkWarning(p.getString(PREFS_LIMIT_WARN_HOURS, null));
-		this.checkAlert(p.getString(PREFS_LIMIT_ALERT_HOURS, null));
 	}
 
 	/**
-	 * Check prefererence: intervall.
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			Intent intent = new Intent(this, Logs.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	/**
+	 * Check preference: interval.
 	 * 
 	 * @param newValue
 	 *            new value
@@ -137,54 +160,13 @@ public class Preferences extends PreferenceActivity {
 	}
 
 	/**
-	 * Check prefererence: warning.
-	 * 
-	 * @param newValue
-	 *            new value
-	 * @return update preference?
-	 */
-	private boolean checkWarning(final String newValue) {
-		boolean enable = Utils.parseFloat(newValue, 0) > 0;
-		Preferences.this.findPreference(PREFS_LIMIT_WARN_DELAY).setEnabled(
-				enable);
-		Preferences.this.findPreference(PREFS_LIMIT_WARN_SOUND).setEnabled(
-				enable);
-		return true;
-	}
-
-	/**
-	 * Check prefererence: alert.
-	 * 
-	 * @param newValue
-	 *            new value
-	 * @return update preference?
-	 */
-	private boolean checkAlert(final String newValue) {
-		final float alertHours = Utils.parseFloat(newValue, 0);
-		final float warnHours = Utils.parseFloat(PreferenceManager
-				.getDefaultSharedPreferences(Preferences.this).getString(
-						PREFS_LIMIT_WARN_HOURS, null), 0);
-		if (warnHours > 0 && alertHours < warnHours) {
-			Toast.makeText(Preferences.this, R.string.limit_alert_gt_warn_,
-					Toast.LENGTH_LONG).show();
-			return false;
-		}
-		boolean enable = alertHours > 0;
-		Preferences.this.findPreference(PREFS_LIMIT_ALERT_DELAY).setEnabled(
-				enable);
-		Preferences.this.findPreference(PREFS_LIMIT_ALERT_SOUND).setEnabled(
-				enable);
-		return true;
-	}
-
-	/**
 	 * Get round from preferences.
 	 * 
 	 * @param context
 	 *            {@link Context}
 	 * @return round
 	 */
-	public static final int getRound(final Context context) {
+	public static int getRound(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_ROUND, null);
@@ -199,14 +181,23 @@ public class Preferences extends PreferenceActivity {
 	 *            {@link Context}
 	 * @return theme
 	 */
-	public static final int getTheme(final Context context) {
+	public static int getTheme(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_THEME, THEME_BLACK);
+		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
 		if (s != null && THEME_LIGHT.equals(s)) {
-			return android.R.style.Theme_Light;
+			if (preHoney) {
+				return android.R.style.Theme_Light;
+			} else {
+				return android.R.style.Theme_Holo_Light;
+			}
 		}
-		return android.R.style.Theme_Black;
+		if (preHoney) {
+			return android.R.style.Theme_Black;
+		} else {
+			return android.R.style.Theme_Holo;
+		}
 	}
 
 	/**
@@ -216,7 +207,7 @@ public class Preferences extends PreferenceActivity {
 	 *            {@link Context}
 	 * @return theme
 	 */
-	public static final float getTextSizeGroup(final Context context) {
+	public static float getTextSizeGroup(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_TEXTSIZE_GROUP, "14");
@@ -230,11 +221,31 @@ public class Preferences extends PreferenceActivity {
 	 *            {@link Context}
 	 * @return theme
 	 */
-	public static final float getTextSizeChild(final Context context) {
+	public static float getTextSizeChild(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_TEXTSIZE_CHILD, "12");
 		return Utils.parseFloat(s, DEFAULT_TEXTSIZE_CHILD);
+	}
+
+	/**
+	 * Get coarse location provider.
+	 * 
+	 * @param context
+	 *            {@link Context}
+	 * @return location provider's name
+	 */
+	public static String getLocationProvider(final Context context) {
+		final LocationManager lm = (LocationManager) context
+				.getSystemService(Context.LOCATION_SERVICE);
+		Criteria c = new Criteria();
+		c.setAccuracy(Criteria.ACCURACY_COARSE);
+		List<String> providers = lm.getProviders(c, true);
+		if (providers.size() > 0) {
+			return providers.get(0);
+		}
+		Log.w(TAG, "no location provider found");
+		return null;
 	}
 
 	/**
@@ -243,7 +254,7 @@ public class Preferences extends PreferenceActivity {
 	 * @param context
 	 *            {@link Context}
 	 */
-	public static final void registerLocationChecker(final Context context) {
+	public static void registerLocationChecker(final Context context) {
 		Log.d(TAG, "registerLocationChecker()");
 		final LocationManager lm = (LocationManager) context
 				.getSystemService(Context.LOCATION_SERVICE);
@@ -256,7 +267,9 @@ public class Preferences extends PreferenceActivity {
 		long interval = Utils.parseLong(p
 				.getString(PREFS_UPDATE_INTERVAL, null), 0L);
 		interval *= Utils.MINUTES_IN_MILLIS;
-		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, interval,
-				MINDISTANCE, pi);
+		String lp = getLocationProvider(context);
+		if (lp != null) {
+			lm.requestLocationUpdates(lp, interval, MINDISTANCE, pi);
+		}
 	}
 }

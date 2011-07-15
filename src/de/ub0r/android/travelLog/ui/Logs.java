@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2010-2011 Felix Bechstein
+ * 
+ * This file is part of TravelLog.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
+ * version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; If not, see <http://www.gnu.org/licenses/>.
+ */
 package de.ub0r.android.travelLog.ui;
 
 import java.util.Calendar;
@@ -6,8 +24,10 @@ import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.app.TimePickerDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.AsyncQueryHandler;
@@ -21,6 +41,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -88,6 +109,9 @@ public final class Logs extends ExpandableListActivity implements
 		AD_KEYWORDS.add("accounting");
 		AD_KEYWORDS.add("time");
 	}
+
+	/** Dialog: clear all data. */
+	private static final int DIALOG_CLEAR = 1;
 
 	/**
 	 * Adapter showing log entries.
@@ -283,7 +307,7 @@ public final class Logs extends ExpandableListActivity implements
 			switch (token) {
 			case LIST_QUERY_TOKEN:
 				Logs.this.requery(cursor);
-				Logs.this.setProgressBarVisibility(false);
+				Logs.this.setProgressBarIndeterminateVisibility(false);
 				return;
 			default:
 				return;
@@ -331,6 +355,11 @@ public final class Logs extends ExpandableListActivity implements
 		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
 		this.setContentView(R.layout.logs);
+
+		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
+		if (!preHoney) {
+			this.findViewById(R.id.buttons).setVisibility(View.GONE);
+		}
 
 		this.queryHandler = new BackgroundQueryHandler(this
 				.getContentResolver());
@@ -395,9 +424,7 @@ public final class Logs extends ExpandableListActivity implements
 			this.startActivity(new Intent(this, Preferences.class));
 			return true;
 		case R.id.item_clear:
-			this.getContentResolver().delete(DataProvider.Logs.CONTENT_URI,
-					null, null);
-			this.requery();
+			this.showDialog(DIALOG_CLEAR);
 			return true;
 		case R.id.item_donate:
 			this.startActivity(new Intent(this, DonationHelper.class));
@@ -405,8 +432,48 @@ public final class Logs extends ExpandableListActivity implements
 		case R.id.item_export:
 			this.export();
 			return true;
+		case R.id.start_pause_:
+			this.changeState(DataProvider.Logtypes.TYPE_PAUSE);
+			return true;
+		case R.id.start_travel_:
+			this.changeState(DataProvider.Logtypes.TYPE_TRAVEL);
+			return true;
+		case R.id.start_work_:
+			this.changeState(DataProvider.Logtypes.TYPE_WORK);
+			return true;
+		case R.id.item_stop:
+			this.changeState(0);
+			return true;
 		default:
 			return false;
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Dialog onCreateDialog(final int id) {
+		Builder b;
+		switch (id) {
+		case DIALOG_CLEAR:
+			b = new Builder(this);
+			b.setTitle(R.string.clear_);
+			b.setMessage(R.string.clear_hint);
+			b.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							Logs.this.getContentResolver().delete(
+									DataProvider.Logs.CONTENT_URI, null, null);
+							Logs.this.requery();
+						}
+					});
+			b.setNegativeButton(android.R.string.cancel, null);
+			return b.create();
+		default:
+			return null;
 		}
 	}
 
@@ -680,39 +747,43 @@ public final class Logs extends ExpandableListActivity implements
 		}
 
 		// set buttons
-		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
-				DataProvider.Logs.PROJECTION, null, null, null);
-		if (cursor.moveToFirst()) { // a log is open
-			final int idLogTypeType = cursor
-					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
-			final int logType = cursor.getInt(idLogTypeType);
-			int resId = -1;
-			int vis = View.VISIBLE;
-			switch (logType) {
-			case DataProvider.Logtypes.TYPE_PAUSE:
-				resId = R.string.stop_pause;
-				break;
-			case DataProvider.Logtypes.TYPE_TRAVEL:
-				resId = R.string.stop_travel;
-				break;
-			case DataProvider.Logtypes.TYPE_WORK:
-				resId = R.string.stop_work;
-				break;
-			default:
-				vis = View.GONE;
-			}
-			TextView tv = (TextView) this.findViewById(R.id.stop);
-			if (resId > 0) {
-				tv.setText(resId);
-			}
-			tv.setVisibility(vis);
-		} else { // no log is open
-			this.findViewById(R.id.stop).setVisibility(View.GONE);
+		View v = this.findViewById(R.id.item_stop);
+		if (v == null) {
+			v = this.findViewById(R.id.stop);
 		}
-		if (!cursor.isClosed()) {
-			cursor.close();
+		if (v != null) {
+			Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
+					DataProvider.Logs.PROJECTION, null, null, null);
+			if (cursor.moveToFirst()) { // a log is open
+				final int idLogTypeType = cursor
+						.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
+				final int logType = cursor.getInt(idLogTypeType);
+				int resId = -1;
+				int vis = View.VISIBLE;
+				switch (logType) {
+				case DataProvider.Logtypes.TYPE_PAUSE:
+					resId = R.string.stop_pause;
+					break;
+				case DataProvider.Logtypes.TYPE_TRAVEL:
+					resId = R.string.stop_travel;
+					break;
+				case DataProvider.Logtypes.TYPE_WORK:
+					resId = R.string.stop_work;
+					break;
+				default:
+					vis = View.GONE;
+				}
+				if (v instanceof TextView && resId > 0) {
+					((TextView) v).setText(resId);
+				}
+				v.setVisibility(vis);
+			} else { // no log is open
+				v.setVisibility(View.GONE);
+			}
+			if (!cursor.isClosed()) {
+				cursor.close();
+			}
 		}
-		cursor = null;
 
 		if (!btnOnly) {
 			this.requery();
@@ -729,7 +800,7 @@ public final class Logs extends ExpandableListActivity implements
 				.cancelOperation(BackgroundQueryHandler.LIST_QUERY_TOKEN);
 		try {
 			// Kick off the new query
-			this.setProgressBarVisibility(true);
+			this.setProgressBarIndeterminateVisibility(true);
 			final String v = String.valueOf(System.currentTimeMillis());
 			final String[] p = DataProvider.Logs.PROJECTION_SUM.clone();
 			final int l = p.length;
@@ -779,8 +850,8 @@ public final class Logs extends ExpandableListActivity implements
 		} else {
 			lv.setVisibility(View.GONE);
 			this.findViewById(R.id.hint).setVisibility(View.VISIBLE);
-			this.changeState(0, 0, true);
 		}
+		this.changeState(0, 0, true);
 	}
 
 	/**

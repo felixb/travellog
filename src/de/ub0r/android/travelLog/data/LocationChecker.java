@@ -315,6 +315,17 @@ public final class LocationChecker extends BroadcastReceiver {
 		Log.d(TAG, "warn:  " + warn);
 		Log.d(TAG, "alert: " + alert);
 
+		if (warn <= 0L && alert <= 0L) {
+			Log.i(TAG, "warn=0; alert=0");
+			NotificationManager nm = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			Log.d(TAG, "nm.cancel(0)");
+			nm.cancel(0);
+			p.edit().remove(PREFS_LAST_LEVEL).remove(PREFS_LAST_NOTIFY)
+					.commit();
+			return -1L; // warn=0; alert=0. no need to notify
+		}
+
 		cursor = cr.query(DataProvider.Logs.CONTENT_URI,
 				DataProvider.Logs.PROJECTION, where, args, null);
 
@@ -342,12 +353,12 @@ public final class LocationChecker extends BroadcastReceiver {
 		long desiredPeriod = 0L;
 		// get current level
 		int level = LEVEL_NOTHING;
-		if (d > alert) {
+		if (alert > 0L && d > alert) {
 			level = LEVEL_ALERT;
 			desiredPeriod = Utils.parseLong(p.getString(
 					Preferences.PREFS_LIMIT_ALERT_DELAY, null), 0L)
 					* Utils.N_1000;
-		} else if (d > warn) {
+		} else if (warn > 0L && d > warn) {
 			level = LEVEL_WARN;
 			desiredPeriod = Utils.parseLong(p.getString(
 					Preferences.PREFS_LIMIT_WARN_DELAY, null), 0L)
