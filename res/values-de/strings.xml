@@ -69,4 +69,5 @@
   <string name="alert_ticker" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="TravelLog: ALERT!">TravelLog: ALARM!</string>
   <string name="alert_title" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Alert: Working time reached limit!">Alarm: Arbeitszeit hat das Limit erreicht!</string>
   <string name="alert_text" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Working time has reached critical limit!">Arbeitszeit hat ein kritisches Level erreicht!</string>
+  <string name="clear_hint" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Do you really want to clear &lt;b&gt;all&lt;/b&gt; records?">Willst du wirklich <b>alle</b> Einträge löschen?</string>
 </resources>
