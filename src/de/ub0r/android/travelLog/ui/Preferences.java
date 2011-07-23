@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -184,20 +183,11 @@ public final class Preferences extends PreferenceActivity {
 	public static int getTheme(final Context context) {
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		final String s = p.getString(PREFS_THEME, THEME_BLACK);
-		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
-		if (s != null && THEME_LIGHT.equals(s)) {
-			if (preHoney) {
-				return android.R.style.Theme_Light;
-			} else {
-				return android.R.style.Theme_Holo_Light;
-			}
+		final String s = p.getString(PREFS_THEME, THEME_LIGHT);
+		if (s != null && THEME_BLACK.equals(s)) {
+			return R.style.Theme_Sherlock;
 		}
-		if (preHoney) {
-			return android.R.style.Theme_Black;
-		} else {
-			return android.R.style.Theme_Holo;
-		}
+		return R.style.Theme_Sherlock_Light;
 	}
 
 	/**

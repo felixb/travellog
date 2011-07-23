@@ -18,25 +18,25 @@
  */
 package de.ub0r.android.travelLog.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.MenuItem;
 import de.ub0r.android.travelLog.R;
 
 /**
- * Display About {@link Activity}.
+ * Display About {@link FragmentActivity}.
  * 
  * @author flx
  */
-public final class About extends Activity {
+public final class About extends FragmentActivity {
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		this.setTheme(Preferences.getTheme(this));
+		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.about);
 		this.setTitle(this.getString(R.string.about_) + " v"
 				+ this.getString(R.string.app_version));

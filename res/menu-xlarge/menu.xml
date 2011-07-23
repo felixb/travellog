@@ -32,9 +32,9 @@
 		android:icon="@android:drawable/ic_menu_preferences"
 		android:showAsAction="never" />
 	<item android:id="@+id/item_export" android:title="@string/export_"
-		android:icon="@android:drawable/ic_menu_upload" android:showAsAction="ifRoom|withText" />
+		android:icon="@android:drawable/ic_menu_upload" android:showAsAction="never" />
 	<item android:id="@+id/item_clear" android:title="@string/clear_"
-		android:icon="@android:drawable/ic_menu_delete" android:showAsAction="ifRoom|withText" />
+		android:icon="@android:drawable/ic_menu_delete" android:showAsAction="never" />
 	<item android:id="@+id/item_donate" android:title="@string/donate_remove_ads_"
 		android:icon="@drawable/ic_menu_star" android:showAsAction="never" />
 </menu>

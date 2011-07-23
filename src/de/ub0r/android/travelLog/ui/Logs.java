@@ -25,7 +25,6 @@ import java.util.HashSet;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ExpandableListActivity;
 import android.app.TimePickerDialog;
 import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -41,14 +40,13 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.Menu;
+import android.support.v4.view.MenuItem;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -58,6 +56,7 @@ import android.widget.ExpandableListView;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.ExpandableListView.OnChildClickListener;
 import de.ub0r.android.lib.Changelog;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
@@ -67,12 +66,12 @@ import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
 /**
- * Main Activity.
+ * Main {@link FragmentActivity}.
  * 
  * @author flx
  */
-public final class Logs extends ExpandableListActivity implements
-		OnClickListener {
+public final class Logs extends FragmentActivity implements
+		OnChildClickListener, OnClickListener {
 	static {
 		Log.init("TravelLog");
 	}
@@ -343,6 +342,11 @@ public final class Logs extends ExpandableListActivity implements
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
+	/** {@link MenuItem} stopping all kind of records. */
+	private MenuItem stopItem = null;
+	/** Show stop item. */
+	private boolean showStopItem = false;
+
 	/** Display ads? */
 	private boolean prefsNoAds;
 
@@ -351,15 +355,10 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		this.setTheme(Preferences.getTheme(this));
+		this.requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.logs);
-
-		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
-		if (!preHoney) {
-			this.findViewById(R.id.buttons).setVisibility(View.GONE);
-		}
 
 		this.queryHandler = new BackgroundQueryHandler(this
 				.getContentResolver());
@@ -406,10 +405,13 @@ public final class Logs extends ExpandableListActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		MenuInflater inflater = this.getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
+		this.getMenuInflater().inflate(R.menu.menu, menu);
 		if (this.prefsNoAds) {
 			menu.removeItem(R.id.item_donate);
+		}
+		this.stopItem = menu.findItem(R.id.item_stop);
+		if (this.stopItem != null) {
+			this.stopItem.setVisible(this.showStopItem);
 		}
 		return true;
 	}
@@ -507,7 +509,6 @@ public final class Logs extends ExpandableListActivity implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public boolean onChildClick(final ExpandableListView parent, final View v,
 			final int groupPosition, final int childPosition, final long id) {
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
@@ -747,42 +748,42 @@ public final class Logs extends ExpandableListActivity implements
 		}
 
 		// set buttons
-		View v = this.findViewById(R.id.item_stop);
-		if (v == null) {
-			v = this.findViewById(R.id.stop);
+		View v = this.findViewById(R.id.stop);
+		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
+				DataProvider.Logs.PROJECTION, null, null, null);
+		if (cursor.moveToFirst()) { // a log is open
+			final int idLogTypeType = cursor
+					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
+			final int logType = cursor.getInt(idLogTypeType);
+			int resId = -1;
+			int vis = View.VISIBLE;
+			switch (logType) {
+			case DataProvider.Logtypes.TYPE_PAUSE:
+				resId = R.string.stop_pause;
+				break;
+			case DataProvider.Logtypes.TYPE_TRAVEL:
+				resId = R.string.stop_travel;
+				break;
+			case DataProvider.Logtypes.TYPE_WORK:
+				resId = R.string.stop_work;
+				break;
+			default:
+				vis = View.GONE;
+			}
+			if (v instanceof TextView && resId > 0) {
+				((TextView) v).setText(resId);
+			}
+			v.setVisibility(vis);
+			this.showStopItem = vis != View.GONE;
+		} else { // no log is open
+			v.setVisibility(View.GONE);
+			this.showStopItem = false;
 		}
-		if (v != null) {
-			Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
-					DataProvider.Logs.PROJECTION, null, null, null);
-			if (cursor.moveToFirst()) { // a log is open
-				final int idLogTypeType = cursor
-						.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
-				final int logType = cursor.getInt(idLogTypeType);
-				int resId = -1;
-				int vis = View.VISIBLE;
-				switch (logType) {
-				case DataProvider.Logtypes.TYPE_PAUSE:
-					resId = R.string.stop_pause;
-					break;
-				case DataProvider.Logtypes.TYPE_TRAVEL:
-					resId = R.string.stop_travel;
-					break;
-				case DataProvider.Logtypes.TYPE_WORK:
-					resId = R.string.stop_work;
-					break;
-				default:
-					vis = View.GONE;
-				}
-				if (v instanceof TextView && resId > 0) {
-					((TextView) v).setText(resId);
-				}
-				v.setVisibility(vis);
-			} else { // no log is open
-				v.setVisibility(View.GONE);
-			}
-			if (!cursor.isClosed()) {
-				cursor.close();
-			}
+		if (!cursor.isClosed()) {
+			cursor.close();
+		}
+		if (this.stopItem != null) {
+			this.stopItem.setVisible(this.showStopItem);
 		}
 
 		if (!btnOnly) {

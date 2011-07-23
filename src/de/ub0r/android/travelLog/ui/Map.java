@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -443,8 +442,12 @@ public final class Map extends MapActivity {
 	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		// this.setTheme(Preferences.getTheme(this));
+		if (Utils.isApi(Build.VERSION_CODES.HONEYCOMB)) {
+			this.setTheme(android.R.style.Theme_Holo);
+		}
 		Utils.setLocale(this);
+		super.onCreate(savedInstanceState);
 		this.setTitle(this.getString(R.string.settings) + " > "
 				+ this.getString(R.string.map_));
 		this.setContentView(R.layout.map);
@@ -501,8 +504,7 @@ public final class Map extends MapActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		MenuInflater inflater = this.getMenuInflater();
-		inflater.inflate(R.menu.map, menu);
+		this.getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
 
