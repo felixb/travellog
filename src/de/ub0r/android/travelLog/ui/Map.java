@@ -466,7 +466,10 @@ public final class Map extends MapActivity {
 		this.myLocationOverly = new MyLocationOverlay(this, this.mv);
 		this.myLocationOverly.runOnFirstFix(new Runnable() {
 			public void run() {
-				mc.animateTo(Map.this.myLocationOverly.getMyLocation());
+				final GeoPoint gp = Map.this.myLocationOverly.getMyLocation();
+				if (gp != null) {
+					mc.animateTo(gp);
+				}
 			}
 		});
 		overlays.add(this.myLocationOverly);
@@ -514,6 +517,15 @@ public final class Map extends MapActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.item_my_location:
+			final GeoPoint gp = this.myLocationOverly.getMyLocation();
+			if (gp != null) {
+				this.mv.getController().animateTo(gp);
+			} else {
+				Toast.makeText(this, R.string.no_location_, Toast.LENGTH_LONG)
+						.show();
+			}
+			return true;
 		case R.id.item_add_cell:
 			Toast.makeText(this, R.string.add_cell_hint, Toast.LENGTH_LONG)
 					.show();

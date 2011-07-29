@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		Copyright (C) 2010-2011 Felix Bechstein
+	-->
+	<!--
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
+	-->
+	<!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+	-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:background="?android:attr/colorBackground"
+	android:layout_height="fill_parent">
+	<FrameLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_weight="1">
+		<ExpandableListView android:id="@android:id/list"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<TextView android:id="@+id/hint" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:padding="10dip"
+			android:layout_gravity="center" android:text="@string/hint" />
+	</FrameLayout>
+	<LinearLayout android:id="@+id/ad"
+		android:layout_alignParentBottom="true" android:visibility="gone"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:cacheColorHint="?android:attr/colorBackground"
+		android:gravity="right" />
+	<LinearLayout android:id="@+id/buttons"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_weight="0" style="@android:style/ButtonBar"
+		android:visibility="gone">
+		<Button android:id="@+id/stop" android:text="id/stop"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_work_" android:text="@string/start_work"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_travel_" android:text="@string/start_travel"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+		<Button android:id="@+id/start_pause_" android:text="@string/start_pause"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_weight="1" />
+	</LinearLayout>
+</LinearLayout>

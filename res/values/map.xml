@@ -21,6 +21,8 @@
 	<string name="map_hint">Add cells on the map to add log items automatically.</string>
 	<string name="map_unavail">Coarse location provider is unavailable!</string>
 	<string name="cell_">Cell</string>
+	<string name="my_location_">My location</string>
+	<string name="no_location_">Location is unknown!</string>
 	<string name="add_cell_">Add cell</string>
 	<string name="add_cell_hint">Touch the map to add a cell.</string>
 	<string name="add_cell_toast">Press menu button to add a cell.</string>

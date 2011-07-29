@@ -17,6 +17,8 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:title="@string/my_location_" android:id="@+id/item_my_location"
+		android:icon="@android:drawable/ic_menu_mylocation" android:showAsAction="always|withText" />
 	<item android:title="@string/add_cell_" android:id="@+id/item_add_cell"
 		android:icon="@android:drawable/ic_menu_add" android:showAsAction="always|withText" />
 </menu>

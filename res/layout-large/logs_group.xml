@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--
+		Copyright (C) 2010-2011 Felix Bechstein
+	-->
+	<!--
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
+	-->
+	<!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+	-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:minHeight="50dip"
+	android:layout_height="wrap_content" android:paddingLeft="50dip"
+	android:layout_marginLeft="15dip" android:paddingRight="15dip"
+	android:paddingTop="5dip" android:paddingBottom="5dip">
+	<TextView android:id="@+id/time" android:text="id/time"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_alignParentRight="true" />
+	<TextView android:id="@+id/date" android:text="id/date"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true" android:layout_toLeftOf="@id/time" />
+	<LinearLayout android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:layout_below="@id/date"
+		android:paddingTop="2dip">
+		<TextView android:id="@+id/work" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/work" />
+		<TextView android:id="@+id/travel" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/travel" android:gravity="center_horizontal" />
+		<TextView android:id="@+id/pause" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/pause" android:gravity="right" />
+	</LinearLayout>
+</RelativeLayout>

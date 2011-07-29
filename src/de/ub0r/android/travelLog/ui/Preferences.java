@@ -185,9 +185,9 @@ public final class Preferences extends PreferenceActivity {
 				.getDefaultSharedPreferences(context);
 		final String s = p.getString(PREFS_THEME, THEME_LIGHT);
 		if (s != null && THEME_BLACK.equals(s)) {
-			return R.style.Theme_Sherlock;
+			return R.style.Theme_SherlockUb0r;
 		}
-		return R.style.Theme_Sherlock_Light;
+		return R.style.Theme_SherlockUb0r_Light;
 	}
 
 	/**
