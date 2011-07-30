@@ -27,7 +27,6 @@
   <string name="about_">About TravelLog</string>
 	<string name="settings">Preferences</string>
 	<string name="settings_common">Preferences - Common</string>
-	<string name="settings_connectors">Preferences - Connectors</string>
 	<string name="twitter_hint">Follow me on twitter.\nGet update notifications etc.</string>
 	<string name="author_">Author:</string>
 	<string name="version_">Version:</string>

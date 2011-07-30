@@ -40,6 +40,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -422,8 +423,12 @@ public final class Logs extends FragmentActivity implements
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.item_settings: // start settings activity
-			this.startActivity(new Intent(this, Preferences.class));
+		case R.id.item_settings:
+			if (Utils.isApi(Build.VERSION_CODES.HONEYCOMB)) {
+				this.startActivity(new Intent(this, Preferences11.class));
+			} else {
+				this.startActivity(new Intent(this, Preferences.class));
+			}
 			return true;
 		case R.id.item_clear:
 			this.showDialog(DIALOG_CLEAR);

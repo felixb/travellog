@@ -17,12 +17,22 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/go_home_">
-		<PreferenceScreen android:key="go_home"
-			android:title="@string/go_home_" android:summary="@string/go_home_hint">
+	<PreferenceCategory android:title="@string/logtypes_">
+		<PreferenceScreen android:title="@string/logtypes_"
+			android:summary="@string/logtypes_hint">
 			<intent android:action="android.intent.action.MAIN"
 				android:targetPackage="de.ub0r.android.travelLog"
-				android:targetClass="de.ub0r.android.travelLog.ui.PreferencesGoHome" />
+				android:targetClass="de.ub0r.android.travelLog.ui.LogTypes" />
+		</PreferenceScreen>
+		<ListPreference android:key="update_interval"
+			android:title="@string/update_interval_" android:summary="@string/update_interval_hint"
+			android:entries="@array/update_interval" android:entryValues="@array/update_interval_values"
+			android:defaultValue="60" />
+		<PreferenceScreen android:key="map" android:title="@string/map_"
+			android:summary="@string/map_hint">
+			<intent android:action="android.intent.action.MAIN"
+				android:targetPackage="de.ub0r.android.travelLog"
+				android:targetClass="de.ub0r.android.travelLog.ui.Map" />
 		</PreferenceScreen>
 	</PreferenceCategory>
 </PreferenceScreen>

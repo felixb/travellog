@@ -18,56 +18,34 @@
  */
 package de.ub0r.android.travelLog.ui;
 
-import android.content.Context;
-import android.content.Intent;
+import java.util.List;
+
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.view.MenuItem;
-import de.ub0r.android.lib.IPreferenceContainer;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
 
 /**
- * Preferences for "go home" settings.
+ * {@link PreferenceActivity} for API>=11.
  * 
  * @author flx
  */
-public final class PreferencesGoHome extends PreferenceActivity implements
-		IPreferenceContainer {
+public final class Preferences11 extends PreferenceActivity {
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.addPreferencesFromResource(R.xml.prefs_screen_go_home);
-		this.setTitle(this.getString(R.string.settings) + " > "
-				+ this.getString(R.string.go_home_));
+		this.setTitle(R.string.settings);
 		Utils.setLocale(this);
-		Preferences.registerPreferenceChecker(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean onOptionsItemSelected(final MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			Intent intent = new Intent(this, Logs.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			this.startActivity(intent);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Context getContext() {
-		return this;
+	public void onBuildHeaders(final List<Header> target) {
+		this.loadHeadersFromResource(R.xml.preference_headers, target);
 	}
 }

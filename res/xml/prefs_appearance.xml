@@ -17,12 +17,14 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/go_home_">
-		<PreferenceScreen android:key="go_home"
-			android:title="@string/go_home_" android:summary="@string/go_home_hint">
-			<intent android:action="android.intent.action.MAIN"
-				android:targetPackage="de.ub0r.android.travelLog"
-				android:targetClass="de.ub0r.android.travelLog.ui.PreferencesGoHome" />
-		</PreferenceScreen>
+	<PreferenceCategory android:title="@string/appearance_">
+		<ListPreference android:key="theme" android:title="@string/theme_"
+			android:entries="@array/themes" android:entryValues="@array/themes_values" />
+		<EditTextPreference android:key="textsize_group"
+			android:title="@string/textsize_group" android:summary="@string/textsize_hint"
+			android:defaultValue="16" android:inputType="number" />
+		<EditTextPreference android:key="textsize_child"
+			android:title="@string/textsize_child" android:summary="@string/textsize_hint"
+			android:defaultValue="14" android:inputType="number" />
 	</PreferenceCategory>
 </PreferenceScreen>

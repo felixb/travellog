@@ -32,6 +32,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.view.MenuItem;
+import android.widget.Toast;
+import de.ub0r.android.lib.IPreferenceContainer;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
@@ -42,7 +44,8 @@ import de.ub0r.android.travelLog.data.LocationChecker;
  * 
  * @author flx
  */
-public final class Preferences extends PreferenceActivity {
+public final class Preferences extends PreferenceActivity implements
+		IPreferenceContainer {
 	static {
 		Log.init("TravelLog");
 	}
@@ -100,33 +103,83 @@ public final class Preferences extends PreferenceActivity {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.addPreferencesFromResource(R.xml.prefs);
+
+		this.addPreferencesFromResource(R.xml.prefs_appearance);
+		this.addPreferencesFromResource(R.xml.prefs_common);
+		this.addPreferencesFromResource(R.xml.prefs_logtypes);
+		this.addPreferencesFromResource(R.xml.prefs_go_home);
+		this.addPreferencesFromResource(R.xml.prefs_about);
+
 		this.setTitle(R.string.settings);
 		Utils.setLocale(this);
-		this.findPreference(PREFS_UPDATE_INTERVAL)
-				.setOnPreferenceChangeListener(
-						new OnPreferenceChangeListener() {
-							@Override
-							public boolean onPreferenceChange(
-									final Preference preference,
-									final Object newValue) {
-								return Preferences.this.checkIntervall(newValue
-										.toString());
-							}
-						});
+		registerPreferenceChecker(this);
+	}
 
-		Preference pr = this.findPreference("map");
-		if (getLocationProvider(this) == null) {
-			pr.setEnabled(false);
-			pr.setSummary(R.string.map_unavail);
-		} else {
-			pr.setSummary(R.string.map_hint);
-			pr.setEnabled(true);
+	/**
+	 * Check all {@link SharedPreferences} and register
+	 * {@link OnPreferenceChangeListener}.
+	 * 
+	 * @param pc
+	 *            {@link IPreferenceContainer}
+	 */
+	static void registerPreferenceChecker(final IPreferenceContainer pc) {
+		Preference pr = pc.findPreference(PREFS_UPDATE_INTERVAL);
+		if (pr != null) {
+			pr.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					return Preferences.checkIntervall(pc, newValue.toString());
+				}
+			});
 		}
 
-		SharedPreferences p = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		this.checkIntervall(p.getString(PREFS_UPDATE_INTERVAL, null));
+		pr = pc.findPreference("map");
+		if (pr != null) {
+			if (getLocationProvider(pc.getContext()) == null) {
+				pr.setEnabled(false);
+				pr.setSummary(R.string.map_unavail);
+			} else {
+				pr.setSummary(R.string.map_hint);
+				pr.setEnabled(true);
+			}
+		}
+
+		pr = pc.findPreference(Preferences.PREFS_LIMIT_WARN_HOURS);
+		if (pr != null) {
+			pr.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					return checkWarning(pc, newValue.toString());
+				}
+			});
+		}
+		pr = pc.findPreference(Preferences.PREFS_LIMIT_ALERT_HOURS);
+		if (pr != null) {
+			pr.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(final Preference preference,
+						final Object newValue) {
+					return checkAlert(pc, newValue.toString());
+				}
+			});
+		}
+
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(pc
+				.getContext());
+		checkIntervall(pc, sp.getString(PREFS_UPDATE_INTERVAL, null));
+		checkWarning(pc, sp.getString(Preferences.PREFS_LIMIT_WARN_HOURS, // .
+				null));
+		checkAlert(pc, sp.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Context getContext() {
+		return this;
 	}
 
 	/**
@@ -148,13 +201,73 @@ public final class Preferences extends PreferenceActivity {
 	/**
 	 * Check preference: interval.
 	 * 
+	 * @param pc
+	 *            {@link IPreferenceContainer}
 	 * @param newValue
 	 *            new value
 	 * @return update preference?
 	 */
-	private boolean checkIntervall(final String newValue) {
-		Preferences.this.findPreference(PREFS_GO_HOME).setEnabled(
-				Utils.parseInt(newValue, 0) > 0);
+	private static boolean checkIntervall(final IPreferenceContainer pc,
+			final String newValue) {
+		Preference pr = pc.findPreference(PREFS_GO_HOME);
+		if (pr != null) {
+			pr.setEnabled(Utils.parseInt(newValue, 0) > 0);
+		}
+		return true;
+	}
+
+	/**
+	 * Check preference: warning.
+	 * 
+	 * @param pc
+	 *            {@link IPreferenceContainer}
+	 * @param newValue
+	 *            new value
+	 * @return update preference?
+	 */
+	private static boolean checkWarning(final IPreferenceContainer pc,
+			final String newValue) {
+		boolean enable = Utils.parseFloat(newValue, 0) > 0;
+		Preference pr = pc.findPreference(Preferences.PREFS_LIMIT_WARN_DELAY);
+		if (pr != null) {
+			pr.setEnabled(enable);
+		}
+		pr = pc.findPreference(Preferences.PREFS_LIMIT_WARN_SOUND);
+		if (pr != null) {
+			pr.setEnabled(enable);
+		}
+		return true;
+	}
+
+	/**
+	 * Check preference: alert.
+	 * 
+	 * @param pc
+	 *            {@link IPreferenceContainer}
+	 * @param newValue
+	 *            new value
+	 * @return update preference?
+	 */
+	private static boolean checkAlert(final IPreferenceContainer pc,
+			final String newValue) {
+		final float alertHours = Utils.parseFloat(newValue, 0);
+		final float warnHours = Utils.parseFloat(PreferenceManager
+				.getDefaultSharedPreferences(pc.getContext()).getString(
+						Preferences.PREFS_LIMIT_WARN_HOURS, null), 0);
+		if (alertHours > 0f && alertHours < warnHours) {
+			Toast.makeText(pc.getContext(), R.string.limit_alert_gt_warn_,
+					Toast.LENGTH_LONG).show();
+			return false;
+		}
+		boolean enable = alertHours > 0f;
+		Preference pr = pc.findPreference(Preferences.PREFS_LIMIT_ALERT_DELAY);
+		if (pr != null) {
+			pr.setEnabled(enable);
+		}
+		pr = pc.findPreference(Preferences.PREFS_LIMIT_ALERT_SOUND);
+		if (pr != null) {
+			pr.setEnabled(enable);
+		}
 		return true;
 	}
 

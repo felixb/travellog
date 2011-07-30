@@ -60,7 +60,6 @@
   </string-array>
   <string name="about_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="About this app">Über diese App</string>
   <string name="settings_common" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Preferences - Common">Einstellungen - Allgemein</string>
-  <string name="settings_connectors" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Preferences - Connectors">Einstellungen - Connectors</string>
   <string name="author_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Author:">Autor:</string>
   <string name="version_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Version:">Version:</string>
   <string name="license_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="License:">Lizenz:</string>

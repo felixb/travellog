@@ -32,6 +32,9 @@
 		<activity android:name=".ui.Preferences"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
+		<activity android:name=".ui.Preferences11"
+			android:configChanges="orientation|keyboardHidden"
+			android:windowSoftInputMode="adjustResize" />
 		<activity android:name=".ui.PreferencesGoHome"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />

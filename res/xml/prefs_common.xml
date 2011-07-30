@@ -17,12 +17,14 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="@string/go_home_">
-		<PreferenceScreen android:key="go_home"
-			android:title="@string/go_home_" android:summary="@string/go_home_hint">
-			<intent android:action="android.intent.action.MAIN"
-				android:targetPackage="de.ub0r.android.travelLog"
-				android:targetClass="de.ub0r.android.travelLog.ui.PreferencesGoHome" />
-		</PreferenceScreen>
+	<PreferenceCategory android:title="@string/settings">
+		<EditTextPreference android:key="mail"
+			android:title="@string/mail_" android:dialogTitle="@string/mail_"
+			android:inputType="textEmailAddress" android:summary="@string/mail__" />
+		<ListPreference android:key="round" android:title="@string/round_"
+			android:entries="@array/round_" android:entryValues="@array/round"
+			android:dialogTitle="@string/round_" />
+		<CheckBoxPreference android:key="export_flip"
+			android:title="@string/export_flip" />
 	</PreferenceCategory>
 </PreferenceScreen>
