@@ -41,6 +41,6 @@
 		<item name="abBackground">#B0353535</item>
 	</style>
 	<style name="Theme.SherlockUb0r_Light" parent="style/Theme.Sherlock.Light">
-		<item name="abBackground">#50353535</item>
+		<item name="abBackground">#50707070</item>
 	</style>
 </resources>

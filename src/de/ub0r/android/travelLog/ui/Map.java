@@ -32,12 +32,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentMapActivity;
+import android.support.v4.view.Menu;
+import android.support.v4.view.MenuItem;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -50,7 +50,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
@@ -64,11 +63,11 @@ import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
 /**
- * {@link MapActivity} showing all auto logs.
+ * {@link FragmentMapActivity} showing all auto logs.
  * 
  * @author flx
  */
-public final class Map extends MapActivity {
+public final class Map extends FragmentMapActivity {
 	/** Tag for output. */
 	private static final String TAG = "Map";
 
@@ -442,15 +441,12 @@ public final class Map extends MapActivity {
 	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		// this.setTheme(Preferences.getTheme(this));
-		if (Utils.isApi(Build.VERSION_CODES.HONEYCOMB)) {
-			this.setTheme(android.R.style.Theme_Holo);
-		}
+		this.setTheme(Preferences.getTheme(this));
 		Utils.setLocale(this);
 		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.map);
 		this.setTitle(this.getString(R.string.settings) + " > "
 				+ this.getString(R.string.map_));
-		this.setContentView(R.layout.map);
 		this.mv = (MapView) this.findViewById(R.id.mapview);
 		this.mv.setBuiltInZoomControls(true);
 		final MapController mc = this.mv.getController();
@@ -474,12 +470,6 @@ public final class Map extends MapActivity {
 		});
 		overlays.add(this.myLocationOverly);
 		this.mv.invalidate();
-
-		final boolean preHoney = !Utils.isApi(Build.VERSION_CODES.HONEYCOMB);
-		if (preHoney) {
-			Toast.makeText(this, R.string.add_cell_toast, Toast.LENGTH_LONG)
-					.show();
-		}
 	}
 
 	/**
