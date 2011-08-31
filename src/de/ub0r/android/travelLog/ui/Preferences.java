@@ -20,6 +20,7 @@ package de.ub0r.android.travelLog.ui;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -179,6 +180,14 @@ public final class Preferences extends PreferenceActivity implements
 	 */
 	@Override
 	public Context getContext() {
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Activity getActivity() {
 		return this;
 	}
 
