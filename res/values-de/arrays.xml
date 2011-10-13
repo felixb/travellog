@@ -21,15 +21,6 @@
                Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=arrays.xml to edit the file.
        -->
 <resources>
-  <string-array name="round">
-    <item>0</item>
-    <item>5</item>
-    <item>10</item>
-    <item>15</item>
-    <item>30</item>
-    <item>60</item>
-    <item>0\'</item>
-  </string-array>
   <string-array name="round_">
     <item>nicht runden</item>
     <item>5min</item>
