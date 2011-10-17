@@ -130,6 +130,8 @@ public final class Logs extends FragmentActivity implements
 		private final java.text.DateFormat timeFormat;
 		/** {@link TextView}'s text size. */
 		private final float textSizeGroup, textSizeChild;
+		/** Count travel time in sum. */
+		private final boolean countTravel;
 
 		/**
 		 * Constructor.
@@ -144,6 +146,8 @@ public final class Logs extends FragmentActivity implements
 			this.timeFormat = DateFormat.getTimeFormat(context);
 			this.textSizeGroup = Preferences.getTextSizeGroup(context);
 			this.textSizeChild = Preferences.getTextSizeChild(context);
+			this.countTravel = PreferenceManager.getDefaultSharedPreferences(
+					context).getBoolean(Preferences.PREFS_COUNT_TRAVEL, false);
 		}
 
 		/**
@@ -212,10 +216,10 @@ public final class Logs extends FragmentActivity implements
 				to = System.currentTimeMillis();
 			}
 			final long from = cursor.getLong(idFrom);
-			final long time = to - from;
 			final long sumWork = cursor.getLong(idSumWork);
 			final long sumTravel = cursor.getLong(idSumTravel);
 			final long sumPause = cursor.getLong(idSumPause);
+			final long time = this.countTravel ? sumWork + sumTravel : sumWork;
 
 			TextView tv = (TextView) view.findViewById(R.id.date);
 			tv.setText(this.dateFormat.format(new Date(from)));
