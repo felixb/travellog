@@ -58,7 +58,7 @@ import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ExpandableListView.OnChildClickListener;
-import de.ub0r.android.lib.Changelog;
+import de.ub0r.android.lib.ChangelogHelper;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
@@ -365,8 +365,8 @@ public final class Logs extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.logs);
 
-		this.queryHandler = new BackgroundQueryHandler(this
-				.getContentResolver());
+		this.queryHandler = new BackgroundQueryHandler(
+				this.getContentResolver());
 		final ExpandableListView lv = (ExpandableListView) this
 				.findViewById(android.R.id.list);
 		lv.setAdapter(new LogAdapter(this));
@@ -377,7 +377,7 @@ public final class Logs extends FragmentActivity implements
 		this.findViewById(R.id.start_travel_).setOnClickListener(this);
 		this.findViewById(R.id.start_work_).setOnClickListener(this);
 
-		Changelog.showChangelog(this);
+		ChangelogHelper.showChangelog(this, true);
 		this.changeState(0, 0, true);
 
 		this.prefsNoAds = DonationHelper.hideAds(this);
@@ -438,7 +438,7 @@ public final class Logs extends FragmentActivity implements
 			this.showDialog(DIALOG_CLEAR);
 			return true;
 		case R.id.item_donate:
-			this.startActivity(new Intent(this, DonationHelper.class));
+			DonationHelper.startDonationActivity(this, true);
 			return true;
 		case R.id.item_export:
 			this.export();
@@ -622,8 +622,8 @@ public final class Logs extends FragmentActivity implements
 		buf.append(this.getString(R.string.website));
 		buf.append("\n");
 		in.putExtra(Intent.EXTRA_TEXT, buf.toString());
-		in.putExtra(Intent.EXTRA_SUBJECT, this
-				.getString(R.string.export_subject));
+		in.putExtra(Intent.EXTRA_SUBJECT,
+				this.getString(R.string.export_subject));
 		in.setType("text/plain");
 		this.startActivity(in);
 	}
@@ -936,8 +936,8 @@ public final class Logs extends FragmentActivity implements
 							null);
 					Logs.this.requery();
 				}
-			}, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal
-					.get(Calendar.DAY_OF_MONTH)).show();
+			}, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+					cal.get(Calendar.DAY_OF_MONTH)).show();
 		}
 	}
 

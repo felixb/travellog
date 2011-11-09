@@ -47,9 +47,6 @@
 			android:theme="@style/Theme.SherlockUb0r" />
 		<provider android:name=".data.DataProvider"
 			android:authorities="de.ub0r.android.travelLog.provider" />
-		<activity android:name="de.ub0r.android.lib.DonationHelper"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" android:theme="@android:style/Theme.Light" />
 		<receiver android:name=".data.LocationChecker">
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -57,7 +54,10 @@
 				<category android:name="android.intent.category.HOME" />
 			</intent-filter>
 		</receiver>
-		<activity android:name="de.ub0r.android.lib.Changelog"
+		<activity android:name="de.ub0r.android.lib.DonationFragmentActivity"
+			android:configChanges="orientation|keyboardHidden"
+			android:windowSoftInputMode="adjustResize" />
+		<activity android:name="de.ub0r.android.lib.ChangelogFragmentActivity"
 			android:configChanges="orientation|keyboardHidden"
 			android:windowSoftInputMode="adjustResize" />
 		<activity android:name="com.google.ads.AdActivity"

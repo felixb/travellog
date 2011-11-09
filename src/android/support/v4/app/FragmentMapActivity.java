@@ -29,8 +29,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,6 +131,11 @@ public abstract class FragmentMapActivity extends MapActivity implements
 		void ensureSupportActionBarAttached() {
 			FragmentMapActivity.this.ensureSupportActionBarAttached();
 		}
+
+		@Override
+		boolean getRetaining() {
+			return FragmentMapActivity.this.mRetaining;
+		}
 	};
 
 	final Handler mHandler = new Handler() {
@@ -153,7 +158,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	};
 	final FragmentManagerImpl mFragments = new FragmentManagerImpl();
 
-	final ActionBar mActionBar;
+	ActionBar mActionBar;
 	boolean mIsActionBarImplAttached;
 	long mWindowFlags = 0;
 
@@ -171,6 +176,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	boolean mResumed;
 	boolean mStopped;
 	boolean mReallyStopped;
+	boolean mRetaining;
 
 	boolean mOptionsMenuInvalidated;
 	boolean mOptionsMenuCreateResult;
@@ -182,6 +188,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 	static final class NonConfigurationInstances {
 		Object activity;
+		Object custom;
 		HashMap<String, Object> children;
 		ArrayList<Fragment> fragments;
 		HCSparseArray<LoaderManagerImpl> loaders;
@@ -202,7 +209,6 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			this.mActionBar = ActionBarWrapper.createFor(this);
 			this.mSupportMenu = null; // Everything should be done natively
 		} else {
-			this.mActionBar = new ActionBarImpl(this);
 			this.mSupportMenu = new MenuBuilder(this);
 			this.mSupportMenu.setCallback(this.mSupportMenuCallback);
 		}
@@ -229,12 +235,12 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			}
 			if ((this.mWindowFlags & WINDOW_FLAG_ACTION_BAR) == WINDOW_FLAG_ACTION_BAR) {
 				if ((this.mWindowFlags & WINDOW_FLAG_ACTION_BAR_OVERLAY) == WINDOW_FLAG_ACTION_BAR_OVERLAY) {
-					super
-							.setContentView(R.layout.abs__screen_action_bar_overlay);
+					super.setContentView(R.layout.abs__screen_action_bar_overlay);
 				} else {
 					super.setContentView(R.layout.abs__screen_action_bar);
 				}
 
+				this.mActionBar = new ActionBarImpl(this);
 				((ActionBarImpl) this.mActionBar).init();
 
 				final boolean textEnabled = ((this.mWindowFlags & WINDOW_FLAG_ACTION_BAR_ITEM_TEXT) == WINDOW_FLAG_ACTION_BAR_ITEM_TEXT);
@@ -242,14 +248,13 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 				if ((this.mWindowFlags & WINDOW_FLAG_INDETERMINANTE_PROGRESS) == WINDOW_FLAG_INDETERMINANTE_PROGRESS) {
 					((ActionBarImpl) this.mActionBar)
-							.setProgressBarIndeterminateVisibility(true);
+							.setProgressBarIndeterminateVisibility(false);
 				}
 
 				// TODO set other flags
 			} else {
 				if ((this.mWindowFlags & WINDOW_FLAG_INDETERMINANTE_PROGRESS) == WINDOW_FLAG_INDETERMINANTE_PROGRESS) {
-					super
-							.requestWindowFeature((int) Window.FEATURE_INDETERMINATE_PROGRESS);
+					super.requestWindowFeature((int) Window.FEATURE_INDETERMINATE_PROGRESS);
 				}
 				super.setContentView(R.layout.abs__screen_simple);
 			}
@@ -348,19 +353,19 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 	@Override
 	public void setTitle(final CharSequence title) {
-		if (IS_HONEYCOMB || (this.mActionBar.getPublicInstance() == null)) {
+		if (IS_HONEYCOMB || (this.getSupportActionBar() == null)) {
 			super.setTitle(title);
 		} else {
-			this.mActionBar.setTitle(title);
+			this.getSupportActionBar().setTitle(title);
 		}
 	}
 
 	@Override
 	public void setTitle(final int titleId) {
-		if (IS_HONEYCOMB || (this.mActionBar.getPublicInstance() == null)) {
+		if (IS_HONEYCOMB || (this.getSupportActionBar() == null)) {
 			super.setTitle(titleId);
 		} else {
-			this.mActionBar.setTitle(titleId);
+			this.getSupportActionBar().setTitle(titleId);
 		}
 	}
 
@@ -383,8 +388,9 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			if (frag == null) {
 				Log.w(TAG, "Activity result no fragment exists for index: 0x"
 						+ Integer.toHexString(requestCode));
+			} else {
+				frag.onActivityResult(requestCode & 0xffff, resultCode, data);
 			}
-			frag.onActivityResult(requestCode & 0xffff, resultCode, data);
 			return;
 		}
 
@@ -469,8 +475,8 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	 * </p>
 	 * <p>
 	 * You can safely hold on to menu (and any items created from it), making
-	 * modifications to it as desired, until the next time {@code
-	 * onCreateOptionsMenu()} is called.
+	 * modifications to it as desired, until the next time
+	 * {@code onCreateOptionsMenu()} is called.
 	 * </p>
 	 * <p>
 	 * When you add items to the menu, you can implement the Activity's
@@ -485,8 +491,9 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		if (DEBUG) {
-			Log.d(TAG, "onCreateOptionsMenu(Menu): Returning "
-					+ menu.hasVisibleItems());
+			Log.d(TAG,
+					"onCreateOptionsMenu(Menu): Returning "
+							+ menu.hasVisibleItems());
 		}
 		return menu.hasVisibleItems();
 	}
@@ -500,15 +507,13 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 		if (IS_HONEYCOMB) {
 			if (DEBUG) {
-				Log
-						.d(
-								TAG,
-								"onCreateOptionsMenu(android.view.Menu): Calling support method with wrapped native menu.");
+				Log.d(TAG,
+						"onCreateOptionsMenu(android.view.Menu): Calling support method with wrapped native menu.");
 			}
 			MenuWrapper wrapped = new MenuWrapper(menu);
 			result = this.onCreateOptionsMenu(wrapped);
-			result |= this.mFragments.dispatchCreateOptionsMenu(wrapped, this
-					.getMenuInflater());
+			result |= this.mFragments.dispatchCreateOptionsMenu(wrapped,
+					this.getMenuInflater());
 		}
 
 		if (DEBUG) {
@@ -570,7 +575,6 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			fragment.mContainerId = containerId;
 			fragment.mTag = tag;
 			fragment.mInLayout = true;
-			fragment.mImmediateActivity = this;
 			fragment.mFragmentManager = this.mFragments;
 			fragment.onInflate(this, attrs, fragment.mSavedFragmentState);
 			this.mFragments.addFragment(fragment, true);
@@ -587,7 +591,6 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			// This fragment was retained from a previous instance; get it
 			// going now.
 			fragment.mInLayout = true;
-			fragment.mImmediateActivity = this;
 			// If this fragment is newly instantiated (either right now, or
 			// from last saved state), then give it the attributes to
 			// initialize itself.
@@ -624,15 +627,21 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			this.mOptionsMenuCreateResult = this
 					.onCreateOptionsMenu(this.mSupportMenu);
 			this.mOptionsMenuCreateResult |= this.mFragments
-					.dispatchCreateOptionsMenu(this.mSupportMenu, this
-							.getMenuInflater());
+					.dispatchCreateOptionsMenu(this.mSupportMenu,
+							this.getMenuInflater());
 
-			// Since we now know we are using a custom action bar, perform the
-			// inflation callback to allow it to display any items it wants.
-			// Any items that were displayed will have a boolean toggled so that
-			// we
-			// do not display them on the options menu.
-			((ActionBarImpl) this.mActionBar).onMenuInflated(this.mSupportMenu);
+			if (this.getSupportActionBar() != null) {
+				if (this.onPrepareOptionsMenu(this.mSupportMenu)) {
+					this.mFragments
+							.dispatchPrepareOptionsMenu(this.mSupportMenu);
+				}
+
+				// Since we now know we are using a custom action bar, perform
+				// the
+				// inflation callback to allow it to display any items it wants.
+				((ActionBarImpl) this.mActionBar)
+						.onMenuInflated(this.mSupportMenu);
+			}
 
 			// Whoops, older platform... we'll use a hack, to manually rebuild
 			// the options menu the next time it is prepared.
@@ -747,14 +756,12 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	public void onPanelClosed(final int featureId, final android.view.Menu menu) {
 		switch (featureId) {
 		case android.view.Window.FEATURE_OPTIONS_PANEL:
-			this.mFragments.dispatchOptionsMenuClosed(menu);
+			this.mFragments.dispatchOptionsMenuClosed(new MenuWrapper(menu));
 
-			if (!IS_HONEYCOMB) {
+			if (!IS_HONEYCOMB && (this.getSupportActionBar() != null)) {
 				if (DEBUG) {
-					Log
-							.d(
-									TAG,
-									"onPanelClosed(int, android.view.Menu): Dispatch menu visibility false to custom action bar.");
+					Log.d(TAG,
+							"onPanelClosed(int, android.view.Menu): Dispatch menu visibility false to custom action bar.");
 				}
 				((ActionBarImpl) this.mActionBar)
 						.onMenuVisibilityChanged(false);
@@ -826,10 +833,8 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			boolean prepareResult = true;
 			if (this.mOptionsMenuCreateResult) {
 				if (DEBUG) {
-					Log
-							.d(
-									TAG,
-									"onPrepareOptionsMenu(android.view.Menu): Calling support method with custom menu.");
+					Log.d(TAG,
+							"onPrepareOptionsMenu(android.view.Menu): Calling support method with custom menu.");
 				}
 				prepareResult = this.onPrepareOptionsMenu(this.mSupportMenu);
 				if (DEBUG) {
@@ -839,10 +844,8 @@ public abstract class FragmentMapActivity extends MapActivity implements
 				}
 				if (prepareResult) {
 					if (DEBUG) {
-						Log
-								.d(
-										TAG,
-										"onPrepareOptionsMenu(android.view.Menu): Dispatching fragment method with custom menu.");
+						Log.d(TAG,
+								"onPrepareOptionsMenu(android.view.Menu): Dispatching fragment method with custom menu.");
 					}
 					this.mFragments
 							.dispatchPrepareOptionsMenu(this.mSupportMenu);
@@ -851,19 +854,16 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 			if (this.mOptionsMenuInvalidated) {
 				if (DEBUG) {
-					Log
-							.d(TAG,
-									"onPrepareOptionsMenu(android.view.Menu): Clearing existing options menu.");
+					Log.d(TAG,
+							"onPrepareOptionsMenu(android.view.Menu): Clearing existing options menu.");
 				}
 				menu.clear();
 				this.mOptionsMenuInvalidated = false;
 
 				if (this.mOptionsMenuCreateResult && prepareResult) {
 					if (DEBUG) {
-						Log
-								.d(
-										TAG,
-										"onPrepareOptionsMenu(android.view.Menu): Adding any action items that are not displayed on the action bar.");
+						Log.d(TAG,
+								"onPrepareOptionsMenu(android.view.Menu): Adding any action items that are not displayed on the action bar.");
 					}
 					// Only add items that have not already been added to our
 					// custom
@@ -878,30 +878,27 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 			if (this.mOptionsMenuCreateResult && prepareResult
 					&& menu.hasVisibleItems()) {
-				if (DEBUG) {
-					Log
-							.d(
-									TAG,
-									"onPrepareOptionsMenu(android.view.Menu): Dispatch menu visibility true to custom action bar.");
+				if (this.getSupportActionBar() != null) {
+					if (DEBUG) {
+						Log.d(TAG,
+								"onPrepareOptionsMenu(android.view.Menu): Dispatch menu visibility true to custom action bar.");
+					}
+					((ActionBarImpl) this.mActionBar)
+							.onMenuVisibilityChanged(true);
 				}
-				((ActionBarImpl) this.mActionBar).onMenuVisibilityChanged(true);
 				result = true;
 			}
 		} else {
 			if (DEBUG) {
-				Log
-						.d(
-								TAG,
-								"onPrepareOptionsMenu(android.view.Menu): Calling support method with wrapped native menu.");
+				Log.d(TAG,
+						"onPrepareOptionsMenu(android.view.Menu): Calling support method with wrapped native menu.");
 			}
 			final MenuWrapper wrappedMenu = new MenuWrapper(menu);
 			result = this.onPrepareOptionsMenu(wrappedMenu);
 			if (result) {
 				if (DEBUG) {
-					Log
-							.d(
-									TAG,
-									"onPrepareOptionsMenu(android.view.Menu): Dispatching fragment method with wrapped native menu.");
+					Log.d(TAG,
+							"onPrepareOptionsMenu(android.view.Menu): Dispatching fragment method with wrapped native menu.");
 				}
 				this.mFragments.dispatchPrepareOptionsMenu(wrappedMenu);
 			}
@@ -952,13 +949,16 @@ public abstract class FragmentMapActivity extends MapActivity implements
 
 	/**
 	 * Retain all appropriate fragment and loader state. You can NOT override
-	 * this yourself!
+	 * this yourself! Use {@link #onRetainCustomNonConfigurationInstance()} if
+	 * you want to retain your own state.
 	 */
 	@Override
 	public final Object onRetainNonConfigurationInstance() {
 		if (this.mStopped) {
 			this.doReallyStop(true);
 		}
+
+		Object custom = this.onRetainCustomNonConfigurationInstance();
 
 		ArrayList<Fragment> fragments = this.mFragments.retainNonConfig();
 		boolean retainLoaders = false;
@@ -975,12 +975,13 @@ public abstract class FragmentMapActivity extends MapActivity implements
 				}
 			}
 		}
-		if (fragments == null && !retainLoaders) {
+		if (fragments == null && !retainLoaders && custom == null) {
 			return null;
 		}
 
 		NonConfigurationInstances nci = new NonConfigurationInstances();
 		nci.activity = null;
+		nci.custom = custom;
 		nci.children = null;
 		nci.fragments = fragments;
 		nci.loaders = this.mAllLoaderManagers;
@@ -1008,12 +1009,13 @@ public abstract class FragmentMapActivity extends MapActivity implements
 		super.onStart();
 
 		this.mStopped = false;
+		this.mReallyStopped = false;
 		this.mHandler.removeMessages(MSG_REALLY_STOPPED);
 
 		if (!this.mCreated) {
 			this.mCreated = true;
 			this.ensureSupportActionBarAttached(); // Needed for retained
-			// fragments
+													// fragments
 			this.mFragments.dispatchActivityCreated();
 		}
 
@@ -1075,7 +1077,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	 */
 	@Override
 	public void setProgressBarIndeterminateVisibility(final Boolean visible) {
-		if (IS_HONEYCOMB) {
+		if (IS_HONEYCOMB || (this.getSupportActionBar() == null)) {
 			super.setProgressBarIndeterminateVisibility(visible);
 		} else if ((this.mWindowFlags & WINDOW_FLAG_INDETERMINANTE_PROGRESS) == WINDOW_FLAG_INDETERMINANTE_PROGRESS) {
 			((ActionBarImpl) this.mActionBar)
@@ -1086,6 +1088,32 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	// ------------------------------------------------------------------------
 	// NEW METHODS
 	// ------------------------------------------------------------------------
+
+	/**
+	 * Use this instead of {@link #onRetainNonConfigurationInstance()}. Retrieve
+	 * later with {@link #getLastCustomNonConfigurationInstance()}.
+	 */
+	public Object onRetainCustomNonConfigurationInstance() {
+		return null;
+	}
+
+	/**
+	 * Return the value previously returned from
+	 * {@link #onRetainCustomNonConfigurationInstance()}.
+	 */
+	public Object getLastCustomNonConfigurationInstance() {
+		NonConfigurationInstances nc = (NonConfigurationInstances) this
+				.getLastNonConfigurationInstance();
+		return nc != null ? nc.custom : null;
+	}
+
+	/**
+	 * @deprecated Use {@link invalidateOptionsMenu}.
+	 */
+	@Deprecated
+	void supportInvalidateOptionsMenu() {
+		this.invalidateOptionsMenu();
+	}
 
 	/**
 	 * Print the Activity's state into the given stream. This gets invoked if
@@ -1139,8 +1167,9 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	void doReallyStop(final boolean retaining) {
 		if (!this.mReallyStopped) {
 			this.mReallyStopped = true;
+			this.mRetaining = retaining;
 			this.mHandler.removeMessages(MSG_REALLY_STOPPED);
-			this.onReallyStop(retaining);
+			this.onReallyStop();
 		}
 	}
 
@@ -1151,11 +1180,11 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	 * to know this, to know whether to retain fragments. This will tell us what
 	 * we need to know.
 	 */
-	void onReallyStop(final boolean retaining) {
+	void onReallyStop() {
 		if (this.mLoadersStarted) {
 			this.mLoadersStarted = false;
 			if (this.mLoaderManager != null) {
-				if (!retaining) {
+				if (!this.mRetaining) {
 					this.mLoaderManager.doStop();
 				} else {
 					this.mLoaderManager.doRetain();
@@ -1163,7 +1192,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 			}
 		}
 
-		this.mFragments.dispatchReallyStop(retaining);
+		this.mFragments.dispatchReallyStop();
 	}
 
 	// ------------------------------------------------------------------------
@@ -1177,7 +1206,8 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	 */
 	@Override
 	public ActionBar getSupportActionBar() {
-		return this.mActionBar.getPublicInstance();
+		return (this.mActionBar != null) ? this.mActionBar.getPublicInstance()
+				: null;
 	}
 
 	/**
@@ -1311,10 +1341,10 @@ public abstract class FragmentMapActivity extends MapActivity implements
 		// Log.v(TAG, "invalidateFragmentIndex: index=" + index);
 		if (this.mAllLoaderManagers != null) {
 			LoaderManagerImpl lm = this.mAllLoaderManagers.get(index);
-			if (lm != null) {
+			if (lm != null && !lm.mRetaining) {
 				lm.doDestroy();
+				this.mAllLoaderManagers.remove(index);
 			}
-			this.mAllLoaderManagers.remove(index);
 		}
 	}
 
