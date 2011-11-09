@@ -225,14 +225,10 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	}
 
 	protected void ensureSupportActionBarAttached() {
-		if (IS_HONEYCOMB) {
+		if (IS_HONEYCOMB || this.mIsActionBarImplAttached) {
 			return;
 		}
-		if (!this.mIsActionBarImplAttached) {
-			if (this.isChild()) {
-				// Do not allow an action bar if we have a parent activity
-				this.mWindowFlags &= ~WINDOW_FLAG_ACTION_BAR;
-			}
+		if (!this.isChild()) {
 			if ((this.mWindowFlags & WINDOW_FLAG_ACTION_BAR) == WINDOW_FLAG_ACTION_BAR) {
 				if ((this.mWindowFlags & WINDOW_FLAG_ACTION_BAR_OVERLAY) == WINDOW_FLAG_ACTION_BAR_OVERLAY) {
 					super.setContentView(R.layout.abs__screen_action_bar_overlay);
@@ -258,10 +254,10 @@ public abstract class FragmentMapActivity extends MapActivity implements
 				}
 				super.setContentView(R.layout.abs__screen_simple);
 			}
-
-			this.invalidateOptionsMenu();
-			this.mIsActionBarImplAttached = true;
 		}
+
+		this.invalidateOptionsMenu();
+		this.mIsActionBarImplAttached = true;
 	}
 
 	// ------------------------------------------------------------------------
@@ -315,7 +311,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	@Override
 	public void setContentView(final int layoutResId) {
 		this.ensureSupportActionBarAttached();
-		if (IS_HONEYCOMB) {
+		if (IS_HONEYCOMB || this.isChild()) {
 			super.setContentView(layoutResId);
 		} else {
 			FrameLayout contentView = (FrameLayout) this
@@ -328,7 +324,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	@Override
 	public void setContentView(final View view, final LayoutParams params) {
 		this.ensureSupportActionBarAttached();
-		if (IS_HONEYCOMB) {
+		if (IS_HONEYCOMB || this.isChild()) {
 			super.setContentView(view, params);
 		} else {
 			FrameLayout contentView = (FrameLayout) this
@@ -341,7 +337,7 @@ public abstract class FragmentMapActivity extends MapActivity implements
 	@Override
 	public void setContentView(final View view) {
 		this.ensureSupportActionBarAttached();
-		if (IS_HONEYCOMB) {
+		if (IS_HONEYCOMB || this.isChild()) {
 			super.setContentView(view);
 		} else {
 			FrameLayout contentView = (FrameLayout) this
