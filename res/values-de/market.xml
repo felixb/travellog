@@ -18,7 +18,7 @@
        -->
       <!--
                This file is generated automatically by ub0rlib/php.
-               Visit http://ub0r.de/translate/travellog/edit.php?lang=de&file=market.xml to edit the file.
+               Visit http://ub0r.de/translate/travellog/de/market.xml to edit the file.
        -->
 <resources>
   <string name="market_about" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="TravelLog is a one-click-app to log your business trips for later accounting (time recording).\n\nLocation based logging turns it into a zero-click-app!">TravelLog ist eine Ein-Klick-App, mit der du deine Geschäftsreisen loggen kannst. Später kannst du sie dann einfach in deiner Zeiterfassung abrechnen.\n\nMit dem Location-based-Logging wird die App sogar zu einer Null-Klick-App!</string>
