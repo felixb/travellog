@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2011 Felix Bechstein
+ * Copyright (C) 2009-2012 Felix Bechstein
  * 
  * This file is part of TraveLog.
  * 
@@ -20,16 +20,18 @@ package de.ub0r.android.travelLog.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.MenuItem;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.ub0r.android.travelLog.R;
 
 /**
- * Display About {@link FragmentActivity}.
+ * Display About {@link SherlockActivity}.
  * 
  * @author flx
  */
-public final class About extends FragmentActivity {
+public final class About extends SherlockActivity {
 	/**
 	 * {@inheritDoc}
 	 */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2011 Felix Bechstein
+ * Copyright (C) 2010-2012 Felix Bechstein
  * 
  * This file is part of TravelLog.
  * 
@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.HashSet;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.app.AlertDialog.Builder;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -43,21 +43,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ResourceCursorTreeAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ExpandableListView.OnChildClickListener;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.ub0r.android.lib.ChangelogHelper;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
@@ -67,12 +68,12 @@ import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
 /**
- * Main {@link FragmentActivity}.
+ * Main {@link SherlockActivity}.
  * 
  * @author flx
  */
-public final class Logs extends FragmentActivity implements
-		OnChildClickListener, OnClickListener {
+public final class Logs extends SherlockActivity implements
+		OnChildClickListener {
 	static {
 		Log.init("TravelLog");
 	}
@@ -365,19 +366,18 @@ public final class Logs extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.logs);
 
-		this.queryHandler = new BackgroundQueryHandler(
-				this.getContentResolver());
+		if (this.queryHandler == null) {
+			this.queryHandler = new BackgroundQueryHandler(
+					this.getContentResolver());
+		}
 		final ExpandableListView lv = (ExpandableListView) this
 				.findViewById(android.R.id.list);
 		lv.setAdapter(new LogAdapter(this));
 		lv.setOnChildClickListener(this);
 
-		this.findViewById(R.id.stop).setOnClickListener(this);
-		this.findViewById(R.id.start_pause_).setOnClickListener(this);
-		this.findViewById(R.id.start_travel_).setOnClickListener(this);
-		this.findViewById(R.id.start_work_).setOnClickListener(this);
-
-		ChangelogHelper.showChangelog(this, true);
+		if (savedInstanceState == null) {
+			ChangelogHelper.showChangelog(this, true);
+		}
 		this.changeState(0, 0, true);
 
 		this.prefsNoAds = DonationHelper.hideAds(this);
@@ -386,37 +386,18 @@ public final class Logs extends FragmentActivity implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void onClick(final View view) {
-		switch (view.getId()) {
-		case R.id.start_pause_:
-			this.changeState(DataProvider.Logtypes.TYPE_PAUSE);
-			break;
-		case R.id.start_travel_:
-			this.changeState(DataProvider.Logtypes.TYPE_TRAVEL);
-			break;
-		case R.id.start_work_:
-			this.changeState(DataProvider.Logtypes.TYPE_WORK);
-			break;
-		case R.id.stop:
-			this.changeState(0);
-			break;
-		default:
-			break;
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		this.getMenuInflater().inflate(R.menu.menu, menu);
+		getSupportMenuInflater().inflate(R.menu.menu, menu);
 		if (this.prefsNoAds) {
 			menu.removeItem(R.id.item_donate);
 		}
 		this.stopItem = menu.findItem(R.id.item_stop);
 		if (this.stopItem != null) {
 			this.stopItem.setVisible(this.showStopItem);
+			if (this.showStopItem) {
+				this.changeState(0, 0, true);
+			}
 		}
 		return true;
 	}
@@ -757,7 +738,6 @@ public final class Logs extends FragmentActivity implements
 		}
 
 		// set buttons
-		View v = this.findViewById(R.id.stop);
 		Cursor cursor = cr.query(DataProvider.Logs.CONTENT_URI_OPEN,
 				DataProvider.Logs.PROJECTION, null, null, null);
 		if (cursor.moveToFirst()) { // a log is open
@@ -765,7 +745,7 @@ public final class Logs extends FragmentActivity implements
 					.getColumnIndex(DataProvider.Logs.TYPE_TYPE);
 			final int logType = cursor.getInt(idLogTypeType);
 			int resId = -1;
-			int vis = View.VISIBLE;
+			this.showStopItem = true;
 			switch (logType) {
 			case DataProvider.Logtypes.TYPE_PAUSE:
 				resId = R.string.stop_pause;
@@ -777,15 +757,12 @@ public final class Logs extends FragmentActivity implements
 				resId = R.string.stop_work;
 				break;
 			default:
-				vis = View.GONE;
+				this.showStopItem = false;
 			}
-			if (v instanceof TextView && resId > 0) {
-				((TextView) v).setText(resId);
+			if (this.stopItem != null) {
+				this.stopItem.setTitle(resId);
 			}
-			v.setVisibility(vis);
-			this.showStopItem = vis != View.GONE;
 		} else { // no log is open
-			v.setVisibility(View.GONE);
 			this.showStopItem = false;
 		}
 		if (!cursor.isClosed()) {
