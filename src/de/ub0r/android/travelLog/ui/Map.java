@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009-2011 Felix Bechstein
+ * Copyright (C) 2009-2012 Felix Bechstein
  * 
  * This file is part of TravelLog.
  * 
@@ -33,21 +33,21 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentMapActivity;
-import android.support.v4.view.Menu;
-import android.support.v4.view.MenuItem;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapController;
@@ -63,11 +63,11 @@ import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
 /**
- * {@link FragmentMapActivity} showing all auto logs.
+ * {@link SherlockMapActivity} showing all auto logs.
  * 
  * @author flx
  */
-public final class Map extends FragmentMapActivity {
+public final class Map extends SherlockMapActivity {
 	/** Tag for output. */
 	private static final String TAG = "Map";
 
@@ -175,7 +175,8 @@ public final class Map extends FragmentMapActivity {
 		/**
 		 * Set a {@link OverlayItem}.
 		 * 
-		 * @parem item item
+		 * @param item
+		 *            item
 		 * @param type
 		 *            log type
 		 * @param radius
@@ -206,9 +207,9 @@ public final class Map extends FragmentMapActivity {
 			if (!this.cursor.moveToPosition(item)) {
 				return null;
 			}
-			OverlayItem ret = new OverlayItem(new GeoPoint(this.cursor
-					.getInt(this.idLat), this.cursor.getInt(this.idLong)), "",
-					"");
+			OverlayItem ret = new OverlayItem(new GeoPoint(
+					this.cursor.getInt(this.idLat),
+					this.cursor.getInt(this.idLong)), "", "");
 			return ret;
 		}
 
@@ -335,19 +336,23 @@ public final class Map extends FragmentMapActivity {
 				t = this.ctx.getString(R.string.nulltype_);
 			}
 			((TextView) v.findViewById(R.id.type)).setText(this.ctx
-					.getString(R.string.type_)
-					+ " " + t);
+					.getString(R.string.type_) + " " + t);
 			((TextView) v.findViewById(R.id.radius)).setText(this.ctx
 					.getString(R.string.radius_)
-					+ " " + this.cursor.getString(this.idRad));
+					+ " "
+					+ this.cursor.getString(this.idRad));
 			Date d = new Date(this.cursor.getLong(this.idSeenFirst));
 			((TextView) v.findViewById(R.id.first_seen)).setText(this.ctx
 					.getString(R.string.first_seen_)
-					+ " " + dFormat.format(d) + " " + tFormat.format(d));
+					+ " "
+					+ dFormat.format(d)
+					+ " " + tFormat.format(d));
 			d = new Date(this.cursor.getLong(this.idSeenLast));
 			((TextView) v.findViewById(R.id.last_seen)).setText(this.ctx
 					.getString(R.string.last_seen_)
-					+ " " + dFormat.format(d) + " " + tFormat.format(d));
+					+ " "
+					+ dFormat.format(d)
+					+ " " + tFormat.format(d));
 			b.setView(v);
 			b.setCancelable(true);
 			b.setPositiveButton(android.R.string.ok, null);
@@ -497,7 +502,7 @@ public final class Map extends FragmentMapActivity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		this.getMenuInflater().inflate(R.menu.map, menu);
+		this.getSupportMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
 

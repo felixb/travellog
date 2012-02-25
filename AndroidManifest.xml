@@ -1,87 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!--
-		Copyright (C) 2009-2011 Felix Bechstein
-	-->
-	<!--
+<!-- Copyright (C) 2009-2012 Felix Bechstein -->
+<!--
 		This file is part of TravelLog. This program is free software; you can
 		redistribute it and/or modify it under the terms of the GNU General
 		Public License as published by the Free Software Foundation; either
 		version 3 of the License, or (at your option) any later version.
-	-->
-	<!--
+-->
+<!--
 		This program is distributed in the hope that it will be useful, but
 		WITHOUT ANY WARRANTY; without even the implied warranty of
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 		General Public License for more details. You should have received a
 		copy of the GNU General Public License along with this program; If
 		not, see <http://www.gnu.org/licenses/>.
-	-->
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="de.ub0r.android.travelLog" android:versionCode="192"
-	android:versionName="2.3" android:installLocation="auto">
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:hardwareAccelerated="true">
-		<activity android:name=".ui.Logs" android:label="@string/app_name"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.SherlockUb0r">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".ui.Preferences"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" />
-		<activity android:name=".ui.Preferences11"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" />
-		<activity android:name=".ui.PreferencesGoHome"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" />
-		<activity android:name=".ui.LogTypes" android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" />
-		<activity android:name=".ui.Map" android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" />
-		<activity android:name=".ui.About" android:configChanges="orientation|keyboardHidden"
-			android:launchMode="singleTop" android:windowSoftInputMode="adjustResize"
-			android:theme="@style/Theme.SherlockUb0r" />
-		<provider android:name=".data.DataProvider"
-			android:authorities="de.ub0r.android.travelLog.provider" />
-		<receiver android:name=".data.LocationChecker">
-			<intent-filter>
-				<action android:name="android.intent.action.BOOT_COMPLETED" />
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.HOME" />
-			</intent-filter>
-		</receiver>
-		<activity android:name="de.ub0r.android.lib.DonationFragmentActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" />
-		<activity android:name="de.ub0r.android.lib.ChangelogFragmentActivity"
-			android:configChanges="orientation|keyboardHidden"
-			android:windowSoftInputMode="adjustResize" />
-		<activity android:name="com.google.ads.AdActivity"
-			android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-			android:configChanges="keyboard|keyboardHidden|orientation" />
-		<uses-library android:name="com.google.android.maps" />
-	</application>
-	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="12" />
-	<supports-screens android:smallScreens="true"
-		android:normalScreens="true" android:largeScreens="true"
-		android:anyDensity="true" />
-	<uses-feature android:name="android.hardware.touchscreen"
-		android:required="false" />
-	<uses-feature android:name="android.hardware.location.network"
-		android:required="false" />
-	<uses-feature android:name="android.hardware.location"
-		android:required="false" />
+    android:installLocation="auto"
+    package="de.ub0r.android.travelLog"
+    android:versionCode="192"
+    android:versionName="2.3" >
 
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name" >
+        <activity
+            android:name=".ui.Logs"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.SherlockUb0r"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-	<!-- AdMob SDK permissions -->
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.Preferences"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.Preferences11"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.PreferencesGoHome"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.LogTypes"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.Map"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.About"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.SherlockUb0r"
+            android:windowSoftInputMode="adjustResize" />
+
+        <provider
+            android:name=".data.DataProvider"
+            android:authorities="de.ub0r.android.travelLog.provider" />
+
+        <receiver android:name=".data.LocationChecker" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="de.ub0r.android.lib.DonationFragmentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="de.ub0r.android.lib.ChangelogFragmentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.google.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
+        <uses-library android:name="com.google.android.maps" />
+    </application>
+
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="15" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- AdMob SDK permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 </manifest>
