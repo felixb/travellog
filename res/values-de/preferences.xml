@@ -45,21 +45,8 @@
   <string name="logtypes_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeit-, Reise und Pausetypen.</string>
   <string name="update_interval_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Update interval">Update Intervall</string>
   <string name="update_interval_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Shorter period will use more battery.">Eine kürzere Periode verbraucht mehr Akku.</string>
-  <string-array name="themes">
-    <item>Dunkel</item>
-    <item>Hell</item>
-  </string-array>
-  <string-array name="update_interval" username="flx &lt;f+translator@ub0r.de&gt;">
-    <item>Nur manuell</item>
-    <item>5 Minuten</item>
-    <item>10 Minuten</item>
-    <item>15 Minuten</item>
-    <item>30 Minuten</item>
-    <item>Eine Stunde</item>
-    <item>Zwei Stunden</item>
-  </string-array>
   <string name="about_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="About this app">Über diese App</string>
-  <string name="settings_common" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Preferences - Common">Einstellungen - Allgemein</string>
+  <string name="settings_common" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Common">Allgemein</string>
   <string name="author_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Author:">Autor:</string>
   <string name="version_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Version:">Version:</string>
   <string name="license_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="License:">Lizenz:</string>
@@ -79,4 +66,17 @@
   <string name="limit_delay_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Delay">Pause</string>
   <string name="limit_delay_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Delay between repetitions in seconds">Pause zwischen zwei Wiederholungen in Sekunden</string>
   <string name="limit_alert_gt_warn_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Alert hours need to be greater than warning hours!">Alarm Stunden müssen über den Warnungsstunden liegen!</string>
+  <string-array name="themes">
+    <item>Dunkel</item>
+    <item>Hell</item>
+  </string-array>
+  <string-array name="update_interval" username="flx &lt;f+translator@ub0r.de&gt;">
+    <item>Nur manuell</item>
+    <item>5 Minuten</item>
+    <item>10 Minuten</item>
+    <item>15 Minuten</item>
+    <item>30 Minuten</item>
+    <item>Eine Stunde</item>
+    <item>Zwei Stunden</item>
+  </string-array>
 </resources>

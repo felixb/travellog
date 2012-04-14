@@ -19,6 +19,7 @@
 	-->
 <resources>
 	<string-array name="updates">
+		<item>HEAD: UI changes</item>
 		<item>v2.3: minor fixes, UI fixes</item>
 		<item>v2.2: major ui improvements, minor changes and fixes</item>
 		<item>v2.1.2: update translations</item>

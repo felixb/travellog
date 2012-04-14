@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!--
-		Copyright (C) 2010-2011 Felix Bechstein
-	-->
-	<!--
+<!-- 		Copyright (C) 2010-2012 Felix Bechstein -->
+<!--
 		This file is part of TravelLog. This program is free software; you can
 		redistribute it and/or modify it under the terms of the GNU General
 		Public License as published by the Free Software Foundation; either
 		version 3 of the License, or (at your option) any later version.
-	-->
-	<!--
+-->
+<!--
 		This program is distributed in the hope that it will be useful, but
 		WITHOUT ANY WARRANTY; without even the implied warranty of
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 		General Public License for more details. You should have received a
 		copy of the GNU General Public License along with this program; If
 		not, see <http://www.gnu.org/licenses/>.
-	-->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceScreen android:title="@string/logtypes_"
-		android:summary="@string/logtypes_hint">
-		<intent android:action="android.intent.action.MAIN"
-			android:targetPackage="de.ub0r.android.travelLog"
-			android:targetClass="de.ub0r.android.travelLog.ui.LogTypes" />
-	</PreferenceScreen>
-	<ListPreference android:key="update_interval"
-		android:title="@string/update_interval_" android:summary="@string/update_interval_hint"
-		android:entries="@array/update_interval" android:entryValues="@array/update_interval_values"
-		android:defaultValue="60" />
-	<PreferenceScreen android:key="map" android:title="@string/map_"
-		android:summary="@string/map_hint">
-		<intent android:action="android.intent.action.MAIN"
-			android:targetPackage="de.ub0r.android.travelLog"
-			android:targetClass="de.ub0r.android.travelLog.ui.Map" />
-	</PreferenceScreen>
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceScreen
+        android:summary="@string/logtypes_hint"
+        android:title="@string/logtypes_" >
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="de.ub0r.android.travelLog.ui.LogTypes"
+            android:targetPackage="de.ub0r.android.travelLog" />
+    </PreferenceScreen>
+
+    <ListPreference
+        android:defaultValue="60"
+        android:entries="@array/update_interval"
+        android:entryValues="@array/update_interval_values"
+        android:key="update_interval"
+        android:summary="@string/update_interval_hint"
+        android:title="@string/update_interval_" />
+
 </PreferenceScreen>

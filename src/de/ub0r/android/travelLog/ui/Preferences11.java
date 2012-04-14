@@ -20,17 +20,21 @@ package de.ub0r.android.travelLog.ui;
 
 import java.util.List;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
 
 /**
- * {@link PreferenceActivity} for API>=11.
+ * {@link SherlockPreferenceActivity} for API>=11.
  * 
  * @author flx
  */
-public final class Preferences11 extends PreferenceActivity {
+public final class Preferences11 extends SherlockPreferenceActivity {
 	/**
 	 * {@inheritDoc}
 	 */
@@ -39,6 +43,7 @@ public final class Preferences11 extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		this.setTitle(R.string.settings);
 		Utils.setLocale(this);
+		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	/**
@@ -47,5 +52,21 @@ public final class Preferences11 extends PreferenceActivity {
 	@Override
 	public void onBuildHeaders(final List<Header> target) {
 		this.loadHeadersFromResource(R.xml.preference_headers, target);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			Intent intent = new Intent(this, Logs.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			this.startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 }

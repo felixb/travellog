@@ -29,12 +29,7 @@
   <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
   <string name="hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;">Diese Ansicht zeigt deine Arbeitszeiten.\n\nDrücke einfach einen der Knöpfe unten um einen neuen Eintrag zu starten.</string>
   <string name="send_" formatted="false">Senden</string>
-  <string name="start_work" formatted="false">Start Arbeit</string>
-  <string name="stop_work" formatted="false">Stopp Arbeit</string>
-  <string name="start_travel" formatted="false">Start Reise</string>
-  <string name="stop_travel" formatted="false">Stopp Reise</string>
-  <string name="start_pause" formatted="false">Start Pause</string>
-  <string name="stop_pause" formatted="false">Stopp Pause</string>
+  <string name="stop" formatted="false">Stopp</string>
   <string name="pause" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Pause">Pause</string>
   <string name="travel" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Travel">Reise</string>
   <string name="work" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Work">Arbeit</string>

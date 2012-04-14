@@ -348,10 +348,10 @@ public final class Logs extends SherlockActivity implements
 	/** {@link BackgroundQueryHandler}. */
 	private BackgroundQueryHandler queryHandler = null;
 
-	/** {@link MenuItem} stopping all kind of records. */
-	private MenuItem stopItem = null;
-	/** Show stop item. */
-	private boolean showStopItem = false;
+	/** {@link MenuItem}s . */
+	private MenuItem stopItem, workItem, pauseItem, travelItem;
+	/** Show {@link MenuItem}s. */
+	private boolean showStopItem, showWorkItem, showPauseItem, showTravelItem;
 
 	/** Display ads? */
 	private boolean prefsNoAds;
@@ -399,6 +399,9 @@ public final class Logs extends SherlockActivity implements
 				this.changeState(0, 0, true);
 			}
 		}
+		this.pauseItem = menu.findItem(R.id.start_pause_);
+		this.travelItem = menu.findItem(R.id.start_travel_);
+		this.workItem = menu.findItem(R.id.start_work_);
 		return true;
 	}
 
@@ -409,11 +412,14 @@ public final class Logs extends SherlockActivity implements
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.item_settings:
-			if (Utils.isApi(Build.VERSION_CODES.HONEYCOMB)) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				this.startActivity(new Intent(this, Preferences11.class));
 			} else {
 				this.startActivity(new Intent(this, Preferences.class));
 			}
+			return true;
+		case R.id.item_map:
+			this.startActivity(new Intent(this, Map.class));
 			return true;
 		case R.id.item_clear:
 			this.showDialog(DIALOG_CLEAR);
@@ -693,13 +699,13 @@ public final class Logs extends SherlockActivity implements
 				AlertDialog.Builder b = new AlertDialog.Builder(this);
 				switch (logTypeType) {
 				case DataProvider.Logtypes.TYPE_PAUSE:
-					b.setTitle(R.string.start_pause);
+					b.setTitle(R.string.pause);
 					break;
 				case DataProvider.Logtypes.TYPE_TRAVEL:
-					b.setTitle(R.string.start_travel);
+					b.setTitle(R.string.travel);
 					break;
 				case DataProvider.Logtypes.TYPE_WORK:
-					b.setTitle(R.string.start_work);
+					b.setTitle(R.string.work);
 					break;
 				default:
 					break;
@@ -748,28 +754,46 @@ public final class Logs extends SherlockActivity implements
 			this.showStopItem = true;
 			switch (logType) {
 			case DataProvider.Logtypes.TYPE_PAUSE:
-				resId = R.string.stop_pause;
+				showPauseItem = false;
+				showTravelItem = true;
+				showWorkItem = true;
 				break;
 			case DataProvider.Logtypes.TYPE_TRAVEL:
-				resId = R.string.stop_travel;
+				showPauseItem = true;
+				showTravelItem = false;
+				showWorkItem = true;
 				break;
 			case DataProvider.Logtypes.TYPE_WORK:
-				resId = R.string.stop_work;
+				showPauseItem = true;
+				showTravelItem = true;
+				showWorkItem = false;
 				break;
 			default:
 				this.showStopItem = false;
-			}
-			if (this.stopItem != null) {
-				this.stopItem.setTitle(resId);
+				showPauseItem = true;
+				showTravelItem = true;
+				showWorkItem = true;
 			}
 		} else { // no log is open
 			this.showStopItem = false;
+			showPauseItem = true;
+			showTravelItem = true;
+			showWorkItem = true;
 		}
 		if (!cursor.isClosed()) {
 			cursor.close();
 		}
 		if (this.stopItem != null) {
 			this.stopItem.setVisible(this.showStopItem);
+		}
+		if (this.pauseItem != null) {
+			this.pauseItem.setVisible(this.showPauseItem);
+		}
+		if (this.travelItem != null) {
+			this.travelItem.setVisible(this.showTravelItem);
+		}
+		if (this.workItem != null) {
+			this.workItem.setVisible(this.showWorkItem);
 		}
 
 		if (!btnOnly) {

@@ -18,29 +18,20 @@
 
     <item
         android:id="@+id/item_stop"
-        android:icon="@drawable/ic_menu_stop"
         android:showAsAction="always|withText"
-        android:title="@string/stop_work"/>
+        android:title="@string/stop"/>
     <item
         android:id="@+id/start_work_"
-        android:icon="@drawable/ic_menu_recent_history"
         android:showAsAction="always|withText"
-        android:title="@string/start_work"/>
+        android:title="@string/work"/>
     <item
         android:id="@+id/start_travel_"
-        android:icon="@drawable/ic_menu_recent_history"
         android:showAsAction="always|withText"
-        android:title="@string/start_travel"/>
+        android:title="@string/travel"/>
     <item
         android:id="@+id/start_pause_"
-        android:icon="@drawable/ic_menu_recent_history"
         android:showAsAction="always|withText"
-        android:title="@string/start_pause"/>
-    <item
-        android:id="@+id/item_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:showAsAction="never"
-        android:title="@string/settings"/>
+        android:title="@string/pause"/>
     <item
         android:id="@+id/item_export"
         android:icon="@android:drawable/ic_menu_upload"
@@ -51,6 +42,16 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:showAsAction="never"
         android:title="@string/clear_"/>
+    <item
+        android:id="@+id/item_map"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        android:showAsAction="never"
+        android:title="@string/map_"/>
+    <item
+        android:id="@+id/item_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction="never"
+        android:title="@string/settings"/>
     <item
         android:id="@+id/item_donate"
         android:icon="@drawable/ic_menu_star"

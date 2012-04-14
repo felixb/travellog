@@ -450,31 +450,45 @@ public final class Map extends SherlockMapActivity {
 		Utils.setLocale(this);
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.map);
-		this.setTitle(this.getString(R.string.settings) + " > "
-				+ this.getString(R.string.map_));
-		this.mv = (MapView) this.findViewById(R.id.mapview);
-		this.mv.setBuiltInZoomControls(true);
-		final MapController mc = this.mv.getController();
-		mc.setZoom(DEFAULT_ZOOM);
+		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		this.setTitle(R.string.map_);
+		if (savedInstanceState == null || this.mv == null) {
+			Toast.makeText(this, R.string.map_hint, Toast.LENGTH_LONG).show();
 
-		List<Overlay> overlays = this.mv.getOverlays();
+			this.mv = (MapView) this.findViewById(R.id.mapview);
+			this.mv.setBuiltInZoomControls(true);
+			final MapController mc = this.mv.getController();
+			mc.setZoom(DEFAULT_ZOOM);
 
-		this.cellOverlay = new CellOverlay(this);
+			List<Overlay> overlays = this.mv.getOverlays();
 
-		Log.d(TAG, "autoLogOverlay.size: " + this.cellOverlay.size());
-		overlays.add(this.cellOverlay);
+			this.cellOverlay = new CellOverlay(this);
 
-		this.myLocationOverly = new MyLocationOverlay(this, this.mv);
-		this.myLocationOverly.runOnFirstFix(new Runnable() {
-			public void run() {
-				final GeoPoint gp = Map.this.myLocationOverly.getMyLocation();
-				if (gp != null) {
-					mc.animateTo(gp);
+			Log.d(TAG, "autoLogOverlay.size: " + this.cellOverlay.size());
+			overlays.add(this.cellOverlay);
+
+			this.myLocationOverly = new MyLocationOverlay(this, this.mv);
+			this.myLocationOverly.runOnFirstFix(new Runnable() {
+				public void run() {
+					final GeoPoint gp = Map.this.myLocationOverly
+							.getMyLocation();
+					if (gp != null) {
+						mc.animateTo(gp);
+					}
 				}
-			}
-		});
-		overlays.add(this.myLocationOverly);
-		this.mv.invalidate();
+			});
+			overlays.add(this.myLocationOverly);
+			this.mv.invalidate();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onSaveInstanceState(final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean("dummy", true);
 	}
 
 	/**
