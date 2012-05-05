@@ -59,7 +59,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 import de.ub0r.android.lib.ChangelogHelper;
-import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
 import de.ub0r.android.travelLog.R;
@@ -349,7 +348,7 @@ public final class Logs extends SherlockActivity implements
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.menu, menu);
+		this.getSupportMenuInflater().inflate(R.menu.menu, menu);
 		this.stopItem = menu.findItem(R.id.item_stop);
 		if (this.stopItem != null) {
 			this.stopItem.setVisible(this.showStopItem);
@@ -705,31 +704,31 @@ public final class Logs extends SherlockActivity implements
 			this.showStopItem = true;
 			switch (logType) {
 			case DataProvider.Logtypes.TYPE_PAUSE:
-				showPauseItem = false;
-				showTravelItem = true;
-				showWorkItem = true;
+				this.showPauseItem = false;
+				this.showTravelItem = true;
+				this.showWorkItem = true;
 				break;
 			case DataProvider.Logtypes.TYPE_TRAVEL:
-				showPauseItem = true;
-				showTravelItem = false;
-				showWorkItem = true;
+				this.showPauseItem = true;
+				this.showTravelItem = false;
+				this.showWorkItem = true;
 				break;
 			case DataProvider.Logtypes.TYPE_WORK:
-				showPauseItem = true;
-				showTravelItem = true;
-				showWorkItem = false;
+				this.showPauseItem = true;
+				this.showTravelItem = true;
+				this.showWorkItem = false;
 				break;
 			default:
 				this.showStopItem = false;
-				showPauseItem = true;
-				showTravelItem = true;
-				showWorkItem = true;
+				this.showPauseItem = true;
+				this.showTravelItem = true;
+				this.showWorkItem = true;
 			}
 		} else { // no log is open
 			this.showStopItem = false;
-			showPauseItem = true;
-			showTravelItem = true;
-			showWorkItem = true;
+			this.showPauseItem = true;
+			this.showTravelItem = true;
+			this.showWorkItem = true;
 		}
 		if (!cursor.isClosed()) {
 			cursor.close();

@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!--
-		Copyright (C) 2010-2011 Felix Bechstein
-	-->
-	<!--
-		This file is part of Call Meter NG. This program is free software; you
+<!-- 		Copyright (C) 2010-2012 Felix Bechstein -->
+<!--
+		This file is part of TravelLog. This program is free software; you
 		can redistribute it and/or modify it under the terms of the GNU
 		General Public License as published by the Free Software Foundation;
 		either version 3 of the License, or (at your option) any later
 		version.
-	-->
-	<!--
+-->
+<!--
 		This program is distributed in the hope that it will be useful, but
 		WITHOUT ANY WARRANTY; without even the implied warranty of
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 		General Public License for more details. You should have received a
 		copy of the GNU General Public License along with this program; If
 		not, see <http://www.gnu.org/licenses/>.
-	-->
+-->
 <resources>
-	<string-array name="updates">
-		<item>HEAD: UI changes, remove ads</item>
-		<item>v2.3: minor fixes, UI fixes</item>
-		<item>v2.2: major ui improvements, minor changes and fixes</item>
-		<item>v2.1.2: update translations</item>
-		<item>v2.1.0.1: fix FC</item>
-		<item>v2.1: add \'go home\' feature, edit cells, improve location checking</item>
-		<item>v2.0: minor changes</item>
-		<item>v2.0beta2: location based logging</item>
-		<item>v2.0beta1: major reimplement, move all data to database</item>
-		<item>v0.5.3: minor internal changes</item>
-		<item>v0.5.2: minor internal changes</item>
-		<item>v0.5.1: some more internal changes</item>
-		<item>v0.5: minor internal changes</item>
-		<item>v0.4: add theme support</item>
-		<item>v0.3.3: add hi-res icons</item>
-		<item>v0.3.2: fix some more bugs</item>
-		<item>v0.3.1: fix some minor bugs</item>
-		<item>v0.3: support flip export upside down</item>
-		<item>v0.2: add locale for en, en_US, calc time for each line, round time</item>
-		<item>v0.1: Initial release</item>
-	</string-array>
+
+    <string-array name="updates" translatable="false">
+        <item>HEAD: UI changes, remove ads</item>
+        <item>v2.3: minor fixes, UI fixes</item>
+        <item>v2.2: major ui improvements, minor changes and fixes</item>
+        <item>v2.1.2: update translations</item>
+        <item>v2.1.0.1: fix FC</item>
+        <item>v2.1: add \'go home\' feature, edit cells, improve location checking</item>
+        <item>v2.0: minor changes</item>
+        <item>v2.0beta2: location based logging</item>
+        <item>v2.0beta1: major reimplement, move all data to database</item>
+        <item>v0.5.3: minor internal changes</item>
+        <item>v0.5.2: minor internal changes</item>
+        <item>v0.5.1: some more internal changes</item>
+        <item>v0.5: minor internal changes</item>
+        <item>v0.4: add theme support</item>
+        <item>v0.3.3: add hi-res icons</item>
+        <item>v0.3.2: fix some more bugs</item>
+        <item>v0.3.1: fix some minor bugs</item>
+        <item>v0.3: support flip export upside down</item>
+        <item>v0.2: add locale for en, en_US, calc time for each line, round time</item>
+        <item>v0.1: Initial release</item>
+    </string-array>
+
 </resources>

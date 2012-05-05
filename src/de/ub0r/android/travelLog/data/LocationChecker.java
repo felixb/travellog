@@ -74,8 +74,7 @@ public final class LocationChecker extends BroadcastReceiver {
 
 	/** Notify user / warning. */
 	private static final String ACTION_NOTIFY = LocationChecker.class
-			.getPackage()
-			+ ".NOTIFY";
+			.getPackage() + ".NOTIFY";
 
 	/** Preference's name: last notification. */
 	private static final String PREFS_LAST_NOTIFY = "last_notify";
@@ -187,11 +186,11 @@ public final class LocationChecker extends BroadcastReceiver {
 						}
 					}
 					ContentValues values = new ContentValues(2);
-					values.put(DataProvider.Cells.SEEN_LAST, System
-							.currentTimeMillis());
+					values.put(DataProvider.Cells.SEEN_LAST,
+							System.currentTimeMillis());
 					if (cursor.getLong(idFirstSeen) <= 0L) {
-						values.put(DataProvider.Cells.SEEN_FIRST, System
-								.currentTimeMillis());
+						values.put(DataProvider.Cells.SEEN_FIRST,
+								System.currentTimeMillis());
 					}
 					cr.update(ContentUris.withAppendedId(
 							DataProvider.Cells.CONTENT_URI, id), values, null,
@@ -307,10 +306,10 @@ public final class LocationChecker extends BroadcastReceiver {
 		}
 		cursor.close();
 
-		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
-				.getString(Preferences.PREFS_LIMIT_WARN_HOURS, null), 0));
-		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(p
-				.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
+		final long warn = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(
+				p.getString(Preferences.PREFS_LIMIT_WARN_HOURS, null), 0));
+		final long alert = (long) (Utils.HOUR_IN_MILLIS * Utils.parseFloat(
+				p.getString(Preferences.PREFS_LIMIT_ALERT_HOURS, null), 0));
 		Log.d(TAG, "countTravel: " + countTravel);
 		Log.d(TAG, "warn:  " + warn);
 		Log.d(TAG, "alert: " + alert);
@@ -355,13 +354,13 @@ public final class LocationChecker extends BroadcastReceiver {
 		int level = LEVEL_NOTHING;
 		if (alert > 0L && d > alert) {
 			level = LEVEL_ALERT;
-			desiredPeriod = Utils.parseLong(p.getString(
-					Preferences.PREFS_LIMIT_ALERT_DELAY, null), 0L)
+			desiredPeriod = Utils.parseLong(
+					p.getString(Preferences.PREFS_LIMIT_ALERT_DELAY, null), 0L)
 					* Utils.N_1000;
 		} else if (warn > 0L && d > warn) {
 			level = LEVEL_WARN;
-			desiredPeriod = Utils.parseLong(p.getString(
-					Preferences.PREFS_LIMIT_WARN_DELAY, null), 0L)
+			desiredPeriod = Utils.parseLong(
+					p.getString(Preferences.PREFS_LIMIT_WARN_DELAY, null), 0L)
 					* Utils.N_1000;
 		}
 
@@ -386,8 +385,8 @@ public final class LocationChecker extends BroadcastReceiver {
 			nm.cancel(0);
 			return -1L;
 		} else if (n != null) {
-			p.edit().putInt(PREFS_LAST_LEVEL, level).putLong(PREFS_LAST_NOTIFY,
-					now - Utils.N_100).commit();
+			p.edit().putInt(PREFS_LAST_LEVEL, level)
+					.putLong(PREFS_LAST_NOTIFY, now - Utils.N_100).commit();
 			Log.d(TAG, "nm.notify(0, " + n + ")");
 			nm.notify(0, n);
 			return desiredPeriod;

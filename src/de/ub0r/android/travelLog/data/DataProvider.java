@@ -723,8 +723,8 @@ public final class DataProvider extends ContentProvider {
 					+ ContentUris.parseId(uri), selection), selectionArgs);
 			break;
 		case ID_OPENLOG:
-			ret = db.delete(Logs.TABLE, DbUtils.sqlAnd(Logs.WHERE_OPEN,
-					selection), selectionArgs);
+			ret = db.delete(Logs.TABLE,
+					DbUtils.sqlAnd(Logs.WHERE_OPEN, selection), selectionArgs);
 			break;
 		case ID_LOGTYPES:
 			ret = db.delete(Logtypes.TABLE, selection, selectionArgs);
@@ -867,9 +867,11 @@ public final class DataProvider extends ContentProvider {
 		Cursor c = null;
 		switch (uid) {
 		case ID_LOGID:
-			c = db.query(Logs.JOIN_LOGTYPES, projection, DbUtils.sqlAnd(
-					selection, Logs.TABLE + "." + Logs.ID + " = "
-							+ ContentUris.parseId(uri)), selectionArgs,
+			c = db.query(
+					Logs.JOIN_LOGTYPES,
+					projection,
+					DbUtils.sqlAnd(selection, Logs.TABLE + "." + Logs.ID
+							+ " = " + ContentUris.parseId(uri)), selectionArgs,
 					groupBy, null, orderBy);
 			break;
 		case ID_LOGS:
@@ -885,9 +887,9 @@ public final class DataProvider extends ContentProvider {
 			if (!TextUtils.isEmpty(sortOrder)) {
 				orderBy = sortOrder;
 			}
-			c = db.query(Logs.JOIN_LOGTYPES, projection, DbUtils.sqlAnd(
-					selection, Logs.WHERE_OPEN), selectionArgs, groupBy, null,
-					orderBy);
+			c = db.query(Logs.JOIN_LOGTYPES, projection,
+					DbUtils.sqlAnd(selection, Logs.WHERE_OPEN), selectionArgs,
+					groupBy, null, orderBy);
 			break;
 		case ID_LOGSUM:
 			groupBy = Logs.FROM_D;
@@ -906,9 +908,11 @@ public final class DataProvider extends ContentProvider {
 			qb.setProjectionMap(Logtypes.PROJECTION_MAP);
 			break;
 		case ID_CELLID:
-			c = db.query(Cells.JOIN_LOGTYPES, projection, DbUtils.sqlAnd(
-					selection, Cells.TABLE + "." + Cells.ID + " = "
-							+ ContentUris.parseId(uri)), selectionArgs,
+			c = db.query(
+					Cells.JOIN_LOGTYPES,
+					projection,
+					DbUtils.sqlAnd(selection, Cells.TABLE + "." + Cells.ID
+							+ " = " + ContentUris.parseId(uri)), selectionArgs,
 					groupBy, null, orderBy);
 			break;
 		case ID_CELLS:
@@ -963,17 +967,15 @@ public final class DataProvider extends ContentProvider {
 			if (values.containsKey(Logs.FROM)) {
 				Logs.fixValues(values);
 			}
-			ret = db.update(Logs.TABLE, values, DbUtils.sqlAnd(Logs.WHERE_OPEN,
-					selection), selectionArgs);
+			ret = db.update(Logs.TABLE, values,
+					DbUtils.sqlAnd(Logs.WHERE_OPEN, selection), selectionArgs);
 			break;
 		case ID_LOGTYPES:
 			ret = db.update(Logtypes.TABLE, values, selection, selectionArgs);
 			break;
 		case ID_LOGTYPEID:
-			ret = db
-					.update(Logtypes.TABLE, values, DbUtils.sqlAnd(Logtypes.ID
-							+ "=" + ContentUris.parseId(uri), selection),
-							selectionArgs);
+			ret = db.update(Logtypes.TABLE, values, DbUtils.sqlAnd(Logtypes.ID
+					+ "=" + ContentUris.parseId(uri), selection), selectionArgs);
 			break;
 		case ID_CELLS:
 			ret = db.update(Cells.TABLE, values, selection, selectionArgs);

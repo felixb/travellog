@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-               Copyright (C) 2009-2011 Felix Bechstein
-       -->
+<!-- Copyright (C) 2009-2012 Felix Bechstein -->
 <!--
                This file is part of TravelLog. This program is free software; you can
                redistribute it and/or modify it under the terms of the GNU General
                Public License as published by the Free Software Foundation; either
                version 3 of the License, or (at your option) any later version.
-       -->
+-->
 <!--
                This program is distributed in the hope that it will be useful, but
                WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -15,54 +13,42 @@
                General Public License for more details. You should have received a
                copy of the GNU General Public License along with this program; If
                not, see <http://www.gnu.org/licenses/>.
-       -->
+-->
 <!--
                This file is generated automatically by ub0rlib/php.
                Visit http://ub0r.de/translate/travellog/de/strings.xml to edit the file.
-       -->
+-->
 <resources>
-  <string name="author_" formatted="false">Autor:</string>
-  <string name="version_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Version:">Version:</string>
-  <string name="license_" formatted="false">Lizenz:</string>
-  <string name="license" formatted="false">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
-  <string name="source_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sourcescode:">Sourcescode:</string>
-  <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
-  <string name="hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;">Diese Ansicht zeigt deine Arbeitszeiten.\n\nDrücke einfach einen der Knöpfe unten um einen neuen Eintrag zu starten.</string>
-  <string name="send_" formatted="false">Senden</string>
-  <string name="stop" formatted="false">Stopp</string>
-  <string name="pause" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Pause">Pause</string>
-  <string name="travel" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Travel">Reise</string>
-  <string name="work" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Work">Arbeit</string>
-  <string name="clear_" formatted="false">Alle löschen</string>
-  <string name="for_" formatted="false">für</string>
-  <string name="add_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Add">Hinzufügen</string>
-  <string-array name="state">
-    <item>Nichts</item>
-    <item>Pause</item>
-    <item>Reise</item>
-    <item>Arbeit</item>
-  </string-array>
-  <string-array name="action_child" username="flx &lt;f+translation@ub0r.de&gt;">
-    <item>Kommentar setzen</item>
-    <item>Datum ändern</item>
-    <item>Startzeit ändern</item>
-    <item>Endezeit ändern</item>
-    <item>Typ ändern</item>
-    <item>Löschen</item>
-  </string-array>
-  <string-array name="action_group" username="flx &lt;f+translation@ub0r.de&gt;">
-    <item>Datum ändern</item>
-    <item>Löschen</item>
-  </string-array>
-  <string-array name="action_logtype" username="flx &lt;f+translator@ub0r.de&gt;">
-    <item>Umnennen</item>
-    <item>Löschen</item>
-  </string-array>
-  <string name="warn_ticker" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="TravelLog: warning">TravelLog: Warnung</string>
-  <string name="warn_title" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Warning: Working time reached limit!">Warnung: Arbeitszeit hat das Limit erreicht!</string>
-  <string name="warn_text" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Working time has reached limit!">Arbeitszeit hat das Limit erreicht!</string>
-  <string name="alert_ticker" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="TravelLog: ALERT!">TravelLog: ALARM!</string>
-  <string name="alert_title" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Alert: Working time reached limit!">Alarm: Arbeitszeit hat das Limit erreicht!</string>
-  <string name="alert_text" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Working time has reached critical limit!">Arbeitszeit hat ein kritisches Level erreicht!</string>
-  <string name="clear_hint" formatted="false" username="Felix Bechstein &lt;f+translator@ub0r.de&gt;" orig="Do you really want to clear &lt;b&gt;all&lt;/b&gt; records?">Willst du wirklich <b>alle</b> Einträge löschen?</string>
+
+    <string name="author_" formatted="false">Autor:</string>
+    <string name="version_" formatted="false" orig="Version:" username="flx &lt;f+translation@ub0r.de>">Version:</string>
+    <string name="license_" formatted="false">Lizenz:</string>
+    <string name="license" formatted="false">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
+    <string name="source_" formatted="false" orig="Sourcescode:" username="flx &lt;f+translation@ub0r.de>">Sourcescode:</string>
+    <string name="website_" formatted="false" orig="Website:" username="flx &lt;f+translation@ub0r.de>">Website:</string>
+    <string name="hint" formatted="false" username="flx &lt;f+translation@ub0r.de>">Diese Ansicht zeigt deine Arbeitszeiten.\n\nDrücke einfach einen der Knöpfe unten um einen neuen Eintrag zu starten.</string>
+    <string name="send_" formatted="false">Senden</string>
+    <string name="stop" formatted="false">Stopp</string>
+    <string name="nothing">Nichts</string>
+    <string name="pause" formatted="false" orig="Pause" username="flx &lt;f+translation@ub0r.de>">Pause</string>
+    <string name="travel" formatted="false" orig="Travel" username="flx &lt;f+translation@ub0r.de>">Reise</string>
+    <string name="work" formatted="false" orig="Work" username="flx &lt;f+translation@ub0r.de>">Arbeit</string>
+    <string name="clear_" formatted="false">Alle löschen</string>
+    <string name="for_" formatted="false">für</string>
+    <string name="add_" formatted="false" orig="Add" username="flx &lt;f+translator@ub0r.de>">Hinzufügen</string>
+    <string name="set_comment">Kommentar setzen</string>
+    <string name="change_date">Datum ändern</string>
+    <string name="change_start_time">Startzeit ändern</string>
+    <string name="change_end_time">Endezeit ändern</string>
+    <string name="change_type">Typ ändern</string>
+    <string name="delete">Löschen</string>
+    <string name="rename">Umnennen</string>
+    <string name="warn_ticker" formatted="false" orig="TravelLog: warning" username="Felix Bechstein &lt;f+translator@ub0r.de>">TravelLog: Warnung</string>
+    <string name="warn_title" formatted="false" orig="Warning: Working time reached limit!" username="Felix Bechstein &lt;f+translator@ub0r.de>">Warnung: Arbeitszeit hat das Limit erreicht!</string>
+    <string name="warn_text" formatted="false" orig="Working time has reached limit!" username="Felix Bechstein &lt;f+translator@ub0r.de>">Arbeitszeit hat das Limit erreicht!</string>
+    <string name="alert_ticker" formatted="false" orig="TravelLog: ALERT!" username="Felix Bechstein &lt;f+translator@ub0r.de>">TravelLog: ALARM!</string>
+    <string name="alert_title" formatted="false" orig="Alert: Working time reached limit!" username="Felix Bechstein &lt;f+translator@ub0r.de>">Alarm: Arbeitszeit hat das Limit erreicht!</string>
+    <string name="alert_text" formatted="false" orig="Working time has reached critical limit!" username="Felix Bechstein &lt;f+translator@ub0r.de>">Arbeitszeit hat ein kritisches Level erreicht!</string>
+    <string name="clear_hint" formatted="false" orig="Do you really want to clear &lt;b>all&lt;/b> records?" username="Felix Bechstein &lt;f+translator@ub0r.de>">Willst du wirklich <b>alle</b> Einträge löschen?</string>
+
 </resources>

@@ -29,9 +29,9 @@ import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.view.MenuItem;
 import android.widget.Toast;
 import de.ub0r.android.lib.IPreferenceContainer;
@@ -260,9 +260,11 @@ public final class Preferences extends PreferenceActivity implements
 	private static boolean checkAlert(final IPreferenceContainer pc,
 			final String newValue) {
 		final float alertHours = Utils.parseFloat(newValue, 0);
-		final float warnHours = Utils.parseFloat(PreferenceManager
-				.getDefaultSharedPreferences(pc.getContext()).getString(
-						Preferences.PREFS_LIMIT_WARN_HOURS, null), 0);
+		final float warnHours = Utils
+				.parseFloat(
+						PreferenceManager.getDefaultSharedPreferences(
+								pc.getContext()).getString(
+								Preferences.PREFS_LIMIT_WARN_HOURS, null), 0);
 		if (alertHours > 0f && alertHours < warnHours) {
 			Toast.makeText(pc.getContext(), R.string.limit_alert_gt_warn_,
 					Toast.LENGTH_LONG).show();
@@ -376,8 +378,8 @@ public final class Preferences extends PreferenceActivity implements
 		lm.removeUpdates(pi);
 		final SharedPreferences p = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		long interval = Utils.parseLong(p
-				.getString(PREFS_UPDATE_INTERVAL, null), 0L);
+		long interval = Utils.parseLong(
+				p.getString(PREFS_UPDATE_INTERVAL, null), 0L);
 		interval *= Utils.MINUTES_IN_MILLIS;
 		String lp = getLocationProvider(context);
 		if (lp != null) {
