@@ -2,12 +2,12 @@ res/values/arrays.xml:7
 res/values/map.xml:17
 res/values/market.xml:4
 res/values/preferences.xml:57
-res/values/strings.xml:45
-res/values/update.xml:20
+res/values/strings.xml:40
+res/values/update.xml:21
 res/values-de/arrays.xml:7
 res/values-de/map.xml:17
 res/values-de/market.xml:4
 res/values-de/preferences.xml:56
-res/values-de/strings.xml:45
-res/values:150
-res/values-de:129
+res/values-de/strings.xml:40
+res/values:146
+res/values-de:124
