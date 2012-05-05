@@ -15,8 +15,8 @@
 		not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="auto"
     package="de.ub0r.android.travelLog"
+    android:installLocation="auto"
     android:versionCode="192"
     android:versionName="2.3" >
 
@@ -73,17 +73,9 @@
         </receiver>
 
         <activity
-            android:name="de.ub0r.android.lib.DonationFragmentActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="de.ub0r.android.lib.ChangelogFragmentActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
         <uses-library android:name="com.google.android.maps" />
     </application>
@@ -112,9 +104,5 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <!-- AdMob SDK permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

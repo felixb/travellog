@@ -20,7 +20,6 @@ package de.ub0r.android.travelLog.ui;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -63,7 +62,6 @@ import de.ub0r.android.lib.ChangelogHelper;
 import de.ub0r.android.lib.DonationHelper;
 import de.ub0r.android.lib.Log;
 import de.ub0r.android.lib.Utils;
-import de.ub0r.android.travelLog.Ads;
 import de.ub0r.android.travelLog.R;
 import de.ub0r.android.travelLog.data.DataProvider;
 
@@ -80,36 +78,6 @@ public final class Logs extends SherlockActivity implements
 
 	/** Tag for output. */
 	private static final String TAG = "Logs";
-
-	/** Ad's unit id. */
-	private static final String AD_UNITID = "a14ae9c6fae6c50";
-
-	/** Ad's keywords. */
-	public static final HashSet<String> AD_KEYWORDS = new HashSet<String>();
-	static {
-		AD_KEYWORDS.add("android");
-		AD_KEYWORDS.add("mobile");
-		AD_KEYWORDS.add("handy");
-		AD_KEYWORDS.add("cellphone");
-		AD_KEYWORDS.add("google");
-		AD_KEYWORDS.add("htc");
-		AD_KEYWORDS.add("samsung");
-		AD_KEYWORDS.add("motorola");
-		AD_KEYWORDS.add("market");
-		AD_KEYWORDS.add("app");
-		AD_KEYWORDS.add("message");
-		AD_KEYWORDS.add("txt");
-		AD_KEYWORDS.add("sms");
-		AD_KEYWORDS.add("mms");
-		AD_KEYWORDS.add("game");
-		AD_KEYWORDS.add("amazon");
-		AD_KEYWORDS.add("report");
-		AD_KEYWORDS.add("business");
-		AD_KEYWORDS.add("travel");
-		AD_KEYWORDS.add("trip");
-		AD_KEYWORDS.add("accounting");
-		AD_KEYWORDS.add("time");
-	}
 
 	/** Dialog: clear all data. */
 	private static final int DIALOG_CLEAR = 1;
@@ -338,8 +306,6 @@ public final class Logs extends SherlockActivity implements
 	/** Action: delete. */
 	// private static final int ACTION_GROUP_DELETE = 4;
 
-	/** Preference's name: hide ads. */
-	static final String PREFS_HIDEADS = "hideads";
 	/** Preference's name: mail. */
 	private static final String PREFS_MAIL = "mail";
 	/** Preference's name: flip export. */
@@ -352,9 +318,6 @@ public final class Logs extends SherlockActivity implements
 	private MenuItem stopItem, workItem, pauseItem, travelItem;
 	/** Show {@link MenuItem}s. */
 	private boolean showStopItem, showWorkItem, showPauseItem, showTravelItem;
-
-	/** Display ads? */
-	private boolean prefsNoAds;
 
 	/**
 	 * {@inheritDoc}
@@ -379,8 +342,6 @@ public final class Logs extends SherlockActivity implements
 			ChangelogHelper.showChangelog(this, true);
 		}
 		this.changeState(0, 0, true);
-
-		this.prefsNoAds = DonationHelper.hideAds(this);
 	}
 
 	/**
@@ -389,9 +350,6 @@ public final class Logs extends SherlockActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.menu, menu);
-		if (this.prefsNoAds) {
-			menu.removeItem(R.id.item_donate);
-		}
 		this.stopItem = menu.findItem(R.id.item_stop);
 		if (this.stopItem != null) {
 			this.stopItem.setVisible(this.showStopItem);
@@ -423,9 +381,6 @@ public final class Logs extends SherlockActivity implements
 			return true;
 		case R.id.item_clear:
 			this.showDialog(DIALOG_CLEAR);
-			return true;
-		case R.id.item_donate:
-			DonationHelper.startDonationActivity(this, true);
 			return true;
 		case R.id.item_export:
 			this.export();
@@ -488,10 +443,6 @@ public final class Logs extends SherlockActivity implements
 
 		// refresh query
 		this.requery();
-
-		if (!this.prefsNoAds) {
-			Ads.loadAd(this, R.id.ad, AD_UNITID, AD_KEYWORDS);
-		}
 	}
 
 	/**
