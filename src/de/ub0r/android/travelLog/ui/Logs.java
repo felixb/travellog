@@ -338,7 +338,9 @@ public final class Logs extends SherlockActivity implements
 		lv.setOnChildClickListener(this);
 
 		if (savedInstanceState == null) {
-			ChangelogHelper.showChangelog(this, true);
+			ChangelogHelper.showChangelog(this,
+					this.getString(R.string.changelog_),
+					this.getString(R.string.app_name), R.array.updates, -1);
 		}
 		this.changeState(0, 0, true);
 	}

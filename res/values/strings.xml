@@ -15,7 +15,7 @@
 		not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-
+    <string name="changelog_" translatable="false">Changelog</string>
     <string name="author_">Author:</string>
     <string name="version_">Version:</string>
     <string name="license_">License:</string>
