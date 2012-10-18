@@ -42,9 +42,9 @@
   <string name="mail__" formatted="false">Eine Mail Adresse an die der Export geschickt wird</string>
   <string name="round_" formatted="false">Zeit runden</string>
   <string name="logtypes_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Log types">Logtypen</string>
-  <string name="logtypes_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeit-, Reise und Pausetypen.</string>
+  <string name="logtypes_hint" formatted="false" username="John &lt;somedeepblue@gmail.com&gt;" orig="Define your own Work, Travel or Pause types.">Definiere deine eigenen Arbeits-, Reise- und Pausetypen.</string>
   <string name="update_interval_" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Update interval">Update Intervall</string>
-  <string name="update_interval_hint" formatted="false" username="flx &lt;f+translator@ub0r.de&gt;" orig="Shorter period will use more battery.">Eine kürzere Periode verbraucht mehr Akku.</string>
+  <string name="update_interval_hint" formatted="false" username="John &lt;somedeepblue@gmail.com&gt;" orig="Shorter period will use more battery.">Kürzere Zeitabstände verbrauchen mehr Akku.</string>
   <string name="about_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="About this app">Über diese App</string>
   <string name="settings_common" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Common">Allgemein</string>
   <string name="author_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Author:">Autor:</string>
@@ -52,7 +52,7 @@
   <string name="license_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="License:">Lizenz:</string>
   <string name="license" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt">GPLv3 - siehe http://www.gnu.org/licenses/gpl-3.0.txt</string>
   <string name="source_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sourcescode:">Quellcode:</string>
-  <string name="website_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Website:">Website:</string>
+  <string name="website_" formatted="false" username="John &lt;somedeepblue@gmail.com&gt;" orig="Website:">Webseite:</string>
   <string name="send_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Send">Senden</string>
   <string name="go_home_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Go home!">Geh nach Hause!</string>
   <string name="go_home_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Check working time and notify user at certain limits.">Überprüfe deine Arbeitszeit und benachrichtige den Benutzer.</string>
@@ -60,12 +60,12 @@
   <string name="count_travel_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Count work and travel time when checking limits.">Arbeits- und Reisezeit erfassen, wenn das Limit geprüft wird.</string>
   <string name="limit_warn_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Warning">Warnung</string>
   <string name="limit_alert_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Alert">Alarm</string>
-  <string name="limit_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Time in hours at which the app should notify">Zeit in Stunden bei der die App die benachrichtigen soll</string>
+  <string name="limit_hint" formatted="false" username="John &lt;somedeepblue@gmail.com&gt;" orig="Time in hours at which the app should notify">Zeit in Stunden, zu der die App die benachrichtigen soll</string>
   <string name="limit_sound_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sound">Ton</string>
   <string name="limit_sound_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Sound to play in warning mode">Ton für die Warnung</string>
   <string name="limit_delay_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Delay">Pause</string>
   <string name="limit_delay_hint" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Delay between repetitions in seconds">Pause zwischen zwei Wiederholungen in Sekunden</string>
-  <string name="limit_alert_gt_warn_" formatted="false" username="flx &lt;f+translation@ub0r.de&gt;" orig="Alert hours need to be greater than warning hours!">Alarm Stunden müssen über den Warnungsstunden liegen!</string>
+  <string name="limit_alert_gt_warn_" formatted="false" username="John &lt;somedeepblue@gmail.com&gt;" orig="Alert hours need to be greater than warning hours!">Alarmstunden müssen über den Warnungsstunden liegen!</string>
   <string-array name="themes">
     <item>Dunkel</item>
     <item>Hell</item>
