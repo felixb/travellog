@@ -23,7 +23,6 @@
 	<string name="author">Felix Bechstein &lt;f@ub0r.de&gt;</string>
 	<string name="source">http://github.com/felixb/travellog</string>
 	<string name="website">http://code.google.com/p/ub0rapps/</string>
-	<string name="twitter_">twitter</string>
 	<string-array name="themes_values">
 		<item>black</item>
 		<item>light</item>
