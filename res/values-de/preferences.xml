@@ -25,7 +25,6 @@
   <string name="faq_hint" formatted="false">Ein paar Tipps und Tricks, wie man diese App einstellt.</string>
   <string name="feedback_" formatted="false">Feedback</string>
   <string name="feedback_hint" formatted="false">Bugreports, feature requests ...</string>
-  <string name="twitter_hint" formatted="false">Follow auf twitter.\nUpdate Infos etc...</string>
   <string name="settings" formatted="false">Einstellungen</string>
   <string name="about_" formatted="false">Über TravelLog</string>
   <string name="more_" formatted="false">Mehr Apps..</string>
