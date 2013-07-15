@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-	<!--
+<!--
 		Copyright (C) 2010-2011 Felix Bechstein
 	-->
-	<!--
+<!--
 		This file is part of TravelLog. This program is free software; you can
 		redistribute it and/or modify it under the terms of the GNU General
 		Public License as published by the Free Software Foundation; either
 		version 3 of the License, or (at your option) any later version.
 	-->
-	<!--
+<!--
 		This program is distributed in the hope that it will be useful, but
 		WITHOUT ANY WARRANTY; without even the implied warranty of
 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -17,4 +17,21 @@
 		not, see <http://www.gnu.org/licenses/>.
 	-->
 <resources>
+  <string name="map_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Map">Mapa</string>
+  <string name="map_hint" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Add cells on the map to add log items automatically.">Adicionar células do mapa para registos automáticos.</string>
+  <string name="map_unavail" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Coarse location provider is unavailable!">Serviço de localização não disponível.</string>
+  <string name="cell_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Cell">Célula</string>
+  <string name="my_location_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="My location">Minha localização</string>
+  <string name="no_location_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Location is unknown!">Localização desconhecida!</string>
+  <string name="add_cell_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Add cell">Adicionar célula</string>
+  <string name="add_cell_hint" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Touch the map to add a cell.">Toque no mapa para adicionar uma célula.</string>
+  <string name="add_cell_toast" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Press menu button to add a cell.">Prima o botão de menu para adicionar uma célula.</string>
+  <string name="type_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Type:">Tipo:</string>
+  <string name="nulltype_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Nothing">Nenhum</string>
+  <string name="radius_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Radius:">Raio:</string>
+  <string name="edit_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Edit">Editar</string>
+  <string name="edit_cell_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Edit cell">Editar célula</string>
+  <string name="delete" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Delete">Eliminar</string>
+  <string name="last_seen_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Last seen:">Última visualização:</string>
+  <string name="first_seen_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="First seen:">Primeira visualização:</string>
 </resources>

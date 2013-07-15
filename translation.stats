@@ -7,5 +7,10 @@ res/values-de/map.xml:17
 res/values-de/market.xml:4
 res/values-de/preferences.xml:55
 res/values-de/strings.xml:30
+res/values-pt/map.xml:17
+res/values-pt/market.xml:4
+res/values-pt/preferences.xml:50
+res/values-pt/strings.xml:30
 res/values:127
 res/values-de:106
+res/values-pt:101
