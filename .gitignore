@@ -5,3 +5,8 @@ wiki
 build.properties
 .ant-targets-build.xml
 commit.log
+.gradle
+.idea
+*.iml
+build
+gradle.properties

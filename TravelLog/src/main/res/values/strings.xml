@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2010-2012 Felix Bechstein -->
+<!--
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
+-->
+<!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="changelog_" translatable="false">Changelog</string>
+    <string name="author_">Author:</string>
+    <string name="version_">Version:</string>
+    <string name="license_">License:</string>
+    <string name="license">GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt</string>
+    <string name="source_">Sourcescode:</string>
+    <string name="website_">Website:</string>
+    <string name="hint">This view holds a list of log items with your working time.\n\nJust press one of the buttons below to start a new one.</string>
+    <string name="send_">Send</string>
+    <string name="stop">Stop</string>
+    <string name="nothing">Nothing</string>
+    <string name="pause">Pause</string>
+    <string name="travel">Travel</string>
+    <string name="work">Work</string>
+    <string name="clear_">Clear</string>
+    <string name="clear_hint">Do you really want to clear <b>all</b> records?</string>
+    <string name="for_">for</string>
+    <string name="add_">Add</string>
+    <string name="set_comment">Set comment</string>
+    <string name="change_date">Change date</string>
+    <string name="change_start_time">Change start time</string>
+    <string name="change_end_time">Change end time</string>
+    <string name="change_type">Change type</string>
+    <string name="rename">Rename</string>
+    <string name="warn_ticker">TravelLog: warning</string>
+    <string name="warn_title">Warning: Working time reached limit!</string>
+    <string name="warn_text">Working time has reached limit!</string>
+    <string name="alert_ticker">TravelLog: ALERT!</string>
+    <string name="alert_title">Alert: Working time reached limit!</string>
+    <string name="alert_text">Working time has reached critical limit!</string>
+
+    <string-array name="state" translatable="false">
+        <item>@string/nothing</item>
+        <item>@string/pause</item>
+        <item>@string/travel</item>
+        <item>@string/work</item>
+    </string-array>
+    <string-array name="action_child" translatable="false">
+        <item>@string/set_comment</item>
+        <item>@string/change_date</item>
+        <item>@string/change_start_time</item>
+        <item>@string/change_end_time</item>
+        <item>@string/change_type</item>
+        <item>@string/delete</item>
+    </string-array>
+    <string-array name="action_group" translatable="false">
+        <item>@string/change_date</item>
+        <item>@string/delete</item>
+    </string-array>
+    <string-array name="action_logtype" translatable="false">
+        <item>@string/rename</item>
+        <item>@string/delete</item>
+    </string-array>
+
+</resources>

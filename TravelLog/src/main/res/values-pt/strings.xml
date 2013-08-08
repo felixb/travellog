@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2010-2012 Felix Bechstein -->
+<!--
+		This file is part of TravelLog. This program is free software; you can
+		redistribute it and/or modify it under the terms of the GNU General
+		Public License as published by the Free Software Foundation; either
+		version 3 of the License, or (at your option) any later version.
+-->
+<!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+  <string name="author_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Author:">Autor:</string>
+  <string name="version_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Version:">Versão:</string>
+  <string name="license_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="License:">Licença:</string>
+  <string name="license" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="GPLv3 - see http://www.gnu.org/licenses/gpl-3.0.txt">GPLv3 - consulte http://www.gnu.org/licenses/gpl-3.0.txt</string>
+  <string name="source_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Sourcescode:">Código fonte:</string>
+  <string name="website_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Website:">Sítio web:</string>
+  <string name="hint" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="This view holds a list of log items with your working time.\n\nJust press one of the buttons below to start a new one.">Esta vista guarda a lista de itens de registo durante o expediente.\n\nPrima um dos botões abaixo para iniciar um novo expediente.</string>
+  <string name="send_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Send">Enviar</string>
+  <string name="stop" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Stop">Parar</string>
+  <string name="nothing" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Nothing">Nada</string>
+  <string name="pause" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Pause">Pausa</string>
+  <string name="travel" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Travel">Viagem</string>
+  <string name="work" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Work">Trabalho</string>
+  <string name="clear_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Clear">Limpar</string>
+  <string name="clear_hint" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Do you really want to clear &lt;b&gt;all&lt;/b&gt; records?">Quer mesmo limpar <b>todos</b> os registos?</string>
+  <string name="for_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="for">para</string>
+  <string name="add_" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Add">Adicionar</string>
+  <string name="set_comment" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Set comment">Inserir comentário</string>
+  <string name="change_date" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Change date">Alterar data</string>
+  <string name="change_start_time" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Change start time">Alterar hora inicial</string>
+  <string name="change_end_time" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Change end time">Alterar hora final</string>
+  <string name="change_type" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Change type">Alterar tipo</string>
+  <string name="rename" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Rename">Mudar nome</string>
+  <string name="warn_ticker" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="TravelLog: warning">TravelLog: aviso</string>
+  <string name="warn_title" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Warning: Working time reached limit!">Aviso: horário de expediente terminado!</string>
+  <string name="warn_text" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Working time has reached limit!">O horário de expediente terminou!</string>
+  <string name="alert_ticker" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="TravelLog: ALERT!">TravelLog: alerta!</string>
+  <string name="alert_title" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Alert: Working time reached limit!">Alerta: horário de expediente terminado!</string>
+  <string name="alert_text" formatted="false" username="Sérgio Marques &lt;smarquespt@gmail.com&gt;" orig="Working time has reached critical limit!">O horário de expediente atingiu o limite crítico!</string>
+</resources>
