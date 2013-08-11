@@ -104,7 +104,6 @@ public final class Map extends SherlockActivity implements GoogleMap.OnMarkerDra
             this.mv.onCreate(savedInstanceState);
             this.googleMap = this.mv.getMap();
             if (this.googleMap != null) {
-                this.googleMap.setMyLocationEnabled(true);
                 this.googleMap.getUiSettings().setAllGesturesEnabled(true);
                 this.googleMap.getUiSettings().setCompassEnabled(true);
                 this.googleMap.getUiSettings().setMyLocationButtonEnabled(true);
