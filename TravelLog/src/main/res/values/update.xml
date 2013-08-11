@@ -18,6 +18,9 @@
 <resources>
 
     <string-array name="updates" translatable="false">
+        <item>v2.6.2: remove fine location permission, save battery</item>
+        <item>v2.6.1: migrate to new Google Maps API</item>
+        <item>v2.6: add portuguese translation</item>
         <item>v2.5: UI changes, remove ads</item>
         <item>v2.3: minor fixes, UI fixes</item>
         <item>v2.2: major ui improvements, minor changes and fixes</item>

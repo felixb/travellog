@@ -17,8 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="de.ub0r.android.travelLog"
           android:installLocation="auto"
-          android:versionCode="7261000"
-          android:versionName="2.6.1">
+          android:versionCode="8262001"
+          android:versionName="2.6.2">
 
     <uses-sdk
             android:minSdkVersion="8"
